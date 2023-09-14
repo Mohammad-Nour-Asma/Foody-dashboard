@@ -35,7 +35,7 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
       method: "GET",
     });
   };
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, isSuccess } = useQuery({
     queryKey: ["branches"],
     queryFn: getBranches,
     onSuccess: (data) => {
@@ -50,7 +50,7 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
     localStorage.setItem("branch_id", event.target.value);
   };
 
-  if (isLoading) {
+  if (isSuccess) {
     if (!localStorage.getItem("branch_id")) {
       localStorage.setItem("branch_id", data.data.data[0].id);
     }
