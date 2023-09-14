@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, TextField, Typography, Paper, Alert } from "@mui/material";
+import { Box, TextField, Typography, Paper, Alert, Stack } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { BiImageAdd } from "react-icons/bi";
 import { Formik } from "formik";
@@ -14,12 +14,12 @@ import { useMutation } from "@tanstack/react-query";
 const IngredientsForm = ({ row }) => {
   const [updatedIng, setUpdatedIng] = useState({});
 
-  let initialValues = { name: "", price: "", name_ar: "" };
+  let initialValues = { name: "", quantity: "", name_ar: "" };
   if (row) {
     initialValues = {
       name: row.original.name,
       name_ar: row.original.name_ar,
-      price: row.original.price_by_piece,
+      quantity: row.original.quantity,
     };
   }
   //Image Upload Stuff
@@ -42,44 +42,33 @@ const IngredientsForm = ({ row }) => {
   // Submit Hanlder
   const submitHandle = (values) => {
     console.log(values);
-    // if (row) {
-    //   console.log(row);
-    //   let dataToSend = {
-    //     price_by_piece: values.price,
-    //     name: values.name,
-    //     branch_id: 1,
-    //   };
-    //   if (image) {
-    //     dataToSend = {
-    //       price_by_piece: values.price,
-    //       name: values.name,
-    //       branch_id: 1,
-    //       image,
-    //     };
-    //   }
-    //   setUpdatedIng(dataToSend);
+    if (row) {
+      console.log(row);
+      let dataToSend = {
+        name: values.name,
+        name_ar: values.name_ar,
+        total_quantity: values.quantity,
+        branch_id: localStorage.getItem("branch_id"),
+      };
 
-    //   console.log(dataToSend);
-    //   updateIngredient.mutate(dataToSend);
-    // } else {
-    //   if (image === "") {
-    //     setImageValidation(true);
-    //   } else {
-    //     setImageValidation(false);
-    //   }
-    //   const data = {
-    //     price_by_piece: values.price,
-    //     name: values.name,
-    //     image: image,
-    //     branch_id: 1,
-    //   };
-    //   storeIngredient.mutate(data);
-    // }
+      setUpdatedIng(dataToSend);
+
+      console.log(dataToSend);
+      updateIngredient.mutate(dataToSend);
+    } else {
+      const data = {
+        name: values.name,
+        name_ar: values.name_ar,
+        total_quantity: values.quantity,
+        branch_id: localStorage.getItem("branch_id"),
+      };
+      storeIngredient.mutate(data);
+    }
   };
 
   const storeIngredientRequest = (data) => {
     return request({
-      url: "/store_ingredient",
+      url: "/ingredient/add",
       method: "POST",
       data: data,
       headers: {
@@ -206,75 +195,19 @@ const IngredientsForm = ({ row }) => {
               />
             </Box>
             <Box sx={{ my: 2 }}>
-              <Price
+              <TextField
+                name="quantity"
+                label="Quantity"
+                fullWidth
                 handleChange={handleChange}
                 onBlur={handleBlur}
-                error={!!touched.price && !!errors.price}
-                helperText={touched.price && errors.price}
+                error={!!touched.quantity && !!errors.quantity}
+                helperText={touched.quantity && errors.quantity}
                 onChange={handleChange}
-                name="price"
-                value={values.price}
+                value={values.quantity}
               />
             </Box>
-            <Box sx={{ my: 2 }}>
-              <input
-                type="file"
-                hidden
-                ref={imageInput}
-                onChange={(e) => setImage(e.target.files[0])}
-              />
-              <UploadBox onClick={() => imageInput.current.click()}>
-                {image ? (
-                  <img
-                    src={image && URL.createObjectURL(image)}
-                    alt=""
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : row ? (
-                  <img
-                    src={row.original.image}
-                    alt=""
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : (
-                  <Box sx={{ textAlign: "center" }}>
-                    <BiImageAdd
-                      style={{ fontSize: "50px", color: "#027edd" }}
-                    />
-                    <Typography>
-                      Drop your image here or{" "}
-                      <span style={{ color: "#027edd", cursor: "pointer" }}>
-                        browse
-                      </span>
-                    </Typography>
-                    <Typography sx={{ fontSize: "12px" }}>
-                      JPG, PNG and GIF images are allowed
-                    </Typography>
-                  </Box>
-                )}
-              </UploadBox>
-              {imageValidation && (
-                <Box sx={{ color: "#f44336", margin: "1rem 0" }}>
-                  image field is required
-                </Box>
-              )}
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                mt: "30px",
-              }}
-            >
+            <Stack sx={{ my: 2 }}>
               <LoadingButton
                 loading={
                   row ? updateIngredient.isPending : storeIngredient.isPending
@@ -284,7 +217,7 @@ const IngredientsForm = ({ row }) => {
               >
                 <span>Submit</span>
               </LoadingButton>
-            </Box>
+            </Stack>
           </form>
         )}
       </Formik>

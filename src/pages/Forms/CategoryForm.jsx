@@ -179,6 +179,20 @@ const CategoryForm = ({ row }) => {
             </Box>
             <Box sx={{ my: 2 }}>
               <TextField
+                name="name_ar"
+                label="Category Arabic Name"
+                variant="outlined"
+                size="small"
+                fullWidth
+                onBlur={handleBlur}
+                onChange={handleChange}
+                error={!!touched.name_ar && !!errors.name_ar}
+                helperText={touched.name_ar && errors.name_ar}
+                value={values.name_ar}
+              />
+            </Box>
+            <Box sx={{ my: 2 }}>
+              <TextField
                 name="position"
                 label="Position in menu"
                 variant="outlined"
