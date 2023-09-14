@@ -13,11 +13,12 @@ import { useMutation } from "@tanstack/react-query";
 
 const IngredientsForm = ({ row }) => {
   const [updatedIng, setUpdatedIng] = useState({});
-  console.log(row);
-  let initialValues = { name: "", price: "" };
+
+  let initialValues = { name: "", price: "", name_ar: "" };
   if (row) {
     initialValues = {
       name: row.original.name,
+      name_ar: row.original.name_ar,
       price: row.original.price_by_piece,
     };
   }
@@ -40,39 +41,40 @@ const IngredientsForm = ({ row }) => {
 
   // Submit Hanlder
   const submitHandle = (values) => {
-    if (row) {
-      console.log(row);
-      let dataToSend = {
-        price_by_piece: values.price,
-        name: values.name,
-        branch_id: 1,
-      };
-      if (image) {
-        dataToSend = {
-          price_by_piece: values.price,
-          name: values.name,
-          branch_id: 1,
-          image,
-        };
-      }
-      setUpdatedIng(dataToSend);
+    console.log(values);
+    // if (row) {
+    //   console.log(row);
+    //   let dataToSend = {
+    //     price_by_piece: values.price,
+    //     name: values.name,
+    //     branch_id: 1,
+    //   };
+    //   if (image) {
+    //     dataToSend = {
+    //       price_by_piece: values.price,
+    //       name: values.name,
+    //       branch_id: 1,
+    //       image,
+    //     };
+    //   }
+    //   setUpdatedIng(dataToSend);
 
-      console.log(dataToSend);
-      updateIngredient.mutate(dataToSend);
-    } else {
-      if (image === "") {
-        setImageValidation(true);
-      } else {
-        setImageValidation(false);
-      }
-      const data = {
-        price_by_piece: values.price,
-        name: values.name,
-        image: image,
-        branch_id: 1,
-      };
-      storeIngredient.mutate(data);
-    }
+    //   console.log(dataToSend);
+    //   updateIngredient.mutate(dataToSend);
+    // } else {
+    //   if (image === "") {
+    //     setImageValidation(true);
+    //   } else {
+    //     setImageValidation(false);
+    //   }
+    //   const data = {
+    //     price_by_piece: values.price,
+    //     name: values.name,
+    //     image: image,
+    //     branch_id: 1,
+    //   };
+    //   storeIngredient.mutate(data);
+    // }
   };
 
   const storeIngredientRequest = (data) => {
@@ -198,9 +200,9 @@ const IngredientsForm = ({ row }) => {
                 fullWidth
                 onBlur={handleBlur}
                 onChange={handleChange}
-                error={!!touched.name && !!errors.name}
-                helperText={touched.name && errors.name}
-                value={values.name}
+                error={!!touched.name_ar && !!errors.name_ar}
+                helperText={touched.name_ar && errors.name_ar}
+                value={values.name_ar}
               />
             </Box>
             <Box sx={{ my: 2 }}>
