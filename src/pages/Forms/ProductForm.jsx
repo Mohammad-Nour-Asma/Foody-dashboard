@@ -16,7 +16,7 @@ import { ErrorMessage, Formik } from "formik";
 import MyLoadingButton from "../../components/common/LoadingButton";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
-
+import NourInput from "./NourInput";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { request } from "../../Request/request";
 import Loader from "../../components/common/loader/loader";
@@ -93,7 +93,10 @@ const ProductForm = ({ row }) => {
   // Get Categories
 
   const getCategory = () => {
-    return request({ url: "/categories", method: "GET" });
+    return request({
+      url: `category/branch/${localStorage.getItem("branch_id")}`,
+      method: "GET",
+    });
   };
 
   const { data, isLoading, isError, isSuccess } = useQuery({
@@ -107,7 +110,7 @@ const ProductForm = ({ row }) => {
   );
   useEffect(() => {
     if (isSuccess) {
-      setSelectedCategory(categories[0].id);
+      if (categories.length !== 0) setSelectedCategory(categories[0].id);
     }
   }, [isSuccess]);
   // Get Ingredients
@@ -303,26 +306,6 @@ const ProductForm = ({ row }) => {
                 </FormControl>
               </Box>
 
-              <Box>
-                <Autocomplete
-                  sx={{ mt: 4 }}
-                  multiple
-                  id="tags-standard"
-                  options={ingredients?.map((option) => option.name)}
-                  onChange={handleIngredientsChange}
-                  value={selectedIngredients}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      helperText="Select Meals's Ingredients "
-                      variant="outlined"
-                      label="Meal's Ingredients"
-                      placeholder="Meal's Ingredients"
-                    />
-                  )}
-                />
-              </Box>
-
               <Box
                 sx={{ mt: 4, display: "flex", alignItems: "center", gap: 4 }}
               >
@@ -385,6 +368,7 @@ const ProductForm = ({ row }) => {
                   defaultChecked={row?.original.status != 1 ? false : true}
                 ></Switch>
               </Box>
+              <NourInput />
 
               <input
                 type="file"

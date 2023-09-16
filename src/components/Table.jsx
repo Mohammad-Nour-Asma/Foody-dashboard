@@ -60,8 +60,6 @@ export const Table = ({
     setOpen({ type, open: true, row: row });
   };
 
-  console.log("render");
-
   return (
     <>
       {" "}
@@ -165,12 +163,14 @@ export const Table = ({
                   </IconButton>
                 </Tooltip>
               )}
-              {hideFromMenu && routeLink === "products" && (
-                <SwitchForMenu
-                  defaultChecked={row.original.status}
-                  productId={row.original.id}
-                />
-              )}
+              {hideFromMenu &&
+                (routeLink === "products" || routeLink === "categories") && (
+                  <SwitchForMenu
+                    defaultChecked={row.original.status}
+                    productId={row.original.id}
+                    switchType={routeLink}
+                  />
+                )}
             </Box>
           );
         }}

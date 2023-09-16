@@ -13,14 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { BiImageAdd } from "react-icons/bi";
-import { request } from "../Request/request";
-import { ErrorMessage, Formik } from "formik";
-import { productValidation } from "../validations/productValidation";
-import MyLoadingButton from "../components/common/LoadingButton";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import Loader from "../components/common/loader/loader";
-import Notify from "../components/common/Notify";
+
 import ProductForm from "./Forms/ProductForm";
 
 const AddProduct = ({ edit }) => {

@@ -27,6 +27,8 @@ import Login from "./pages/Login";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Categories from "./pages/Categories";
 import AddCategory from "./pages/AddCategory";
+import ExtraIngredients from "./pages/ExtraIngredients";
+import AddExtra from "./pages/AddExtra";
 
 const sideBarWidth = 250;
 
@@ -101,6 +103,10 @@ function App() {
             {/* Categories */}
             <Route path="/categories" element={<Categories />} />
             <Route path="/category/add" element={<AddCategory />} />
+
+            {/* Extra Ingredients */}
+            <Route path="/extra" element={<ExtraIngredients />} />
+            <Route path="/extra/add" element={<AddExtra />} />
           </Routes>
         </Box>
       </Box>

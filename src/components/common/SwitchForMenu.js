@@ -6,7 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Box, Button } from "@mui/material";
 import Notify from "./Notify";
 
-const SwitchForMenu = ({ productId, ...options }) => {
+const SwitchForMenu = ({ productId, switchType, ...options }) => {
   const [value, setValue] = useState(options.defaultChecked);
 
   const onChangehandler = (e) => {
@@ -14,16 +14,18 @@ const SwitchForMenu = ({ productId, ...options }) => {
   };
 
   const switchState = (id) => {
+    console.log(switchType);
     return request({
-      url: `edit_status/${id}`,
+      url: `${
+        switchType === "categories" ? "category" : "product"
+      }/status/${id}`,
+      method: "POST",
     });
   };
-
 
   const statusMutate = useMutation({
     mutationFn: switchState,
     onSuccess: () => {
-
       setOpen(true);
     },
     onError: (err) => {
@@ -31,8 +33,6 @@ const SwitchForMenu = ({ productId, ...options }) => {
       setOpen(true);
     },
   });
-
-  const switchRef = useRef();
 
   const [open, setOpen] = useState(false);
 

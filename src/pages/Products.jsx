@@ -33,7 +33,11 @@ const Products = () => {
     },
     {
       accessorKey: "name", //access nested data with dot notation
-      header: "Meal",
+      header: "Meal Name",
+    },
+    {
+      accessorKey: "name_ar", //access nested data with dot notation
+      header: "Meal Arabic Name",
     },
 
     {
@@ -57,13 +61,17 @@ const Products = () => {
   ];
 
   const getAllProducts = () => {
-    return request({ url: "/products", method: "GET" });
+    return request({
+      url: `/products/branch/${localStorage.getItem("branch_id")}`,
+      method: "GET",
+    });
   };
 
-  const { isLoading, data, isError } = useQuery({
+  const { isLoading, data, isError, error } = useQuery({
     queryKey: ["porducts"],
     queryFn: getAllProducts,
   });
+  console.log(isError);
 
   const products = data?.data.data;
 

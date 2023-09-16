@@ -18,6 +18,11 @@ const Categories = () => {
       size: 100,
     },
     {
+      accessorKey: "name_ar", //access nested data with dot notation
+      header: "Arabic Name",
+      size: 100,
+    },
+    {
       accessorKey: "position", //access nested data with dot notation
       header: "Position",
       size: 100,
@@ -47,7 +52,7 @@ const Categories = () => {
   });
 
   const categories = data?.data.data;
-
+  console.log(data);
   const deleteCategory = (id) => {
     return request({
       url: `delete_category/${id}`,
@@ -92,6 +97,7 @@ const Categories = () => {
               showPreview={false}
               deleteElement={deleteMutate}
               UpdatingForm={CategoryForm}
+              hideFromMenu={true}
               routeLink="categories"
             />
           )}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Page from "../components/common/Page";
 import Layout from "../components/common/Layout";
 import Table from "../components/Table";
-import { ingredientColumns, IngredientsData } from "../data/Ingredients";
+import { extraIngredientsColumns } from "../data/Ingredients";
 
 import { Box, Button, Typography } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -10,13 +10,14 @@ import { request } from "../Request/request";
 import Loader from "../components/common/loader/loader";
 import Notify from "../components/common/Notify";
 import IngredientsForm from "./Forms/IngredientsForm";
+import ExtraForm from "./Forms/ExtraForm";
 
-const Ingredients = () => {
+const ExtraIngredients = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["ingredients-get"],
     queryFn: () => {
       return request({
-        url: `/ingredient/branch/${localStorage.getItem("branch_id")}`,
+        url: `/extraIng/branch/${localStorage.getItem("branch_id")}`,
         method: "GET",
       });
     },
@@ -43,11 +44,7 @@ const Ingredients = () => {
   };
 
   return (
-    <Page
-      button={"Add Ingredient"}
-      link={"/ingredient/add"}
-      title={"Ingredients"}
-    >
+    <Page button={"Add Extra"} link={"/extra/add"} title={"Extra Ingredients"}>
       <Notify
         message={"deleted successfully"}
         open={open}
@@ -59,7 +56,7 @@ const Ingredients = () => {
         ) : (
           <Table
             data={ingredients?.data}
-            fields={ingredientColumns}
+            fields={extraIngredientsColumns}
             numberOfRows={ingredients.length}
             enableTopToolBar={true}
             enableBottomToolBar={true}
@@ -69,9 +66,8 @@ const Ingredients = () => {
             enableColumnDragging={true}
             showPreview={false}
             deleteElement={deleteMutate}
-            UpdatingForm={IngredientsForm}
-            hideFromMenu={true}
-            routeLink="ingredients"
+            UpdatingForm={ExtraForm}
+            routeLink="extraIngredients"
           />
         )}
       </Box>
@@ -79,4 +75,4 @@ const Ingredients = () => {
   );
 };
 
-export default Ingredients;
+export default ExtraIngredients;

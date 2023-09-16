@@ -20,7 +20,7 @@ export const links = [
     url: "/Dashboard",
   },
   {
-    name: "Ingredients",
+    name: "Ingredients in wearhouse",
     icon: <FiShoppingBag />,
     subLinks: [
       {
@@ -30,6 +30,20 @@ export const links = [
       {
         name: "Add Ingredients",
         url: "/ingredient/add",
+      },
+    ],
+  },
+  {
+    name: "Extra ingredients",
+    icon: <FiShoppingBag />,
+    subLinks: [
+      {
+        name: "All extra ",
+        url: "/extra",
+      },
+      {
+        name: "Add extra",
+        url: "/extra/add",
       },
     ],
   },

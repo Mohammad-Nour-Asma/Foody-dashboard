@@ -10,8 +10,9 @@ import styled from "@emotion/styled";
 import Notify from "../../components/common/Notify";
 import Price from "../../components/common/Price";
 import { useMutation } from "@tanstack/react-query";
+import { ExtraValidation } from "../../validations/ExtraValidations";
 
-const IngredientsForm = ({ row }) => {
+const ExtraForm = ({ row }) => {
   const [updatedIng, setUpdatedIng] = useState({});
 
   let initialValues = { name: "", quantity: "", name_ar: "" };
@@ -20,24 +21,9 @@ const IngredientsForm = ({ row }) => {
       name: row.original.name,
       name_ar: row.original.name_ar,
       quantity: row.original.quantity,
+      price_per_peice: row.original.price_per_peice,
     };
   }
-  //Image Upload Stuff
-  const UploadBox = styled(Box)({
-    marginTop: 30,
-    height: 200,
-    borderRadius: "10px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    borderStyle: "dashed",
-    borderWidth: "2px",
-    borderColor: "divider",
-  });
-  const imageInput = useRef(null);
-  const [image, setImage] = useState("");
-  const [imageValidation, setImageValidation] = useState();
 
   // Submit Hanlder
   const submitHandle = (values) => {
@@ -45,7 +31,8 @@ const IngredientsForm = ({ row }) => {
       let dataToSend = {
         name: values.name,
         name_ar: values.name_ar,
-        total_quantity: values.quantity,
+        quantity: values.quantity,
+        price_per_peice: values.price_per_peice,
         branch_id: localStorage.getItem("branch_id"),
       };
 
@@ -56,7 +43,8 @@ const IngredientsForm = ({ row }) => {
       const data = {
         name: values.name,
         name_ar: values.name_ar,
-        total_quantity: values.quantity,
+        quantity: values.quantity,
+        price_per_peice: values.price_per_peice,
         branch_id: localStorage.getItem("branch_id"),
       };
       storeIngredient.mutate(data);
@@ -65,7 +53,7 @@ const IngredientsForm = ({ row }) => {
 
   const storeIngredientRequest = (data) => {
     return request({
-      url: "/ingredient/add",
+      url: "/extraIng/add",
       method: "POST",
       data: data,
       headers: {
@@ -137,8 +125,8 @@ const IngredientsForm = ({ row }) => {
           updateIngredient.isError || storeIngredient.isError
             ? "something went wrong"
             : row
-            ? "Ingredient updatede Successfully"
-            : "Ingredient added successfully"
+            ? "Extra Ingredient updatede Successfully"
+            : "Extra Ingredient added successfully"
         }
         open={open}
         handleClose={handleClose}
@@ -150,7 +138,7 @@ const IngredientsForm = ({ row }) => {
       />
       <Formik
         initialValues={initialValues}
-        validationSchema={ingredientValidation}
+        validationSchema={ExtraValidation}
         onSubmit={submitHandle}
       >
         {({
@@ -190,17 +178,18 @@ const IngredientsForm = ({ row }) => {
                 value={values.name_ar}
               />
             </Box>
+
             <Box sx={{ my: 2 }}>
               <TextField
-                name="quantity"
-                label="Quantity"
+                name="price_per_peice"
+                label="Price Per Peice"
                 fullWidth
                 handleChange={handleChange}
                 onBlur={handleBlur}
-                error={!!touched.quantity && !!errors.quantity}
-                helperText={touched.quantity && errors.quantity}
+                error={!!touched.price_per_peice && !!errors.price_per_peice}
+                helperText={touched.price_per_peice && errors.price_per_peice}
                 onChange={handleChange}
-                value={values.quantity}
+                value={values.price_per_peice}
               />
             </Box>
             <Stack sx={{ my: 2 }}>
@@ -221,4 +210,4 @@ const IngredientsForm = ({ row }) => {
   );
 };
 
-export default IngredientsForm;
+export default ExtraForm;

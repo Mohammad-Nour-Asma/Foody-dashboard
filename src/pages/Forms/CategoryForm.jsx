@@ -14,6 +14,7 @@ const CategoryForm = ({ row }) => {
   if (row) {
     initialValues = {
       name: row.original.name,
+      name_ar: row.original.name_ar,
       position: row.original.position,
     };
   }
@@ -41,7 +42,7 @@ const CategoryForm = ({ row }) => {
 
   const storeCategory = (data) => {
     return request({
-      url: "/store_category",
+      url: "/category/add",
       method: "POST",
       data: data,
       headers: {
@@ -54,7 +55,6 @@ const CategoryForm = ({ row }) => {
     mutationFn: storeCategory,
 
     onError: (err) => {
-      console.log(err);
       setOpen(true);
     },
     onSuccess: () => {
@@ -66,9 +66,14 @@ const CategoryForm = ({ row }) => {
     if (row) {
       let categoryToSend;
       if (image) {
-        categoryToSend = { ...values, image };
+        categoryToSend = {
+          ...values,
+          image,
+        };
       } else {
-        categoryToSend = { ...values };
+        categoryToSend = {
+          ...values,
+        };
       }
       setUpdatedCat(categoryToSend);
       updateCategory.mutate(categoryToSend);
@@ -80,6 +85,7 @@ const CategoryForm = ({ row }) => {
         const category = {
           image: image,
           ...values,
+          branch_id: localStorage.getItem("branch_id"),
         };
         addCategory.mutate(category);
       }
@@ -94,7 +100,7 @@ const CategoryForm = ({ row }) => {
   const updateCategoryRequest = (data) => {
     console.log(data, "upload datat");
     return request({
-      url: `update_category/${row.original.id}`,
+      url: `category/${row.original.id}`,
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -105,14 +111,16 @@ const CategoryForm = ({ row }) => {
 
   const updateCategory = useMutation({
     mutationFn: updateCategoryRequest,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const newCat = data.data.data;
       setOpen(true);
       if (image) {
         row.original.image = URL.createObjectURL(image);
       }
 
-      row.original.name = updateCategory.name;
-      row.original.position = updateCategory.position;
+      row.original.name = newCat.name;
+      row.original.name_ar = newCat.name_ar;
+      row.original.position = newCat.position;
     },
     onError: (err) => {
       console.log(err);
@@ -180,7 +188,7 @@ const CategoryForm = ({ row }) => {
             <Box sx={{ my: 2 }}>
               <TextField
                 name="name_ar"
-                label="Category Arabic Name"
+                label="اسم الفئة بالعربي"
                 variant="outlined"
                 size="small"
                 fullWidth
