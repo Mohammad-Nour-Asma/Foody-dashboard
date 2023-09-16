@@ -1,18 +1,23 @@
 import styled from "@emotion/styled";
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import React from "react";
-import AveargeTotals from "../components/sales/AveargeTotals";
 import BarChart from "../components/sales/charts/BarChart";
 import LineChart from "../components/sales/charts/LineChart";
-import SalesReportChart from "../components/sales/charts/SalesReportChart";
 import {
-  salesLineChartData,
   salesLineChartOptions,
-  salesReportPieChartData,
-  salesReportPieChartOptions,
 } from "../data/chartData";
 import { request } from "../Request/request";
 import { useQuery } from "@tanstack/react-query";
+import Loader from "../components/loader/loader";
+
+
+const getPeakTime = () => {
+  return request({
+    url : '/peakTimes',
+    method : 'post'
+  })
+}
+
 
 const SalesAnalytics = () => {
   const ComponentWrapper = styled(Box)({
@@ -65,6 +70,19 @@ const SalesAnalytics = () => {
   const chartData = { name: "Total Sales", data: getTotalSalesData(data) };
   // End Total Salse Per Month
 
+
+  const peakTimeQuery = useQuery({
+    queryKey : ['get-peak-time'],
+    queryFn : getPeakTime
+  })
+
+
+  if(peakTimeQuery.isLoading){
+    return <Loader />
+  }
+
+  console.log(peakTimeQuery.data.data)
+
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
       <Typography variant="h6" sx={{ marginBottom: "14px" }}>
@@ -78,7 +96,7 @@ const SalesAnalytics = () => {
               chartData={[chartData]}
             />
           </Grid>
-          <Grid item xs={12} md={6} lg={12}>
+          {/* <Grid item xs={12} md={6} lg={12}>
             <Paper
               sx={{
                 boxShadow: "none !important",
@@ -91,7 +109,7 @@ const SalesAnalytics = () => {
             >
               <BarChart />
             </Paper>
-          </Grid>
+          </Grid> */}
         </Grid>
       </ComponentWrapper>
     </Box>

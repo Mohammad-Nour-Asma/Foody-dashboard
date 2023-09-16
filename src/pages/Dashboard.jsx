@@ -9,6 +9,12 @@ import ComponentWrapper from "../components/ComponentWrapper";
 import FiveElements from "./Dashboard Components/FiveElements";
 import Chart from "react-apexcharts";
 import Donut from "./Dashboard Components/Donut";
+import { request } from "../Request/request";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../components/loader/loader";
+
+
+
 
 const Dashboard = () => {
   const columns = [
@@ -30,13 +36,17 @@ const Dashboard = () => {
     },
   ];
 
+ 
+
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
       <ComponentWrapper>
         <Stats />
       </ComponentWrapper>
-      <FiveElements entity={"products"} type={"top"} columns={columns} />
-      <FiveElements entity={"products"} type={"least"} columns={columns} />
+      <FiveElements entity={"products"} type={"top"} columns={columns} fetchAPI={'/mostRequestedProduct'} />
+      <FiveElements entity={"products"} type={"least"} columns={columns} fetchAPI={'/leastRequestedProduct'} />
+      <FiveElements entity={"rated products"} type={"least"} columns={columns} fetchAPI={'/mostRatedProduct'} />
+      <FiveElements entity={"rated products"} type={"least"} columns={columns} fetchAPI={'/leastRequestedProduct'} />
       <ComponentWrapper>
         <Typography mb={2} textAlign={"center"} variant="h5">
           Agerage Products Rating
@@ -44,13 +54,14 @@ const Dashboard = () => {
         <Box sx={{ margin: "0 auto", display: "block" }}>
           <Paper
             sx={{
-              maxWidth: "50%",
+              maxWidth: "100%",
               padding: "1rem",
               display: "flex",
               margin: "0 auto",
               justifyContent: "center",
             }}
           >
+            <Donut width={400} series={[45, 100 - 40]} />
             <Donut width={400} series={[45, 100 - 40]} />
           </Paper>
         </Box>

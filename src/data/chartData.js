@@ -247,13 +247,13 @@ export const salesLineChartOptions = {
 
 export const dailyVisitsBarChartData = [
   {
-    name: "Mobile Browser",
+    name: "visit",
     data: [44, 55, 57, 56],
   },
-  {
-    name: "Desktop",
-    data: [76, 85, 101, 98],
-  },
+  // {
+  //   name: "Desktop",
+  //   data: [76, 85, 101, 98],
+  // },
 ];
 
 export const dailyVisitsBarChartOptions = {
