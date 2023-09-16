@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -6,44 +6,129 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import { Button } from "@mui/material";
 
-const NourInput = () => {
-  const ings = [];
+import { Button, Typography } from "@mui/material";
+
+const NourInput = ({ data, title, buttonTitle, setValues }) => {
+  const [components, setComponents] = React.useState([]);
+  const [validate, setValidate] = useState(false);
 
   const [age, setAge] = React.useState("");
 
   const handleChange = (event) => {
     setAge(event.target.value);
   };
+
+  const addIngredients = (index) => {
+    console.log(components[index]?.id.toString().trim());
+    if (
+      components.length === 0 ||
+      (components[index]?.quantity.toString().trim().length > 0 &&
+        components[index]?.id.toString().trim().length > 0 &&
+        components[index]?.id !== 0)
+    ) {
+      setValidate(false);
+      setComponents((prev) => {
+        return [...prev, { id: 0, quantity: "" }];
+      });
+      setValues(components);
+    } else {
+      setValidate(true);
+    }
+  };
+
+  const setIng = (value, index) => {
+    components[index].id = value;
+  };
+
+  const setQantity = (value, index) => {
+    components[index].quantity = value;
+  };
+
   return (
-    <Box>
-      <Box
+    <Box
+      sx={{
+        border: "1px solid #ddd",
+        padding: "1.5rem 1rem",
+        margin: "1rem 0",
+        borderRadius: "5px",
+        maxHeight: "20rem",
+        overflowY: "auto",
+      }}
+    >
+      <Typography sx={{ padding: " 0 1rem", fontSize: "1.3rem" }}>
+        {title}
+      </Typography>
+      {components.map((item, index) => {
+        return (
+          <Box
+            key={index}
+            sx={{
+              border: "1px solid #ddd",
+              padding: "1.5rem 1rem",
+              borderRadius: "1rem",
+              margin: "1rem",
+            }}
+          >
+            <Stack
+              spacing={5}
+              direction={"row"}
+              justifyContent={"space-between"}
+            >
+              <FormControl
+                disabled={components.length - 1 > index ? true : false}
+                fullWidth
+              >
+                <InputLabel id="demo-simple-select-label">
+                  Ingredient
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Ingredient"
+                  //   value={components[index].name}
+                  onChange={(event) => {
+                    setIng(event.target.value, index);
+                  }}
+                >
+                  {data?.map((item, index2) => {
+                    return (
+                      <MenuItem key={index2} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+              <TextField
+                disabled={components.length - 1 > index ? true : false}
+                onChange={(e) => {
+                  setQantity(e.target.value, index);
+                }}
+                label="quantity"
+                type="string"
+              />
+            </Stack>
+          </Box>
+        );
+      })}
+      <Button
         sx={{
-          border: "1px solid #ddd",
-          padding: "1.5rem 1rem",
-          borderRadius: "1rem",
+          margin: "1rem auto",
+          width: "full",
+          display: "block",
+        }}
+        onClick={() => {
+          addIngredients(components.length - 1);
         }}
       >
-        <Stack spacing={5} direction={"row"} justifyContent={"space-between"}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={age}
-              label="Age"
-              onChange={handleChange}
-            >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField type="string" />
-        </Stack>
-      </Box>
-      <Button>Add Ingredient</Button>
+        {buttonTitle}
+      </Button>
+      {validate && (
+        <Typography sx={{ color: "red", fontSize: "0.6rem" }}>
+          Please Fill the inputs above
+        </Typography>
+      )}
     </Box>
   );
 };

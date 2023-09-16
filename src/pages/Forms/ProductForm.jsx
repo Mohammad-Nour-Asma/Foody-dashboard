@@ -37,7 +37,9 @@ const ProductForm = ({ row }) => {
   } else {
     initialValues = {
       name: "",
-      ingredient: "",
+      name_ar: "",
+      description: "",
+      description_ar: "",
       price: "",
       estimated_time: "",
       position: "",
@@ -45,22 +47,19 @@ const ProductForm = ({ row }) => {
   }
 
   const [updatedMeal, setUpdatedMeal] = useState();
+  const [ingredient, setIngredients] = useState([]);
+  const [extraIngredient, setExtraIngredients] = useState([]);
+
   const handleSubmit = (values) => {
-    console.log("lsdakfjsdlkfjds");
     const product = {
       ...values,
       category_id: selectedCategory,
       status: status ? 1 : 0,
-      branch_id: 1,
+      branch_id: localStorage.getItem("branch_id"),
+      ingredients: ingredient,
+      extra_ingredients: extraIngredient,
     };
-    if (selectedIngredients.length > 0) {
-      product.ingredientID = selectedIngredients.map((item) => {
-        const { id } = ingredients.find(
-          (ingredient) => ingredient.name == item
-        );
-        return id;
-      });
-    }
+
     setUpdatedMeal(product);
     if (row) {
       // row.original.extraIngredients = selectedIngredients;
@@ -113,9 +112,13 @@ const ProductForm = ({ row }) => {
       if (categories.length !== 0) setSelectedCategory(categories[0].id);
     }
   }, [isSuccess]);
+
   // Get Ingredients
-  const getExtreIngredients = () => {
-    return request({ url: "/ingredients", method: "GET" });
+  const getIngredients = () => {
+    return request({
+      url: `/ingredient/branch/${localStorage.getItem("branch_id")}`,
+      method: "GET",
+    });
   };
 
   const {
@@ -124,10 +127,29 @@ const ProductForm = ({ row }) => {
     isError: error2,
   } = useQuery({
     queryKey: ["ingredients-get"],
-    queryFn: getExtreIngredients,
+    queryFn: getIngredients,
   });
 
+  // Get Ingredients
+  const getExtraIngredients = () => {
+    return request({
+      url: `/extraIng/branch/${localStorage.getItem("branch_id")}`,
+      method: "GET",
+    });
+  };
+
   const ingredients = ingredientsData?.data.data;
+
+  const {
+    data: extraIngredientsData,
+    isLoading: loading3,
+    isError: error3,
+  } = useQuery({
+    queryKey: ["extra-ingredients-get"],
+    queryFn: getExtraIngredients,
+  });
+
+  const extraIngredients = extraIngredientsData?.data.data;
 
   const [selectedIngredients, setSelectedIngredients] = useState(
     row ? row.original.extraIngredients.map((item) => item.name) : []
@@ -182,7 +204,7 @@ const ProductForm = ({ row }) => {
 
   const addMeal = (meal) => {
     return request({
-      url: "/store_product",
+      url: "/product/add",
       method: "POST",
       data: meal,
       headers: {
@@ -207,7 +229,7 @@ const ProductForm = ({ row }) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  console.log(ingredient);
   return (
     <Paper
       sx={{
@@ -237,7 +259,7 @@ const ProductForm = ({ row }) => {
           addProduct?.isError || updateMutation?.isError ? "error" : "success"
         }
       />
-      {isLoading || loading2 ? (
+      {isLoading || loading2 || loading3 ? (
         <Loader />
       ) : (
         <Formik
@@ -269,19 +291,48 @@ const ProductForm = ({ row }) => {
                   value={values.name}
                 />
               </Box>
+              <Box sx={{ my: 2 }}>
+                <TextField
+                  label="اسم الوجبة بالعربي"
+                  name="name_ar"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={!!touched.name_ar && !!errors.name_ar}
+                  helperText={touched.name_ar && errors.name_ar}
+                  value={values.name_ar}
+                />
+              </Box>
               <Box sx={{ mt: 4 }}>
                 <TextField
                   label="Meal Description"
-                  name="ingredient"
+                  name="description"
                   variant="outlined"
                   rows={4}
                   fullWidth
                   multiline
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  error={!!touched.ingredient && !!errors.ingredient}
-                  helperText={touched.ingredient && errors.ingredient}
-                  value={values.ingredient}
+                  error={!!touched.description && !!errors.description}
+                  helperText={touched.description && errors.description}
+                  value={values.description}
+                />
+              </Box>
+              <Box sx={{ mt: 4 }}>
+                <TextField
+                  label="وصف الوجبة"
+                  name="description_ar"
+                  variant="outlined"
+                  rows={4}
+                  fullWidth
+                  multiline
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  error={!!touched.description_ar && !!errors.description_ar}
+                  helperText={touched.description_ar && errors.description_ar}
+                  value={values.description_ar}
                 />
               </Box>
 
@@ -368,7 +419,20 @@ const ProductForm = ({ row }) => {
                   defaultChecked={row?.original.status != 1 ? false : true}
                 ></Switch>
               </Box>
-              <NourInput />
+
+              <NourInput
+                buttonTitle={"add ingredients"}
+                title={"Basic Ingredient"}
+                data={ingredients}
+                setValues={setIngredients}
+              />
+
+              <NourInput
+                buttonTitle={"add Extra ingredients"}
+                title={"Extra Ingredient"}
+                data={extraIngredients}
+                setValues={setExtraIngredients}
+              />
 
               <input
                 type="file"

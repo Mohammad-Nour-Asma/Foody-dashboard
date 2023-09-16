@@ -5,7 +5,11 @@ const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
 export const productValidation = yup.object({
   name: yup.string().required("name field is required"),
-  ingredient: yup.string().required("Meal description field is required"),
+  name_ar: yup.string().required("arabic name field is required"),
+  description: yup.string().required("Meal description field is required"),
+  description_ar: yup
+    .string()
+    .required("Meal's arabic description field is required"),
   price: yup.number().required("the price filed is required"),
   estimated_time: yup
     .mixed()
@@ -14,7 +18,7 @@ export const productValidation = yup.object({
         return false;
       }
 
-      const durationRegex = /^(?:[0-5]?[0-9]):(?:[0-5]?[0-9])$/;
+      const durationRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
       return durationRegex.test(value);
     }),
   position: yup.number().required("the position filed is required"),

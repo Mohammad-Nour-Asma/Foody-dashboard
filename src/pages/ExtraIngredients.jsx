@@ -14,7 +14,7 @@ import ExtraForm from "./Forms/ExtraForm";
 
 const ExtraIngredients = () => {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["ingredients-get"],
+    queryKey: ["extra-ingredients-get"],
     queryFn: () => {
       return request({
         url: `/extraIng/branch/${localStorage.getItem("branch_id")}`,
