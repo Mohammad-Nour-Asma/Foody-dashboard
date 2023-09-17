@@ -29,10 +29,12 @@ const ProductForm = ({ row }) => {
   if (row) {
     initialValues = {
       name: row.original.name,
-      ingredient: row.original.ingredient,
+      description: row.original.description,
       price: row.original.price,
       estimated_time: row.original.estimated_time,
       position: row.original.position,
+      description_ar: row.original.description_ar,
+      name_ar: row.original.name_ar,
     };
   } else {
     initialValues = {
@@ -59,11 +61,10 @@ const ProductForm = ({ row }) => {
       ingredients: ingredient,
       extra_ingredients: extraIngredient,
     };
+    console.log(product);
 
     setUpdatedMeal(product);
     if (row) {
-      // row.original.extraIngredients = selectedIngredients;
-
       updateMutation.mutate(product);
     } else {
       addProduct.mutate(product);
@@ -151,13 +152,6 @@ const ProductForm = ({ row }) => {
 
   const extraIngredients = extraIngredientsData?.data.data;
 
-  const [selectedIngredients, setSelectedIngredients] = useState(
-    row ? row.original.extraIngredients.map((item) => item.name) : []
-  );
-
-  const handleIngredientsChange = (event, newValue) => {
-    setSelectedIngredients(newValue);
-  };
   // Handle Status Change
   const [status, setStatus] = useState(true);
   const handleStatusChange = (e) => {
@@ -167,8 +161,9 @@ const ProductForm = ({ row }) => {
   // UPdate
 
   const updateProduct = (data) => {
+    console.log(data);
     return request({
-      url: `/update_product/${row.original.id}`,
+      url: `/product/${row.original.id}`,
       data,
       method: "POST",
       headers: {
@@ -229,7 +224,9 @@ const ProductForm = ({ row }) => {
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(ingredient);
+
+  // console.log(row.original.ingredients, "row");
+
   return (
     <Paper
       sx={{
@@ -421,6 +418,7 @@ const ProductForm = ({ row }) => {
               </Box>
 
               <NourInput
+                initialValues={row ? row.original.ingredients : []}
                 buttonTitle={"add ingredients"}
                 title={"Basic Ingredient"}
                 data={ingredients}
@@ -428,6 +426,7 @@ const ProductForm = ({ row }) => {
               />
 
               <NourInput
+                initialValues={row ? row.original.extra_ingredients : []}
                 buttonTitle={"add Extra ingredients"}
                 title={"Extra Ingredient"}
                 data={extraIngredients}

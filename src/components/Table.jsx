@@ -39,13 +39,10 @@ export const Table = ({
 
   const [tableData, setTableData] = useState(() => data);
 
-  const handleDeleteRow = useCallback(
-    (row) => {
-      data.splice(row.index, 1);
-      setTableData([...tableData]);
-    },
-    [tableData]
-  );
+  const handleDeleteRow = (row) => {
+    const newData = data.filter((item) => item.id !== row.id);
+    setTableData([...newData]);
+  };
 
   // HANDLE SWITCH
   // const [check, setCheck] = useState();

@@ -26,8 +26,8 @@ const ExtraIngredients = () => {
   const ingredients = data?.data;
   const deleteProduct = (id) => {
     return request({
-      url: `delete_ingredient/${id}`,
-      method: "POST",
+      url: `extraIng/${id}`,
+      method: "DELETE",
     });
   };
 

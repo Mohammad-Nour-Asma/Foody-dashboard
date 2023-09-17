@@ -9,18 +9,24 @@ import TextField from "@mui/material/TextField";
 
 import { Button, Typography } from "@mui/material";
 
-const NourInput = ({ data, title, buttonTitle, setValues }) => {
-  const [components, setComponents] = React.useState([]);
+const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
   const [validate, setValidate] = useState(false);
 
-  const [age, setAge] = React.useState("");
+  const orginized = [
+    ...initialValues?.map((item) => {
+      return { id: item.id, quantity: item.pivot.quantity };
+    }),
+    {
+      id: { id: data.length > 0 ? data[0].id : 0, quantity: "" },
+      quantity: "",
+    },
+  ];
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
+  const [components, setComponents] = React.useState(
+    orginized?.length > 0 ? orginized : []
+  );
 
   const addIngredients = (index) => {
-    console.log(components[index]?.id.toString().trim());
     if (
       components.length === 0 ||
       (components[index]?.quantity.toString().trim().length > 0 &&
@@ -29,7 +35,10 @@ const NourInput = ({ data, title, buttonTitle, setValues }) => {
     ) {
       setValidate(false);
       setComponents((prev) => {
-        return [...prev, { id: 0, quantity: "" }];
+        return [
+          ...prev,
+          { id: data.length > 0 ? data[0].id : 0, quantity: "" },
+        ];
       });
       setValues(components);
     } else {
@@ -38,6 +47,7 @@ const NourInput = ({ data, title, buttonTitle, setValues }) => {
   };
 
   const setIng = (value, index) => {
+    console.log(value, index);
     components[index].id = value;
   };
 
@@ -45,6 +55,10 @@ const NourInput = ({ data, title, buttonTitle, setValues }) => {
     components[index].quantity = value;
   };
 
+  const deleteInput = (index) => {
+    const filtered = components.filter((item, index1) => index1 !== index);
+    setComponents(filtered);
+  };
   return (
     <Box
       sx={{
@@ -68,8 +82,30 @@ const NourInput = ({ data, title, buttonTitle, setValues }) => {
               padding: "1.5rem 1rem",
               borderRadius: "1rem",
               margin: "1rem",
+              position: "relative",
             }}
           >
+            {components.length - 1 > index && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  background: "red",
+                  width: "25px",
+                  height: "25px",
+                  borderRadius: "50%",
+                  textAlign: "center",
+                  color: "white",
+                  fontWeight: "bold",
+                  top: "-8px",
+                  right: "-8px",
+                }}
+                onClick={() => {
+                  deleteInput(index);
+                }}
+              >
+                x
+              </Box>
+            )}
             <Stack
               spacing={5}
               direction={"row"}
@@ -86,8 +122,8 @@ const NourInput = ({ data, title, buttonTitle, setValues }) => {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="Ingredient"
-                  //   value={components[index].name}
                   onChange={(event) => {
+                    console.log("red");
                     setIng(event.target.value, index);
                   }}
                 >
@@ -106,7 +142,7 @@ const NourInput = ({ data, title, buttonTitle, setValues }) => {
                   setQantity(e.target.value, index);
                 }}
                 label="quantity"
-                type="string"
+                type="number"
               />
             </Stack>
           </Box>

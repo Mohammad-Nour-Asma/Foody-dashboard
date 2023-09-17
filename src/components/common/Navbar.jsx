@@ -20,6 +20,12 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Loader from "./loader/loader";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setGolbalDay,
+  setGolbalMonth,
+  setGolbalYear,
+} from "../../redux/SettingsSlice";
 
 const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
   const colorMode = useColorTheme();
@@ -56,6 +62,39 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
     }
   }
 
+  const { year, day, month } = useSelector((state) => state.settings);
+
+  const dispatch = useDispatch();
+
+  const handleYearChange = (event) => {
+    dispatch(setGolbalYear(event.target.value));
+  };
+  const handleMonthChange = (event) => {
+    dispatch(setGolbalMonth(event.target.value));
+  };
+  const handleDayChange = (event) => {
+    dispatch(setGolbalDay(event.target.value));
+  };
+
+  function getMonthsInYear() {
+    const months = [];
+    for (let month = 0; month < 12; month++) {
+      const date = new Date(2022, month, 1);
+      months.push({
+        month: date.toLocaleString("default", { month: "long" }),
+        number: month,
+      });
+    }
+    return months;
+  }
+
+  function getDays() {
+    const days = [];
+    for (let day = 0; day < 32; day++) {
+      days.push(day);
+    }
+    return days;
+  }
   return (
     <AppBar
       position="fixed"
@@ -106,7 +145,61 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
           <Stack direction="row" spacing={1} alignItems="center">
             <FormControl
               variant="standard"
-              sx={{ m: 1, minWidth: 120 }}
+              sx={{ m: 1, minWidth: 80 }}
+              size="small"
+            >
+              <InputLabel id="demo-simple-select-label">Day</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Day"
+                value={day}
+                onChange={handleDayChange}
+              >
+                {getDays().map((item) => {
+                  return <MenuItem value={item}>{item}</MenuItem>;
+                })}
+              </Select>
+            </FormControl>
+            <FormControl
+              variant="standard"
+              sx={{ m: 1, minWidth: 80 }}
+              size="small"
+            >
+              <InputLabel id="demo-simple-select-label">Month</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Month"
+                value={month}
+                onChange={handleMonthChange}
+              >
+                {getMonthsInYear().map((item) => {
+                  return <MenuItem value={item.number}>{item.month}</MenuItem>;
+                })}
+              </Select>
+            </FormControl>
+            <FormControl
+              variant="standard"
+              sx={{ m: 1, minWidth: 80 }}
+              size="small"
+            >
+              <InputLabel id="demo-simple-select-label">Year</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Year"
+                value={year}
+                onChange={handleYearChange}
+              >
+                <MenuItem value={"2023"}>2023</MenuItem>
+                <MenuItem value={"2024"}>2024</MenuItem>
+                <MenuItem value={"2025"}>2025</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl
+              variant="standard"
+              sx={{ m: 1, minWidth: 80 }}
               size="small"
             >
               <InputLabel id="demo-select-small-label">Branch</InputLabel>
@@ -128,6 +221,7 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
                 </Select>
               )}
             </FormControl>
+
             <ProfileMenu />
             <Tooltip title="Toggle Theme" arrow>
               <IconButton

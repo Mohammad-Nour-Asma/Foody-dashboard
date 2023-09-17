@@ -55,8 +55,8 @@ const Categories = () => {
   console.log(data);
   const deleteCategory = (id) => {
     return request({
-      url: `delete_category/${id}`,
-      method: "POST",
+      url: `category/${id}`,
+      method: "DELETE",
     });
   };
 

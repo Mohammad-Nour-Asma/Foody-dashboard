@@ -9,32 +9,35 @@ const SingleProduct = () => {
   const { id } = useParams();
 
   const getProductDetails = () => {
-    return request({ url: `show_product/${id}` });
+    return request({ url: `product/${id}` });
   };
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, isSuccess } = useQuery({
     queryKey: ["get-product-details"],
     queryFn: getProductDetails,
   });
-  const productDetails = data?.data.data;
 
-  const getProdcutRate = () => {
-    return request({
-      url: `show_rating/${id}`,
-    });
-  };
-  const rating = useQuery({
-    queryKey: [`get-${id}-rate`],
-    queryFn: getProdcutRate,
-  });
+  let productDetails;
+  if (isSuccess) productDetails = data?.data.data;
 
-  const rate = rating?.data?.data.data.value;
-  console.log(rate);
+  // const getProdcutRate = () => {
+  //   return request({
+  //     url: `show_rating/${id}`,
+  //   });
+  // };
+  // const rating = useQuery({
+  //   queryKey: [`get-${id}-rate`],
+  //   queryFn: getProdcutRate,
+  // });
+
+  // const rate = rating?.data?.data.data.value;
+  // console.log(rate);
+  console.log(productDetails);
 
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
       <Typography variant="h4">Product Details</Typography>
-      {isLoading || rating.isLoading ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <Paper
@@ -56,18 +59,16 @@ const SingleProduct = () => {
               />
             </Grid>
             <Grid item xs={12} md={6} lg={8}>
-              <Typography variant="h4">{productDetails?.name}</Typography>
-              <Typography variant="h5">${productDetails?.price}</Typography>
+              <Typography variant="h4">{productDetails.name}</Typography>
+              <Typography variant="h5">{productDetails.description}</Typography>
+
               <Box
                 sx={{ display: "flex", alignItems: "center", gap: 4, my: 2 }}
               >
-                <Typography variant="subtitle2">
-                  284 customer reviews
-                </Typography>
-                <Rating value={rate / 2} readOnly />
+                {/* <Rating value={rate / 2} readOnly /> */}
               </Box>
               <Typography variant="subtitle2">
-                {productDetails?.ingredients}
+                {productDetails.price} SAR
               </Typography>
               <Box
                 sx={{ display: "flex", alignItems: "center", gap: 4, my: 2 }}
@@ -78,12 +79,29 @@ const SingleProduct = () => {
               <Box
                 sx={{ display: "flex", alignItems: "center", gap: 4, my: 2 }}
               >
+                <Typography variant="subtitle2">Ingredients</Typography>
+                {productDetails.ingredients.length == 0 && (
+                  <p>No Ingredients</p>
+                )}
+                {productDetails.ingredients.map((item) => (
+                  <Chip
+                    label={`${item.name} ${item.pivot.quantity}g`}
+                    color="success"
+                  />
+                ))}
+              </Box>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 4, my: 2 }}
+              >
                 <Typography variant="subtitle2">Extra Ingredients</Typography>
-                {productDetails?.extraIngredients.length == 0 && (
+                {productDetails.extra_ingredients.length == 0 && (
                   <p>No Extra Ingredients</p>
                 )}
-                {productDetails?.extraIngredients.map((item) => (
-                  <Chip label={item.name} color="success" />
+                {productDetails.extra_ingredients.map((item) => (
+                  <Chip
+                    label={`${item.name} ${item.pivot.quantity}g`}
+                    color="success"
+                  />
                 ))}
               </Box>
             </Grid>

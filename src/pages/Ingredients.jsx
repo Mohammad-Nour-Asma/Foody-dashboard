@@ -25,8 +25,8 @@ const Ingredients = () => {
   const ingredients = data?.data;
   const deleteProduct = (id) => {
     return request({
-      url: `delete_ingredient/${id}`,
-      method: "POST",
+      url: `ingredient/${id}`,
+      method: "DELETE",
     });
   };
 
@@ -41,7 +41,7 @@ const Ingredients = () => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  console.log(deleteMutate);
   return (
     <Page
       button={"Add Ingredient"}

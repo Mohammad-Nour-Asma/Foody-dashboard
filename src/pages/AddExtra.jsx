@@ -15,8 +15,6 @@ import IngredientsForm from "./Forms/IngredientsForm";
 import ExtraForm from "./Forms/ExtraForm";
 
 const AddExtra = () => {
-  const navigate = useNavigate();
-
   return (
     <>
       {" "}

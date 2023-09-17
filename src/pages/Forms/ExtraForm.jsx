@@ -15,13 +15,13 @@ import { ExtraValidation } from "../../validations/ExtraValidations";
 const ExtraForm = ({ row }) => {
   const [updatedIng, setUpdatedIng] = useState({});
 
-  let initialValues = { name: "", quantity: "", name_ar: "" };
+  let initialValues = { name: "", price_per_kilo: "", name_ar: "" };
   if (row) {
     initialValues = {
       name: row.original.name,
       name_ar: row.original.name_ar,
       quantity: row.original.quantity,
-      price_per_peice: row.original.price_per_peice,
+      price_per_kilo: row.original.price_per_kilo,
     };
   }
 
@@ -32,7 +32,7 @@ const ExtraForm = ({ row }) => {
         name: values.name,
         name_ar: values.name_ar,
         quantity: values.quantity,
-        price_per_peice: values.price_per_peice,
+        price_per_kilo: values.price_per_kilo,
         branch_id: localStorage.getItem("branch_id"),
       };
 
@@ -44,7 +44,7 @@ const ExtraForm = ({ row }) => {
         name: values.name,
         name_ar: values.name_ar,
         quantity: values.quantity,
-        price_per_peice: values.price_per_peice,
+        price_per_kilo: values.price_per_kilo,
         branch_id: localStorage.getItem("branch_id"),
       };
       storeIngredient.mutate(data);
@@ -82,7 +82,7 @@ const ExtraForm = ({ row }) => {
   // Updating
   const updateIngredientRequest = (data) => {
     return request({
-      url: `ingredient/${row.original.id}`,
+      url: `extraIng/${row.original.id}`,
 
       method: "PATCH",
       data: data,
@@ -181,15 +181,15 @@ const ExtraForm = ({ row }) => {
 
             <Box sx={{ my: 2 }}>
               <TextField
-                name="price_per_peice"
-                label="Price Per Peice"
+                name="price_per_kilo"
+                label="Price Per Kilo"
                 fullWidth
                 handleChange={handleChange}
                 onBlur={handleBlur}
-                error={!!touched.price_per_peice && !!errors.price_per_peice}
-                helperText={touched.price_per_peice && errors.price_per_peice}
+                error={!!touched.price_per_kilo && !!errors.price_per_kilo}
+                helperText={touched.price_per_kilo && errors.price_per_kilo}
                 onChange={handleChange}
-                value={values.price_per_peice}
+                value={values.price_per_kilo}
               />
             </Box>
             <Stack sx={{ my: 2 }}>

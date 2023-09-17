@@ -71,14 +71,13 @@ const Products = () => {
     queryKey: ["porducts"],
     queryFn: getAllProducts,
   });
-  console.log(isError);
 
   const products = data?.data.data;
 
   const deleteProduct = (id) => {
     return request({
-      url: `delete_product/${id}`,
-      method: "POST",
+      url: `product/${id}`,
+      method: "DELETE",
     });
   };
 
