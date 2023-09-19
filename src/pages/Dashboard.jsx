@@ -11,6 +11,25 @@ import Chart from "react-apexcharts";
 import Donut from "./Dashboard Components/Donut";
 
 const Dashboard = () => {
+  const ratedColumns = [
+    {
+      accessorKey: "name", //access nested data with dot notation
+      header: "Product",
+    },
+    {
+      accessorKey: "category", //access nested data with dot notation
+      header: "Category",
+    },
+    {
+      accessorKey: "rate", //access nested data with dot notation
+      header: "Rating",
+
+      Cell: ({ cell, row }) => {
+        return <Rating defaultValue={cell.getValue()} readOnly />;
+      },
+    },
+  ];
+
   const columns = [
     {
       accessorKey: "name", //access nested data with dot notation
@@ -21,12 +40,8 @@ const Dashboard = () => {
       header: "Category",
     },
     {
-      accessorKey: "rating", //access nested data with dot notation
-      header: "Rating",
-
-      Cell: ({ cell, row }) => {
-        return <Rating defaultValue={cell.getValue()} readOnly />;
-      },
+      accessorKey: "total", //access nested data with dot notation
+      header: "Total",
     },
   ];
 
@@ -35,8 +50,26 @@ const Dashboard = () => {
       <ComponentWrapper>
         <Stats />
       </ComponentWrapper>
-      <FiveElements entity={"products"} type={"top"} columns={columns} />
-      <FiveElements entity={"products"} type={"least"} columns={columns} />
+      <FiveElements
+        entity={"products"}
+        type={"top requested products"}
+        columns={columns}
+      />
+      <FiveElements
+        entity={"products"}
+        type={"least requested products"}
+        columns={columns}
+      />
+      <FiveElements
+        entity={"products"}
+        type={"top rated products"}
+        columns={ratedColumns}
+      />
+      <FiveElements
+        entity={"products"}
+        type={"least rated products"}
+        columns={ratedColumns}
+      />
       <ComponentWrapper>
         <Typography mb={2} textAlign={"center"} variant="h5">
           Agerage Products Rating

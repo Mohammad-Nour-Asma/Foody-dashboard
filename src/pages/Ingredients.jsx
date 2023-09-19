@@ -10,13 +10,15 @@ import { request } from "../Request/request";
 import Loader from "../components/common/loader/loader";
 import Notify from "../components/common/Notify";
 import IngredientsForm from "./Forms/IngredientsForm";
+import { useSelector } from "react-redux";
 
 const Ingredients = () => {
+  const { branch_id } = useSelector((state) => state.settings);
   const { data, isLoading, isError } = useQuery({
     queryKey: ["ingredients-get"],
     queryFn: () => {
       return request({
-        url: `/ingredient/branch/${localStorage.getItem("branch_id")}`,
+        url: `/ingredient/branch/${branch_id}`,
         method: "GET",
       });
     },
@@ -41,7 +43,7 @@ const Ingredients = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(deleteMutate);
+
   return (
     <Page
       button={"Add Ingredient"}

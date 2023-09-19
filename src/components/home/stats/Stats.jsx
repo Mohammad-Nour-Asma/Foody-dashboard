@@ -21,13 +21,16 @@ const Stats = () => {
 
   const getStats = (data) => {
     return request({
-      url: "/statistics",
+      url: `/statistics/${branch_id}`,
       data,
       method: "POST",
     });
   };
 
-  const { year, day, month } = useSelector((state) => state.settings);
+  const { year, day, month, branch_id } = useSelector(
+    (state) => state.settings
+  );
+
   console.log(year, day, month);
 
   const { mutate, isPending, data, isError } = useMutation({
@@ -46,6 +49,7 @@ const Stats = () => {
       year,
       day,
       month,
+      branch_id,
     });
   }, [year, day, month]);
 

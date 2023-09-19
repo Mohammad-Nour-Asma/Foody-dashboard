@@ -248,11 +248,11 @@ export const salesLineChartOptions = {
 export const dailyVisitsBarChartData = [
   {
     name: "Mobile Browser",
-    data: [44, 55, 57, 56],
+    data: [0, 0, 0, 1, 44, 0],
   },
   {
     name: "Desktop",
-    data: [76, 85, 101, 98],
+    data: [0, 0, 0, 101, 98],
   },
 ];
 
@@ -276,7 +276,7 @@ export const dailyVisitsBarChartOptions = {
     colors: ["transparent"],
   },
   xaxis: {
-    categories: ["Sep", "Oct", "Nov", "Dec"],
+    categories: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24],
     axisBorder: {
       show: false,
     },

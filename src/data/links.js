@@ -84,10 +84,10 @@ export const links = [
         name: "Sales Analytics",
         url: "/sales/analysis",
       },
-      {
-        name: "Product Sales",
-        url: "/sales",
-      },
+      // {
+      //   name: "Product Sales",
+      //   url: "/sales",
+      // },
     ],
   },
   {
@@ -104,25 +104,26 @@ export const links = [
       },
     ],
   },
-  {
-    name: "Orders",
-    icon: <FiShoppingCart />,
-    subLinks: [
-      {
-        name: "All Orders",
-        url: "/orders",
-      },
-    ],
-  },
+  // {
+  //   name: "Orders",
+  //   icon: <FiShoppingCart />,
+  //   subLinks: [
+  //     {
+  //       name: "All Orders",
+  //       url: "/orders",
+  //     },
+  //   ],
+  // },
 
   {
     name: "Reviews",
     icon: <FiMessageCircle />,
     url: "/reviews",
   },
+
   {
-    name: "Settings",
+    name: "Service Timing",
     icon: <FiSettings />,
-    url: "/settings",
+    url: "/service-timing",
   },
 ];

@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import React from "react";
 import AveargeTotals from "../components/sales/AveargeTotals";
 import BarChart from "../components/sales/charts/BarChart";
 import LineChart from "../components/sales/charts/LineChart";
@@ -13,6 +12,9 @@ import {
 } from "../data/chartData";
 import { request } from "../Request/request";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import Loader from "../components/common/loader/loader";
 
 const SalesAnalytics = () => {
   const ComponentWrapper = styled(Box)({
@@ -60,10 +62,54 @@ const SalesAnalytics = () => {
       month: 2,
       total: 40,
     },
+    {
+      month: 3,
+      total: 90,
+    },
+    {
+      month: 4,
+      total: 200,
+    },
+    {
+      month: 5,
+      total: 400,
+    },
   ];
   salesLineChartOptions.xaxis.categories = getMonths(data);
   const chartData = { name: "Total Sales", data: getTotalSalesData(data) };
   // End Total Salse Per Month
+
+  const { year, month, day, branch_id } = useSelector(
+    (state) => state.settings
+  );
+
+  const getData = () => {
+    console.log(`${year}-${month}-${day}`);
+    return request({
+      url: `peakTimes/${branch_id}`,
+      method: "POST",
+      data: { date: `${year}-${month}-${day}` },
+    });
+  };
+
+  const {
+    data: bar,
+    isLoading,
+    isErro,
+    refetch,
+  } = useQuery({
+    queryKe: [`get-${year}-${month}`],
+    queryFn: getData,
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [year, month, day, branch_id]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+  console.log(bar.data.data, "bar");
 
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
@@ -89,7 +135,7 @@ const SalesAnalytics = () => {
                 height: "100%",
               }}
             >
-              <BarChart />
+              <BarChart data={bar.data.data} />
             </Paper>
           </Grid>
         </Grid>

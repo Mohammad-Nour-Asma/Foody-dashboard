@@ -8,6 +8,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../components/common/loader/loader";
 import Notify from "../components/common/Notify";
 import ProductForm from "./Forms/ProductForm";
+import { useSelector } from "react-redux";
 
 const Products = () => {
   const productsColumns = [
@@ -60,16 +61,21 @@ const Products = () => {
     },
   ];
 
+  const { branch_id } = useSelector((state) => state.settings);
+
+  console.log(branch_id);
+
   const getAllProducts = () => {
     return request({
-      url: `/products/branch/${localStorage.getItem("branch_id")}`,
+      url: `/products/branch/${branch_id}`,
       method: "GET",
     });
   };
 
   const { isLoading, data, isError, error } = useQuery({
-    queryKey: ["porducts"],
+    queryKey: [`porducts-${branch_id}`],
     queryFn: getAllProducts,
+    staleTime: 0,
   });
 
   const products = data?.data.data;
@@ -93,6 +99,8 @@ const Products = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  console.log(products);
 
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
@@ -126,7 +134,7 @@ const Products = () => {
         <Loader />
       ) : (
         <Table
-          data={products}
+          data={data?.data.data}
           fields={productsColumns}
           numberOfRows={products.length}
           enableTopToolBar={true}
@@ -142,6 +150,15 @@ const Products = () => {
           routeLink="products"
           UpdatingForm={ProductForm}
         />
+      )}
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Box>
+          {products.map((item) => {
+            return <Box sx={{ color: "red" }}>{item.id}</Box>;
+          })}
+        </Box>
       )}
     </Box>
   );

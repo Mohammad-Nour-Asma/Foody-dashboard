@@ -22,6 +22,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Loader from "./loader/loader";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setBranchId,
   setGolbalDay,
   setGolbalMonth,
   setGolbalYear,
@@ -30,9 +31,8 @@ import {
 const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
   const colorMode = useColorTheme();
   const theme = useTheme();
-  const [branche, setbranche] = useState(
-    localStorage.getItem("branch_id") ? localStorage.getItem("branch_id") : 1
-  );
+
+  const dispatch = useDispatch();
   const currentTheme = theme.palette.mode;
 
   const getBranches = () => {
@@ -44,27 +44,30 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
   const { data, isLoading, isError, isSuccess } = useQuery({
     queryKey: ["branches"],
     queryFn: getBranches,
+
     onSuccess: (data) => {
       // Assuming data contains an id property
-      console.log(data);
+
       localStorage.setItem("id", data[0].id);
+      dispatch(setBranchId(data[0].id));
     },
   });
-
-  const handleChange = (event) => {
-    setbranche(event.target.value);
-    localStorage.setItem("branch_id", event.target.value);
-  };
 
   if (isSuccess) {
     if (!localStorage.getItem("branch_id")) {
       localStorage.setItem("branch_id", data.data.data[0].id);
+      dispatch(setBranchId(data.data.data[0].id));
     }
   }
 
-  const { year, day, month } = useSelector((state) => state.settings);
+  const { year, day, month, branch_id } = useSelector(
+    (state) => state.settings
+  );
 
-  const dispatch = useDispatch();
+  const handleBranchChange = (event) => {
+    localStorage.setItem("branch_id", event.target.value);
+    dispatch(setBranchId(event.target.value));
+  };
 
   const handleYearChange = (event) => {
     dispatch(setGolbalYear(event.target.value));
@@ -90,7 +93,7 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
 
   function getDays() {
     const days = [];
-    for (let day = 0; day < 32; day++) {
+    for (let day = 1; day < 32; day++) {
       days.push(day);
     }
     return days;
@@ -156,6 +159,8 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
                 value={day}
                 onChange={handleDayChange}
               >
+                <MenuItem value={null}>none</MenuItem>
+
                 {getDays().map((item) => {
                   return <MenuItem value={item}>{item}</MenuItem>;
                 })}
@@ -174,6 +179,8 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
                 value={month}
                 onChange={handleMonthChange}
               >
+                <MenuItem value={null}>none</MenuItem>
+
                 {getMonthsInYear().map((item) => {
                   return <MenuItem value={item.number}>{item.month}</MenuItem>;
                 })}
@@ -192,6 +199,7 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
                 value={year}
                 onChange={handleYearChange}
               >
+                <MenuItem value={null}>none</MenuItem>
                 <MenuItem value={"2023"}>2023</MenuItem>
                 <MenuItem value={"2024"}>2024</MenuItem>
                 <MenuItem value={"2025"}>2025</MenuItem>
@@ -211,9 +219,9 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
                 <Select
                   labelId="demo-select-small-label"
                   id="demo-select-small"
-                  value={branche}
+                  value={branch_id}
                   label="Branch"
-                  onChange={handleChange}
+                  onChange={handleBranchChange}
                 >
                   {data.data.data.map((item) => {
                     return <MenuItem value={item.id}>{item.name}</MenuItem>;

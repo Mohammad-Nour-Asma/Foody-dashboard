@@ -25,5 +25,5 @@ export const settingSlice = createSlice({
     },
   },
 });
-export const { setGolbalYear, setGolbalDay, setGolbalMonth } =
+export const { setGolbalYear, setGolbalDay, setGolbalMonth, setBranchId } =
   settingSlice.actions;

@@ -29,6 +29,7 @@ import Categories from "./pages/Categories";
 import AddCategory from "./pages/AddCategory";
 import ExtraIngredients from "./pages/ExtraIngredients";
 import AddExtra from "./pages/AddExtra";
+// import ServiceTiming from "./pages/ServiceTiming";
 
 const sideBarWidth = 250;
 
@@ -107,6 +108,11 @@ function App() {
             {/* Extra Ingredients */}
             <Route path="/extra" element={<ExtraIngredients />} />
             <Route path="/extra/add" element={<AddExtra />} />
+
+            {/* Service Timing */}
+            <Route path="/extra/add" element={<AddExtra />} />
+
+            <Route path="/service-timing" element={<Settings />} />
           </Routes>
         </Box>
       </Box>

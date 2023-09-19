@@ -11,13 +11,15 @@ import Loader from "../components/common/loader/loader";
 import Notify from "../components/common/Notify";
 import IngredientsForm from "./Forms/IngredientsForm";
 import ExtraForm from "./Forms/ExtraForm";
+import { useSelector } from "react-redux";
 
 const ExtraIngredients = () => {
+  const { branch_id } = useSelector((state) => state.settings);
   const { data, isLoading, isError } = useQuery({
     queryKey: ["extra-ingredients-get"],
     queryFn: () => {
       return request({
-        url: `/extraIng/branch/${localStorage.getItem("branch_id")}`,
+        url: `/extraIng/branch/${branch_id}`,
         method: "GET",
       });
     },

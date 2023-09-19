@@ -15,6 +15,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { useSelector } from "react-redux";
 
 export const Table = ({
   data,
@@ -57,6 +58,7 @@ export const Table = ({
     setOpen({ type, open: true, row: row });
   };
 
+  console.log(data, "from table");
   return (
     <>
       {" "}

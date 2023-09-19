@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../components/common/loader/loader";
 import CategoryForm from "./Forms/CategoryForm";
 import Notify from "../components/common/Notify";
+import { useSelector } from "react-redux";
 
 const Categories = () => {
   const offerColumns = [
@@ -39,20 +40,23 @@ const Categories = () => {
     },
   ];
 
+  const { branch_id } = useSelector((state) => state.settings);
+
   const getCategory = () => {
     return request({
-      url: `/category/branch/${localStorage.getItem("branch_id")}`,
+      url: `/category/branch/${branch_id}`,
       method: "GET",
     });
   };
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["category-get"],
+  const { data, isLoading, isError, isSuccess } = useQuery({
+    queryKey: [`category-${branch_id}-get`],
     queryFn: getCategory,
+    cacheTime: 0,
   });
 
   const categories = data?.data.data;
-  console.log(data);
+
   const deleteCategory = (id) => {
     return request({
       url: `category/${id}`,
@@ -73,6 +77,9 @@ const Categories = () => {
     setOpen(false);
   };
 
+  if (isSuccess) {
+    console.log(categories, branch_id);
+  }
   return (
     <Page button={"add offer"} link={"/offer/add"} title={"Offers"}>
       <Notify
