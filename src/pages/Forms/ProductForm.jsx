@@ -23,9 +23,11 @@ import Loader from "../../components/common/loader/loader";
 import { productValidationUpdate } from "../../validations/productValidationUpdate";
 import { productValidation } from "../../validations/productValidation";
 import Notify from "../../components/common/Notify";
+import { useSelector } from "react-redux";
 const ProductForm = ({ row }) => {
   const [image, setImage] = useState("");
   let initialValues;
+  const { branch_id } = useSelector((state) => state.settings);
   if (row) {
     initialValues = {
       name: row.original.name,
@@ -57,7 +59,7 @@ const ProductForm = ({ row }) => {
       ...values,
       category_id: selectedCategory,
       status: status ? 1 : 0,
-      branch_id: localStorage.getItem("branch_id"),
+      branch_id,
       ingredients: ingredient,
       extra_ingredients: extraIngredient,
     };
@@ -94,13 +96,13 @@ const ProductForm = ({ row }) => {
 
   const getCategory = () => {
     return request({
-      url: `category/branch/${localStorage.getItem("branch_id")}`,
+      url: `category/branch/${branch_id}}`,
       method: "GET",
     });
   };
 
-  const { data, isLoading, isError, isSuccess } = useQuery({
-    queryKey: ["category-get"],
+  const { data, isLoading, isError, isSuccess, refetch } = useQuery({
+    queryKey: [`category-get-${branch_id}`],
     queryFn: getCategory,
   });
   const categories = data?.data.data;
@@ -114,10 +116,16 @@ const ProductForm = ({ row }) => {
     }
   }, [isSuccess]);
 
+  useEffect(() => {
+    refetch();
+    extraIngredientRefetch();
+    ingredientRefetch();
+  }, [branch_id]);
+
   // Get Ingredients
   const getIngredients = () => {
     return request({
-      url: `/ingredient/branch/${localStorage.getItem("branch_id")}`,
+      url: `/ingredient/branch/${branch_id}}`,
       method: "GET",
     });
   };
@@ -126,15 +134,16 @@ const ProductForm = ({ row }) => {
     data: ingredientsData,
     isLoading: loading2,
     isError: error2,
+    refetch: ingredientRefetch,
   } = useQuery({
-    queryKey: ["ingredients-get"],
+    queryKey: [`ingredients-get-${branch_id}`],
     queryFn: getIngredients,
   });
 
   // Get Ingredients
   const getExtraIngredients = () => {
     return request({
-      url: `/extraIng/branch/${localStorage.getItem("branch_id")}`,
+      url: `/extraIng/branch/${branch_id}}`,
       method: "GET",
     });
   };
@@ -145,8 +154,9 @@ const ProductForm = ({ row }) => {
     data: extraIngredientsData,
     isLoading: loading3,
     isError: error3,
+    refetch: extraIngredientRefetch,
   } = useQuery({
-    queryKey: ["extra-ingredients-get"],
+    queryKey: [`extra-ingredients-get-${branch_id}`],
     queryFn: getExtraIngredients,
   });
 
@@ -161,7 +171,6 @@ const ProductForm = ({ row }) => {
   // UPdate
 
   const updateProduct = (data) => {
-    console.log(data);
     return request({
       url: `/product/${row.original.id}`,
       data,
@@ -418,7 +427,7 @@ const ProductForm = ({ row }) => {
               </Box>
 
               <NourInput
-                initialValues={row ? row.original.ingredients : []}
+                initialValues={row ? row.original.ingredients : null}
                 buttonTitle={"add ingredients"}
                 title={"Basic Ingredient"}
                 data={ingredients}
@@ -426,7 +435,7 @@ const ProductForm = ({ row }) => {
               />
 
               <NourInput
-                initialValues={row ? row.original.extra_ingredients : []}
+                initialValues={row ? row.original.extra_ingredients : null}
                 buttonTitle={"add Extra ingredients"}
                 title={"Extra Ingredient"}
                 data={extraIngredients}

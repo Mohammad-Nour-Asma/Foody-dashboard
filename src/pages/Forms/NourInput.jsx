@@ -8,23 +8,22 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 
 import { Button, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
 
 const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
   const [validate, setValidate] = useState(false);
 
-  const orginized = [
-    ...initialValues?.map((item) => {
-      return { id: item.id, quantity: item.pivot.quantity };
-    }),
-    {
-      id: { id: data.length > 0 ? data[0].id : 0, quantity: "" },
-      quantity: "",
-    },
-  ];
+  // const orginized = [
+  //   ...initialValues?.map((item) => {
+  //     return { id: item.id, quantity: item.pivot.quantity };
+  //   }),
+  //   {
+  //     id: { id: data.length > 0 ? data[0].id : 0, quantity: "" },
+  //     quantity: "",
+  //   },
+  // ];
 
-  const [components, setComponents] = React.useState(
-    orginized?.length > 0 ? orginized : []
-  );
+  const [components, setComponents] = React.useState([]);
 
   const addIngredients = (index) => {
     if (
@@ -34,11 +33,12 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
         components[index]?.id !== 0)
     ) {
       setValidate(false);
+      console.log(data[0].id, "data");
       setComponents((prev) => {
-        return [
-          ...prev,
-          { id: data.length > 0 ? data[0].id : 0, quantity: "" },
-        ];
+        let id;
+        if (data.length > 0) id = data[0].id;
+        else id = 0;
+        return [...prev, { id: id, quantity: "" }];
       });
       setValues(components);
     } else {
@@ -48,7 +48,9 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
 
   const setIng = (value, index) => {
     console.log(value, index);
+    console.log(components[index]);
     components[index].id = value;
+    setComponents(components);
   };
 
   const setQantity = (value, index) => {
@@ -56,9 +58,20 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
   };
 
   const deleteInput = (index) => {
-    const filtered = components.filter((item, index1) => index1 !== index);
-    setComponents(filtered);
+    console.log(index, "index");
+    const filtered = components.filter((item, index1) => {
+      return index1 !== index;
+    });
+    console.log(filtered, "filterd");
+    setComponents((prev) => {
+      const filtered = prev.filter((item, index1) => {
+        return index1 !== index;
+      });
+      return filtered;
+    });
   };
+
+  console.log(components, "comp");
   return (
     <Box
       sx={{
@@ -76,7 +89,6 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
       {components.map((item, index) => {
         return (
           <Box
-            key={index}
             sx={{
               border: "1px solid #ddd",
               padding: "1.5rem 1rem",
@@ -122,17 +134,14 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="Ingredient"
+                  value={item.value}
                   onChange={(event) => {
                     console.log("red");
                     setIng(event.target.value, index);
                   }}
                 >
                   {data?.map((item, index2) => {
-                    return (
-                      <MenuItem key={index2} value={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    );
+                    return <MenuItem value={item.id}>{item.name}</MenuItem>;
                   })}
                 </Select>
               </FormControl>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Page from "../components/common/Page";
 import Layout from "../components/common/Layout";
 import Table from "../components/Table";
@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 
 const Ingredients = () => {
   const { branch_id } = useSelector((state) => state.settings);
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["ingredients-get"],
     queryFn: () => {
       return request({
@@ -43,6 +43,11 @@ const Ingredients = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    refetch();
+    console.log("hello");
+  }, [branch_id]);
 
   return (
     <Page

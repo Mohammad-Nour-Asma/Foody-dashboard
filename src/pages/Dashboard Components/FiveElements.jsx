@@ -29,7 +29,9 @@ const TopElements = ({ columns, type, entity }) => {
     },
   ];
 
-  const { year, month, day } = useSelector((state) => state.settings);
+  const { year, month, day, branch_id } = useSelector(
+    (state) => state.settings
+  );
 
   const getData = () => {
     let api;
@@ -44,7 +46,7 @@ const TopElements = ({ columns, type, entity }) => {
     }
     console.log(api);
     return request({
-      url: `${api}`,
+      url: `${api}/${branch_id}`,
       method: "POST",
       data: {
         year,

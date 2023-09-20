@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Page from "../components/common/Page";
 import Layout from "../components/common/Layout";
 import { offerData, offerColumns } from "../data/offer";
@@ -16,20 +16,23 @@ import { request } from "../Request/request";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../components/common/loader/loader";
 import Notify from "../components/common/Notify";
+import { useSelector } from "react-redux";
 
 const Offer = () => {
+  const { branch_id } = useSelector((state) => state.settings);
+
   const getOffers = () => {
-    return request({ url: "/offers", method: "GET" });
+    return request({ url: `offer/branch/${branch_id}`, method: "GET" });
   };
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["offers-get"],
     queryFn: getOffers,
   });
   const offers = data?.data.data;
 
   const handleDelete = (id) => {
-    return request({ url: `delete_offer/${id}`, method: "POST" });
+    return request({ url: `offer/${id}`, method: "POST" });
   };
 
   const mutate = useMutation({
@@ -45,6 +48,9 @@ const Offer = () => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    refetch();
+  }, [branch_id]);
   return (
     <Page button={"add offer"} link={"/offer/add"} title={"Offers"}>
       <Notify

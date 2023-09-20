@@ -18,7 +18,7 @@ const AddExtra = () => {
   return (
     <>
       {" "}
-      <Page title="Add Ingredients">
+      <Page title="Add Extra Ingredients">
         <Layout>
           <ExtraForm />
         </Layout>

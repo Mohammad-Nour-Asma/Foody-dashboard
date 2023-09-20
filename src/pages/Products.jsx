@@ -151,15 +151,6 @@ const Products = () => {
           UpdatingForm={ProductForm}
         />
       )}
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <Box>
-          {products.map((item) => {
-            return <Box sx={{ color: "red" }}>{item.id}</Box>;
-          })}
-        </Box>
-      )}
     </Box>
   );
 };

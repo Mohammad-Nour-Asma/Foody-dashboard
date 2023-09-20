@@ -70,24 +70,6 @@ const Dashboard = () => {
         type={"least rated products"}
         columns={ratedColumns}
       />
-      <ComponentWrapper>
-        <Typography mb={2} textAlign={"center"} variant="h5">
-          Agerage Products Rating
-        </Typography>
-        <Box sx={{ margin: "0 auto", display: "block" }}>
-          <Paper
-            sx={{
-              maxWidth: "50%",
-              padding: "1rem",
-              display: "flex",
-              margin: "0 auto",
-              justifyContent: "center",
-            }}
-          >
-            <Donut width={400} series={[45, 100 - 40]} />
-          </Paper>
-        </Box>
-      </ComponentWrapper>
     </Box>
   );
 };

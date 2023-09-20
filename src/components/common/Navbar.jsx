@@ -73,6 +73,7 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
     dispatch(setGolbalYear(event.target.value));
   };
   const handleMonthChange = (event) => {
+    console.log(event.target.value);
     dispatch(setGolbalMonth(event.target.value));
   };
   const handleDayChange = (event) => {
@@ -85,7 +86,7 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
       const date = new Date(2022, month, 1);
       months.push({
         month: date.toLocaleString("default", { month: "long" }),
-        number: month,
+        number: month + 1,
       });
     }
     return months;
@@ -230,7 +231,6 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
               )}
             </FormControl>
 
-            <ProfileMenu />
             <Tooltip title="Toggle Theme" arrow>
               <IconButton
                 onClick={colorMode.toggleColorMode}

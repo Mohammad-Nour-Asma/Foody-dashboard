@@ -22,13 +22,21 @@ const SalesAnalytics = () => {
     paddingBottom: "10px",
   });
 
+  const { year, month, day, branch_id } = useSelector(
+    (state) => state.settings
+  );
+
   // Start Total Salse Per Month
   const totalSalseRequest = () => {
-    return request({ url: "product/maxSales", method: "GET" });
+    return request({
+      url: `totalSales/${branch_id}`,
+      method: "POST",
+      data: { year },
+    });
   };
 
   const totalSales = useQuery({
-    queryKey: ["maxSalels"],
+    queryKey: [`maxSalels-${branch_id}`],
     queryFn: totalSalseRequest,
   });
 
@@ -48,40 +56,35 @@ const SalesAnalytics = () => {
     let info = [];
     for (let index = 0; index < data.length; index++) {
       // data.push(data[index]?.total);
-      info.push(data[index].total);
+      info.push(data[index].totalSales);
     }
     return info;
   };
 
-  const data = [
-    {
-      month: 1,
-      total: 20000,
-    },
-    {
-      month: 2,
-      total: 40,
-    },
-    {
-      month: 3,
-      total: 90,
-    },
-    {
-      month: 4,
-      total: 200,
-    },
-    {
-      month: 5,
-      total: 400,
-    },
-  ];
-  salesLineChartOptions.xaxis.categories = getMonths(data);
-  const chartData = { name: "Total Sales", data: getTotalSalesData(data) };
-  // End Total Salse Per Month
+  // const data = [
+  //   {
+  //     month: 1,
+  //     totalSales: 20000,
+  //   },
+  //   {
+  //     month: 2,
+  //     totalSales: 40,
+  //   },
+  //   {
+  //     month: 3,
+  //     totalSales: 90,
+  //   },
+  //   {
+  //     month: 4,
+  //     totalSales: 200,
+  //   },
+  //   {
+  //     month: 5,
+  //     totalSales: 400,
+  //   },
+  // ];
 
-  const { year, month, day, branch_id } = useSelector(
-    (state) => state.settings
-  );
+  // End Total Salse Per Month
 
   const getData = () => {
     console.log(`${year}-${month}-${day}`);
@@ -106,10 +109,27 @@ const SalesAnalytics = () => {
     refetch();
   }, [year, month, day, branch_id]);
 
-  if (isLoading) {
-    return <Loader />;
+  useEffect(() => {
+    totalSales.refetch();
+  }, [year]);
+
+  if (isLoading || totalSales.isLoading) {
+    return (
+      <Box sx={{ pt: "80px", pb: "20px" }}>
+        <Loader />
+      </Box>
+    );
   }
-  console.log(bar.data.data, "bar");
+
+  // initiate the line data
+
+  const salsePerMonth = totalSales.data.data.data;
+  console.log(salsePerMonth);
+  const chartData = {
+    name: "Total Sales",
+    data: getTotalSalesData(salsePerMonth),
+  };
+  salesLineChartOptions.xaxis.categories = getMonths(salsePerMonth);
 
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>

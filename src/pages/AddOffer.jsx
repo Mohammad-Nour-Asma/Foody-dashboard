@@ -10,6 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import MyLoadingButton from "../components/common/LoadingButton";
 import Notify from "../components/common/Notify";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const AddOffer = () => {
   //Image Upload Stuff
@@ -28,7 +29,7 @@ const AddOffer = () => {
   const imageInput = useRef(null);
   const [image, setImage] = useState("");
   const [imageValidation, setImageValidation] = useState(true);
-
+  const { branch_id } = useSelector((state) => state.settings);
   const [progress, setProgress] = useState({ loading: false, open: false });
 
   const submitHandle = () => {
@@ -38,17 +39,18 @@ const AddOffer = () => {
     } else {
       const offer = {
         image: image,
+        branch_id,
       };
-
+      console.log(offer);
       mutate(offer);
     }
   };
 
-  const storeOffer = (image) => {
+  const storeOffer = (offer) => {
     return request({
-      url: "/store_offer",
+      url: "/offer/add",
       method: "POST",
-      data: image,
+      data: offer,
       headers: {
         "Content-Type": "multipart/form-data",
       },

@@ -13,7 +13,6 @@ import {
   ProductSales,
   Reviews,
   SalesAnalytics,
-  Settings,
   SingleCustomer,
   SingleOrder,
   SingleProduct,
@@ -29,7 +28,7 @@ import Categories from "./pages/Categories";
 import AddCategory from "./pages/AddCategory";
 import ExtraIngredients from "./pages/ExtraIngredients";
 import AddExtra from "./pages/AddExtra";
-// import ServiceTiming from "./pages/ServiceTiming";
+import ServiceTiming from "./pages/ServiceTiming";
 
 const sideBarWidth = 250;
 
@@ -91,7 +90,7 @@ function App() {
             <Route path="/transactions" element={<Transactions />} />
 
             <Route path="/reviews" element={<Reviews />} />
-            <Route path="/settings" element={<Settings />} />
+
             <Route path="/reviews" element={<Reviews />} />
             {/* Ingredients */}
             <Route path="/ingredient/add" element={<AddIngredients />} />
@@ -112,7 +111,7 @@ function App() {
             {/* Service Timing */}
             <Route path="/extra/add" element={<AddExtra />} />
 
-            <Route path="/service-timing" element={<Settings />} />
+            <Route path="/service-timing" element={<ServiceTiming />} />
           </Routes>
         </Box>
       </Box>

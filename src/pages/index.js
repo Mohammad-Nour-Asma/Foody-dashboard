@@ -11,4 +11,3 @@ export { default as OrderTemplate } from "./OrderTemplate";
 export { default as SingleOrder } from "./SingleOrder";
 export { default as Transactions } from "./Transactions";
 export { default as Reviews } from "./Reviews";
-export { default as Settings } from "./Settings";

@@ -81,7 +81,7 @@ const Categories = () => {
     console.log(categories, branch_id);
   }
   return (
-    <Page button={"add offer"} link={"/offer/add"} title={"Offers"}>
+    <Page button={"add category"} link={"/category/add"} title={"Category"}>
       <Notify
         message={"deleted successfully"}
         open={open}
