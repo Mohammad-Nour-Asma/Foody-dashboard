@@ -251,247 +251,257 @@ const ProductForm = ({ row }) => {
         overflow: "hidden",
       }}
     >
-      <Notify
-        message={
-          updateMutation.isError || addProduct.isError
-            ? "something went wrong"
-            : row
-            ? "Meal updatede Successfully"
-            : "Meal added successfully"
-        }
-        open={open}
-        handleClose={handleClose}
-        type={
-          addProduct?.isError || updateMutation?.isError ? "error" : "success"
-        }
-      />
-      {isLoading || loading2 || loading3 ? (
-        <Loader />
+      {categories?.length === 0 ? (
+        <Typography textAlign={"center"}>Please Add a Category</Typography>
       ) : (
-        <Formik
-          initialValues={initialValues}
-          validationSchema={row ? productValidationUpdate : productValidation}
-          onSubmit={handleSubmit}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleBlur,
-            handleChange,
-            handleSubmit,
-            setFieldValue,
-          }) => (
-            <form onSubmit={handleSubmit}>
-              <Box sx={{ my: 2 }}>
-                <TextField
-                  label="Meal Name"
-                  name="name"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={!!touched.name && !!errors.name}
-                  helperText={touched.name && errors.name}
-                  value={values.name}
-                />
-              </Box>
-              <Box sx={{ my: 2 }}>
-                <TextField
-                  label="اسم الوجبة بالعربي"
-                  name="name_ar"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={!!touched.name_ar && !!errors.name_ar}
-                  helperText={touched.name_ar && errors.name_ar}
-                  value={values.name_ar}
-                />
-              </Box>
-              <Box sx={{ mt: 4 }}>
-                <TextField
-                  label="Meal Description"
-                  name="description"
-                  variant="outlined"
-                  rows={4}
-                  fullWidth
-                  multiline
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={!!touched.description && !!errors.description}
-                  helperText={touched.description && errors.description}
-                  value={values.description}
-                />
-              </Box>
-              <Box sx={{ mt: 4 }}>
-                <TextField
-                  label="وصف الوجبة"
-                  name="description_ar"
-                  variant="outlined"
-                  rows={4}
-                  fullWidth
-                  multiline
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={!!touched.description_ar && !!errors.description_ar}
-                  helperText={touched.description_ar && errors.description_ar}
-                  value={values.description_ar}
-                />
-              </Box>
-
-              <Box sx={{ mt: 4 }}>
-                <FormControl fullWidth size="small">
-                  <InputLabel id="demo-simple-select-label">
-                    Category
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Category"
-                    onChange={handleCategoryChange}
-                    value={selectedCategory}
-                  >
-                    {categories?.map(({ id, name }) => (
-                      <MenuItem value={id} key={id}>
-                        {name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-
-              <Box
-                sx={{ mt: 4, display: "flex", alignItems: "center", gap: 4 }}
-              >
-                <TextField
-                  label="Price"
-                  variant="outlined"
-                  rows={4}
-                  fullWidth
-                  name="price"
-                  size="small"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={!!touched.price && !!errors.price}
-                  helperText={touched.price && errors.price}
-                  value={values.price}
-                />
-              </Box>
-
-              <Box
-                sx={{ mt: 4, display: "flex", alignItems: "center", gap: 4 }}
-              >
-                <TextField
-                  label="Estimated Time"
-                  variant="outlined"
-                  rows={4}
-                  fullWidth
-                  name="estimated_time"
-                  size="small"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={!!touched.estimated_time && !!errors.estimated_time}
-                  helperText={touched.estimated_time && errors.estimated_time}
-                  value={values.estimated_time}
-                />
-                <TextField
-                  label="Position"
-                  variant="outlined"
-                  name="position"
-                  rows={4}
-                  fullWidth
-                  size="small"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={!!touched.position && !!errors.position}
-                  helperText={touched.position && errors.position}
-                  value={values.position}
-                />
-              </Box>
-
-              <Box sx={{ my: 2 }}>
-                <label
-                  style={{
-                    color: "#9d9fa6",
-                  }}
-                >
-                  Meal Status
-                </label>
-                <Switch
-                  onChange={handleStatusChange}
-                  defaultChecked={row?.original.status != 1 ? false : true}
-                ></Switch>
-              </Box>
-
-              <NourInput
-                initialValues={row ? row.original.ingredients : null}
-                buttonTitle={"add ingredients"}
-                title={"Basic Ingredient"}
-                data={ingredients}
-                setValues={setIngredients}
-              />
-
-              <NourInput
-                initialValues={row ? row.original.extra_ingredients : null}
-                buttonTitle={"add Extra ingredients"}
-                title={"Extra Ingredient"}
-                data={extraIngredients}
-                setValues={setExtraIngredients}
-              />
-
-              <input
-                type="file"
-                // name={row ? " " : "image"}
-                ref={imageInput}
-                hidden
-                // onBlur={handleBlur}
-                onChange={(event) => {
-                  setImage(event.currentTarget.files[0]);
-                  setFieldValue("image", event.currentTarget.files[0]); // Update this line
-                }}
-              />
-              <UploadBox onClick={() => imageInput.current.click()}>
-                {image ? (
-                  <img
-                    src={image && URL.createObjectURL(image)}
-                    alt=""
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : row?.original.image ? (
-                  <img
-                    src={row.original.image}
-                    alt=""
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "contain",
-                    }}
-                  />
-                ) : (
-                  <Box sx={{ textAlign: "center" }}>
-                    <BiImageAdd
-                      style={{ fontSize: "50px", color: "#027edd" }}
+        <>
+          <Notify
+            message={
+              updateMutation.isError || addProduct.isError
+                ? "something went wrong"
+                : row
+                ? "Meal updatede Successfully"
+                : "Meal added successfully"
+            }
+            open={open}
+            handleClose={handleClose}
+            type={
+              addProduct?.isError || updateMutation?.isError
+                ? "error"
+                : "success"
+            }
+          />
+          {isLoading || loading2 || loading3 ? (
+            <Loader />
+          ) : (
+            <Formik
+              initialValues={initialValues}
+              validationSchema={
+                row ? productValidationUpdate : productValidation
+              }
+              onSubmit={handleSubmit}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleBlur,
+                handleChange,
+                handleSubmit,
+                setFieldValue,
+              }) => (
+                <form onSubmit={handleSubmit}>
+                  <Box sx={{ my: 2 }}>
+                    <TextField
+                      label="Meal Name"
+                      name="name"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.name && !!errors.name}
+                      helperText={touched.name && errors.name}
+                      value={values.name}
                     />
-                    <Typography>
-                      Drop your image here or{" "}
-                      <span style={{ color: "#027edd", cursor: "pointer" }}>
-                        browse
-                      </span>
-                    </Typography>
-                    <Typography sx={{ fontSize: "12px" }}>
-                      JPG, PNG and GIF images are allowed
-                    </Typography>
                   </Box>
-                )}
-              </UploadBox>
-              {/* <ErrorMessage
+                  <Box sx={{ my: 2 }}>
+                    <TextField
+                      label="اسم الوجبة بالعربي"
+                      name="name_ar"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.name_ar && !!errors.name_ar}
+                      helperText={touched.name_ar && errors.name_ar}
+                      value={values.name_ar}
+                    />
+                  </Box>
+                  <Box sx={{ mt: 4 }}>
+                    <TextField
+                      label="Meal Description"
+                      name="description"
+                      variant="outlined"
+                      rows={4}
+                      fullWidth
+                      multiline
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.description && !!errors.description}
+                      helperText={touched.description && errors.description}
+                      value={values.description}
+                    />
+                  </Box>
+                  <Box sx={{ mt: 4 }}>
+                    <TextField
+                      label="وصف الوجبة"
+                      name="description_ar"
+                      variant="outlined"
+                      rows={4}
+                      fullWidth
+                      multiline
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={
+                        !!touched.description_ar && !!errors.description_ar
+                      }
+                      helperText={
+                        touched.description_ar && errors.description_ar
+                      }
+                      value={values.description_ar}
+                    />
+                  </Box>
+
+                  <Box sx={{ mt: 4 }}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel id="demo-simple-select-label">
+                        Category
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        label="Category"
+                        onChange={handleCategoryChange}
+                        value={selectedCategory}
+                      >
+                        {categories?.map(({ id, name }) => (
+                          <MenuItem value={id} key={id}>
+                            {name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      mt: 4,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <TextField
+                      label="Price"
+                      variant="outlined"
+                      rows={4}
+                      fullWidth
+                      name="price"
+                      size="small"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.price && !!errors.price}
+                      helperText={touched.price && errors.price}
+                      value={values.price}
+                    />
+                  </Box>
+
+                  <Box
+                    sx={{
+                      mt: 4,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <TextField
+                      label="Estimated Time"
+                      variant="outlined"
+                      rows={4}
+                      fullWidth
+                      name="estimated_time"
+                      size="small"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={
+                        !!touched.estimated_time && !!errors.estimated_time
+                      }
+                      helperText={
+                        touched.estimated_time && errors.estimated_time
+                      }
+                      value={values.estimated_time}
+                    />
+                    <TextField
+                      label="Position"
+                      variant="outlined"
+                      name="position"
+                      rows={4}
+                      fullWidth
+                      size="small"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.position && !!errors.position}
+                      helperText={touched.position && errors.position}
+                      value={values.position}
+                    />
+                  </Box>
+
+                  <Box sx={{ my: 2 }}>
+                    <label
+                      style={{
+                        color: "#9d9fa6",
+                      }}
+                    >
+                      Meal Status
+                    </label>
+                    <Switch
+                      onChange={handleStatusChange}
+                      defaultChecked={row?.original.status != 1 ? false : true}
+                    ></Switch>
+                  </Box>
+
+                  <input
+                    type="file"
+                    // name={row ? " " : "image"}
+                    ref={imageInput}
+                    hidden
+                    // onBlur={handleBlur}
+                    onChange={(event) => {
+                      setImage(event.currentTarget.files[0]);
+                      setFieldValue("image", event.currentTarget.files[0]); // Update this line
+                    }}
+                  />
+                  <UploadBox onClick={() => imageInput.current.click()}>
+                    {image ? (
+                      <img
+                        src={image && URL.createObjectURL(image)}
+                        alt=""
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                        }}
+                      />
+                    ) : row?.original.image ? (
+                      <img
+                        src={row.original.image}
+                        alt=""
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                        }}
+                      />
+                    ) : (
+                      <Box sx={{ textAlign: "center" }}>
+                        <BiImageAdd
+                          style={{ fontSize: "50px", color: "#027edd" }}
+                        />
+                        <Typography>
+                          Drop your image here or{" "}
+                          <span style={{ color: "#027edd", cursor: "pointer" }}>
+                            browse
+                          </span>
+                        </Typography>
+                        <Typography sx={{ fontSize: "12px" }}>
+                          JPG, PNG and GIF images are allowed
+                        </Typography>
+                      </Box>
+                    )}
+                  </UploadBox>
+                  {/* <ErrorMessage
                     name="image"
                     style={{
                     fontSize: "1rem",
@@ -499,27 +509,29 @@ const ProductForm = ({ row }) => {
                     }}
                     component="p"
                 /> */}
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  mt: "30px",
-                }}
-              >
-                <MyLoadingButton
-                  variant={"contained"}
-                  title={"submit"}
-                  type="submit"
-                  loading={
-                    row ? updateMutation.isPending : addProduct.isPending
-                  }
-                  onClick={handleSubmit}
-                />
-              </Box>
-            </form>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      mt: "30px",
+                    }}
+                  >
+                    <MyLoadingButton
+                      variant={"contained"}
+                      title={"submit"}
+                      type="submit"
+                      loading={
+                        row ? updateMutation.isPending : addProduct.isPending
+                      }
+                      onClick={handleSubmit}
+                    />
+                  </Box>
+                </form>
+              )}
+            </Formik>
           )}
-        </Formik>
+        </>
       )}
     </Paper>
   );

@@ -22,22 +22,6 @@ const IngredientsForm = ({ row }) => {
       quantity: row.original.quantity,
     };
   }
-  //Image Upload Stuff
-  const UploadBox = styled(Box)({
-    marginTop: 30,
-    height: 200,
-    borderRadius: "10px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    borderStyle: "dashed",
-    borderWidth: "2px",
-    borderColor: "divider",
-  });
-  const imageInput = useRef(null);
-  const [image, setImage] = useState("");
-  const [imageValidation, setImageValidation] = useState();
 
   // Submit Hanlder
   const submitHandle = (values) => {

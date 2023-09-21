@@ -1,9 +1,15 @@
 import { Box, Chip, Grid, Paper, Rating, Typography } from "@mui/material";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { request } from "../Request/request";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../components/common/loader/loader";
+import {
+  ingredientColumns,
+  productIngredientColumns,
+} from "../data/Ingredients";
+import Table from "../components/Table";
+import Page from "../components/common/Page";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -32,7 +38,19 @@ const SingleProduct = () => {
 
   // const rate = rating?.data?.data.data.value;
   // console.log(rate);
-  console.log(productDetails);
+
+  if (isLoading) {
+    return (
+      <Box sx={{ pt: "80px", pb: "20px" }}>
+        <Loader />
+      </Box>
+    );
+  }
+
+  const extra = productDetails.extra_ingredients;
+  const ingredients = productDetails.ingredients;
+
+  console.log(extra, ingredients);
 
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
@@ -76,38 +94,56 @@ const SingleProduct = () => {
                 <Typography variant="subtitle2">Category</Typography>
                 <Chip label={productDetails?.category.name} />
               </Box>
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 4, my: 2 }}
-              >
-                <Typography variant="subtitle2">Ingredients</Typography>
-                {productDetails.ingredients.length == 0 && (
-                  <p>No Ingredients</p>
-                )}
-                {productDetails.ingredients.map((item) => (
-                  <Chip
-                    label={`${item.name} ${item.pivot.quantity}g`}
-                    color="success"
-                  />
-                ))}
-              </Box>
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 4, my: 2 }}
-              >
-                <Typography variant="subtitle2">Extra Ingredients</Typography>
-                {productDetails.extra_ingredients.length == 0 && (
-                  <p>No Extra Ingredients</p>
-                )}
-                {productDetails.extra_ingredients.map((item) => (
-                  <Chip
-                    label={`${item.name} ${item.pivot.quantity}g`}
-                    color="success"
-                  />
-                ))}
-              </Box>
             </Grid>
           </Grid>
         </Paper>
       )}
+      <Page
+        title={"product ingredients"}
+        type={"productIng"}
+        link={""}
+        button={"add ingredient"}
+        productIngredient={ingredients}
+        productExtraIngredient={extra}
+      >
+        <Paper my={"1rem"}>
+          <Table
+            data={ingredients}
+            fields={productIngredientColumns}
+            numberOfRows={ingredients.length}
+            enableTopToolBar={true}
+            enableBottomToolBar={true}
+            enablePagination={true}
+            enableColumnFilters={true}
+            enableColumnDragging={true}
+            showPreview={false}
+            hideFromMenu={true}
+          />
+        </Paper>
+      </Page>
+      <Page
+        title={"product extra ingredients"}
+        link={""}
+        button={"add extra ingredient"}
+        productIngredient={ingredients}
+        type={"extraProductIng"}
+        productExtraIngredient={extra}
+      >
+        <Paper my={"1rem"}>
+          <Table
+            data={extra}
+            fields={ingredientColumns}
+            numberOfRows={extra.length}
+            enableTopToolBar={true}
+            enableBottomToolBar={true}
+            enablePagination={true}
+            enableColumnFilters={true}
+            enableColumnDragging={true}
+            showPreview={false}
+            hideFromMenu={true}
+          />
+        </Paper>
+      </Page>
     </Box>
   );
 };

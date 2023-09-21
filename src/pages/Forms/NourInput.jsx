@@ -50,6 +50,7 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
     console.log(value, index);
     console.log(components[index]);
     components[index].id = value;
+    console.log(components, "hellow");
     setComponents(components);
   };
 
@@ -62,6 +63,7 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
     const filtered = components.filter((item, index1) => {
       return index1 !== index;
     });
+
     console.log(filtered, "filterd");
     setComponents((prev) => {
       const filtered = prev.filter((item, index1) => {
@@ -96,6 +98,7 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
               margin: "1rem",
               position: "relative",
             }}
+            key={item.id}
           >
             {components.length - 1 > index && (
               <Box
@@ -123,10 +126,7 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
               direction={"row"}
               justifyContent={"space-between"}
             >
-              <FormControl
-                disabled={components.length - 1 > index ? true : false}
-                fullWidth
-              >
+              <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">
                   Ingredient
                 </InputLabel>
@@ -134,7 +134,7 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="Ingredient"
-                  value={item.value}
+                  value={item.id}
                   onChange={(event) => {
                     console.log("red");
                     setIng(event.target.value, index);

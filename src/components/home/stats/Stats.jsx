@@ -31,8 +31,6 @@ const Stats = () => {
     (state) => state.settings
   );
 
-  console.log(year, day, month);
-
   const { mutate, isPending, data, isError } = useMutation({
     mutationKey: [`get-${year}-${month}-${day}-statis`],
     mutationFn: getStats,
@@ -77,11 +75,11 @@ const Stats = () => {
             }}
           >
             <Box sx={{ flex: 1 }}>
-              icon
+              {/* icon */}
+              {item.replace("_", " ").toLocaleUpperCase()}
               <Typography variant="h4" sx={{ my: 2 }}>
                 {stats[item]}
               </Typography>
-              <Typography sx={{ opacity: 0.7 }}>{item}</Typography>
             </Box>
           </Item>
         </Grid>
