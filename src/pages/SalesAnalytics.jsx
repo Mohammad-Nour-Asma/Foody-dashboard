@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import AveargeTotals from "../components/sales/AveargeTotals";
 import BarChart from "../components/sales/charts/BarChart";
 import LineChart from "../components/sales/charts/LineChart";
@@ -14,24 +14,25 @@ import { request } from "../Request/request";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import React, { useEffect } from "react";
-import Loader from "../components/common/loader/loader";
-
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 const SalesAnalytics = () => {
   const ComponentWrapper = styled(Box)({
     marginTop: "10px",
     paddingBottom: "10px",
   });
 
-  const { year, month, day, branch_id } = useSelector(
-    (state) => state.settings
-  );
+  const { dateFilter, branch_id } = useSelector((state) => state.settings);
 
   // Start Total Salse Per Month
   const totalSalseRequest = () => {
+    let data = { year: new Date().getFullYear() };
+    if (dateFilter.year) {
+      data.year = dateFilter.year;
+    }
     return request({
       url: `totalSales/${branch_id}`,
       method: "POST",
-      data: { year },
+      data: data,
     });
   };
 
@@ -61,37 +62,15 @@ const SalesAnalytics = () => {
     return info;
   };
 
-  // const data = [
-  //   {
-  //     month: 1,
-  //     totalSales: 20000,
-  //   },
-  //   {
-  //     month: 2,
-  //     totalSales: 40,
-  //   },
-  //   {
-  //     month: 3,
-  //     totalSales: 90,
-  //   },
-  //   {
-  //     month: 4,
-  //     totalSales: 200,
-  //   },
-  //   {
-  //     month: 5,
-  //     totalSales: 400,
-  //   },
-  // ];
-
   // End Total Salse Per Month
 
   const getData = () => {
-    console.log(`${year}-${month}-${day}`);
     return request({
       url: `peakTimes/${branch_id}`,
       method: "POST",
-      data: { date: `${year}-${month}-${day}` },
+      data: {
+        date: `${dateFilter.year}-${dateFilter.month}-${dateFilter.day}`,
+      },
     });
   };
 
@@ -101,30 +80,24 @@ const SalesAnalytics = () => {
     isErro,
     refetch,
   } = useQuery({
-    queryKe: [`get-${year}-${month}`],
+    queryKe: [`get-peakTimes-${dateFilter.year}-${dateFilter.month}`],
     queryFn: getData,
   });
 
   useEffect(() => {
     refetch();
-  }, [year, month, day, branch_id]);
+  }, [dateFilter, branch_id]);
 
   useEffect(() => {
     totalSales.refetch();
-  }, [year]);
-
-  if (isLoading || totalSales.isLoading) {
-    return (
-      <Box sx={{ pt: "80px", pb: "20px" }}>
-        <Loader />
-      </Box>
-    );
-  }
+  }, [dateFilter]);
 
   // initiate the line data
 
-  const salsePerMonth = totalSales.data.data.data;
-  console.log(salsePerMonth);
+  if (totalSales.isError || isErro) {
+    return <Typography>Error happen</Typography>;
+  }
+  const salsePerMonth = totalSales.isLoading ? [] : totalSales.data.data.data;
   const chartData = {
     name: "Total Sales",
     data: getTotalSalesData(salsePerMonth),
@@ -132,31 +105,59 @@ const SalesAnalytics = () => {
   salesLineChartOptions.xaxis.categories = getMonths(salsePerMonth);
 
   return (
-    <Box sx={{ pt: "80px", pb: "20px" }}>
-      <Typography variant="h6" sx={{ marginBottom: "14px" }}>
-        Sales Analytics
-      </Typography>
+    <Box sx={{ pt: "20px", pb: "20px" }}>
+      <Stack
+        gap={0.8}
+        sx={{ marginBottom: "14px" }}
+        direction={"row"}
+        alignItems={"center"}
+      >
+        <MonetizationOnIcon
+          sx={{
+            color: "#c387f2",
+            fontSize: "1.5rem",
+            position: "relative",
+            bottom: "0.1rem",
+          }}
+          className="gradient-icon"
+        />{" "}
+        <Typography
+          sx={{
+            background: "linear-gradient(to bottom, #da32f9, #629ad6)",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+          variant="h5"
+        >
+          Sales Analytics
+        </Typography>
+      </Stack>
       <ComponentWrapper>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={12}>
-            <LineChart
-              chartOptions={salesLineChartOptions}
-              chartData={[chartData]}
-            />
+          <Grid item xs={12} md={6} lg={6}>
+            {isLoading || totalSales.isLoading ? (
+              <Skeleton
+                sx={{ bottom: "80px", position: "relative" }}
+                width={"100%"}
+                height={"400px"}
+              />
+            ) : (
+              <LineChart
+                chartOptions={salesLineChartOptions}
+                chartData={[chartData]}
+              />
+            )}
           </Grid>
-          <Grid item xs={12} md={6} lg={12}>
-            <Paper
-              sx={{
-                boxShadow: "none !important",
-                borderRadius: "12px",
-                borderStyle: "solid",
-                borderWidth: "1px",
-                borderColor: "divider",
-                height: "100%",
-              }}
-            >
+          <Grid item xs={12} md={6} lg={6}>
+            {isLoading || totalSales.isLoading ? (
+              <Skeleton
+                sx={{ bottom: "80px", position: "relative" }}
+                width={"100%"}
+                height={"400px"}
+              />
+            ) : (
               <BarChart data={bar.data.data} />
-            </Paper>
+            )}
           </Grid>
         </Grid>
       </ComponentWrapper>

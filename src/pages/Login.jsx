@@ -3,16 +3,19 @@ import React, { useState } from "react";
 import GridBox from "../components/common/GridBox";
 import GridItem from "../components/common/GridItem";
 import LoadingButton from "@mui/lab/LoadingButton";
-import logo from "../images/WhatsApp Image 2023-08-26 at 05.08.45.jpg";
-import Logo from "../components/common/Logo";
+import logo from "../images/background.jpg";
 import { userSchema } from "../validations/UserValidation";
 import { Formik, setIn } from "formik";
 import { request } from "../Request/request";
 import { useNavigate } from "react-router-dom";
+import Resto from "../images/3.png";
+import { useDispatch } from "react-redux";
+import { setRestaurantId } from "../redux/SettingsSlice";
 
 const Login = () => {
   const [info, setInfo] = useState({ loading: false, error: false });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const submitHandler = (values) => {
     setInfo({ loading: true, error: false });
 
@@ -21,20 +24,30 @@ const Login = () => {
         setInfo({ ...info, loading: false });
         // resp.data.data.token;
         localStorage.setItem("token", resp.data.token);
-        localStorage.setItem("restaurant_id", resp.data.user.branch.id);
+        localStorage.setItem(
+          "restaurant_id",
+          resp.data.user.branch.restaurant_id
+        );
+        dispatch(setRestaurantId(resp.data.user.branch.restaurant_id));
         navigate("/dashboard");
       })
       .catch((err) => {
         setInfo({ error: true, loading: false });
-        console.log(err);
       });
   };
 
   return (
     <Box>
-      <GridBox spacing={5}>
+      <GridBox spacing={3}>
         <GridItem md={6} xs={12}>
-          <Logo />
+          <Box padding={"1rem"} width={"200px"}>
+            <img
+              src={Resto}
+              style={{
+                maxWidth: "100%",
+              }}
+            />
+          </Box>
           <Formik
             initialValues={{ email: "", password: "" }}
             validationSchema={userSchema}
@@ -48,7 +61,12 @@ const Login = () => {
               handleChange,
               handleSubmit,
             }) => (
-              <form onSubmit={handleSubmit}>
+              <form
+                style={{
+                  padding: "1rem",
+                }}
+                onSubmit={handleSubmit}
+              >
                 <Stack mt={"4rem"} spacing={3}>
                   <Box>
                     <TextField
@@ -87,6 +105,9 @@ const Login = () => {
                     fullWidth
                     sx={{
                       padding: "1rem",
+                      borderRadius: "5px",
+                      background:
+                        "linear-gradient(to bottom, #dd78ef, #779bc2) !important",
                     }}
                   >
                     <span
@@ -110,32 +131,37 @@ const Login = () => {
             )}
           </Formik>
         </GridItem>
-        <GridItem
-          sx={{ overFlow: "hidden", position: "relative" }}
-          md={6}
-          xs={12}
-        >
-          <img
-            style={{
-              maxWidth: "100%",
-              maxHeight: "100vh",
-              borderImage: "cover",
-              width: "auto",
-              height: "auto",
-              margin: "0 auto",
-              display: "block",
-            }}
-            src={logo}
-          />
+        <GridItem md={6} xs={12}>
           <Box
             sx={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%,-50%)",
+              position: "relative",
+              backgroundImage: `url("${logo}")`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+              backgoundPosition: "center",
+              minHeight: "100vh",
+              display: {
+                md: "block",
+                sm: "none",
+                xs: "none",
+              },
             }}
           >
-            <Logo />
+            <Box
+              sx={{
+                position: "absolute",
+                left: "50%",
+                top: "40%",
+                transform: "translate(-50%,-50%)",
+              }}
+            >
+              <img
+                src={Resto}
+                style={{
+                  maxWidth: "100%",
+                }}
+              />
+            </Box>
           </Box>
         </GridItem>
       </GridBox>

@@ -41,7 +41,6 @@ const AddOffer = () => {
         image: image,
         branch_id,
       };
-      console.log(offer);
       mutate(offer);
     }
   };
@@ -66,7 +65,6 @@ const AddOffer = () => {
       setProgress({ loading: true, open: false });
     },
     onError: (err) => {
-      console.log(err);
       setProgress({ loading: false, open: false });
     },
     onSuccess: () => {

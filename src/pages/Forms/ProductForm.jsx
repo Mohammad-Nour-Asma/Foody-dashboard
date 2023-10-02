@@ -63,7 +63,6 @@ const ProductForm = ({ row }) => {
       ingredients: ingredient,
       extra_ingredients: extraIngredient,
     };
-    console.log(product);
 
     setUpdatedMeal(product);
     if (row) {
@@ -233,8 +232,6 @@ const ProductForm = ({ row }) => {
   const handleClose = () => {
     setOpen(false);
   };
-
-  // console.log(row.original.ingredients, "row");
 
   return (
     <Paper

@@ -1,4 +1,4 @@
-import { Box, Button, Switch, Typography } from "@mui/material";
+import { Box, Button, Skeleton, Switch, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { Link } from "react-router-dom";
@@ -9,6 +9,7 @@ import Loader from "../components/common/loader/loader";
 import Notify from "../components/common/Notify";
 import ProductForm from "./Forms/ProductForm";
 import { useSelector } from "react-redux";
+import Layout from "../components/common/Layout";
 
 const Products = () => {
   const productsColumns = [
@@ -63,11 +64,9 @@ const Products = () => {
 
   const { branch_id } = useSelector((state) => state.settings);
 
-  console.log(branch_id);
-
   const getAllProducts = () => {
     return request({
-      url: `/products/branch/${branch_id}`,
+      url: `/admin/products/branch/${branch_id}`,
       method: "GET",
     });
   };
@@ -100,8 +99,6 @@ const Products = () => {
     setOpen(false);
   };
 
-  console.log(products);
-
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
       <Notify
@@ -118,39 +115,59 @@ const Products = () => {
           marginBottom: "16px",
         }}
       >
-        <Typography variant="h6">Products</Typography>
+        <Typography
+          sx={{
+            background: "linear-gradient(to bottom, #da32f9, #629ad6)",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+          variant="h6"
+        >
+          Products
+        </Typography>
         <Link to="/products/add" style={{ textDecoration: "none" }}>
           <Button
             variant="contained"
-            color="primary"
             startIcon={<FiPlus />}
-            sx={{ borderRadius: "20px" }}
+            sx={{
+              borderRadius: "20px",
+              background:
+                "linear-gradient(to bottom, #dd78ef, #779bc2) !important",
+            }}
           >
             Add Product
           </Button>
         </Link>
       </Box>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <Table
-          data={data?.data.data}
-          fields={productsColumns}
-          numberOfRows={products.length}
-          enableTopToolBar={true}
-          enableBottomToolBar={true}
-          enablePagination={true}
-          enableColumnFilters={true}
-          enableEditing={true}
-          enableColumnDragging={true}
-          showPreview={true}
-          hideFromMenu={true}
-          deleteElement={deleteMutate}
-          edit={true}
-          routeLink="products"
-          UpdatingForm={ProductForm}
-        />
-      )}
+      <Layout>
+        <Box sx={{ pb: "20px" }}>
+          {isLoading ? (
+            <Skeleton
+              sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
+              width={"100%"}
+              height={"400px"}
+            />
+          ) : (
+            <Table
+              data={data?.data.data}
+              fields={productsColumns}
+              numberOfRows={products.length}
+              enableTopToolBar={true}
+              enableBottomToolBar={true}
+              enablePagination={true}
+              enableColumnFilters={true}
+              enableEditing={true}
+              enableColumnDragging={true}
+              showPreview={true}
+              hideFromMenu={true}
+              deleteElement={deleteMutate}
+              edit={true}
+              routeLink="products"
+              UpdatingForm={ProductForm}
+            />
+          )}
+        </Box>
+      </Layout>
     </Box>
   );
 };

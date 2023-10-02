@@ -3,14 +3,16 @@ import React from "react";
 import { links } from "../../data/links";
 import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
+import Logo from "../../images/3.png";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 const Sidebar = ({ window, sideBarWidth, mobileOpen, handleDrawerToggle }) => {
   const drawer = (
     <div>
       <Toolbar>
-        <Typography variant="h6" sx={{ fontWeight: "bold", ml: 2 }}>
-          Dashboard
-        </Typography>
+        <Box variant="h6" sx={{ fontWeight: "bold", padding: ".5rem" }}>
+          <img width={"80%"} src={Logo} />
+        </Box>
       </Toolbar>
       <Divider />
       <List disablePadding>
@@ -48,7 +50,7 @@ const Sidebar = ({ window, sideBarWidth, mobileOpen, handleDrawerToggle }) => {
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: sideBarWidth,
-            backgroundColor: "sidebar.background",
+            backgroundColor: "#f4f7fe",
             color: "sidebar.textColor",
           },
         }}
@@ -68,7 +70,7 @@ const Sidebar = ({ window, sideBarWidth, mobileOpen, handleDrawerToggle }) => {
             width: sideBarWidth,
             boxSizing: "border-box",
             borderRight: 0,
-            backgroundColor: "sidebar.background",
+            backgroundColor: "#f4f7fe",
             color: "sidebar.textColor",
           },
         }}

@@ -3,7 +3,7 @@ import Layout from "../components/common/Layout";
 import Page from "../components/common/Page";
 import { offerColumns, offerData } from "../data/offer";
 import Table from "../components/Table";
-import { Box } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import { request } from "../Request/request";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../components/common/loader/loader";
@@ -77,9 +77,6 @@ const Categories = () => {
     setOpen(false);
   };
 
-  if (isSuccess) {
-    console.log(categories, branch_id);
-  }
   return (
     <Page button={"add category"} link={"/category/add"} title={"Category"}>
       <Notify
@@ -90,7 +87,11 @@ const Categories = () => {
       <Layout>
         <Box sx={{ pb: "20px" }}>
           {isLoading ? (
-            <Loader />
+            <Skeleton
+              sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
+              width={"100%"}
+              height={"400px"}
+            />
           ) : (
             <Table
               data={categories}

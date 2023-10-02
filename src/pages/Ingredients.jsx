@@ -2,20 +2,26 @@ import React, { useEffect, useState } from "react";
 import Page from "../components/common/Page";
 import Layout from "../components/common/Layout";
 import Table from "../components/Table";
-import { ingredientColumns, IngredientsData } from "../data/Ingredients";
+import {
+  ingredientColumns,
+  IngredientsData,
+  mealIngredientColumns,
+} from "../data/Ingredients";
 
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Paper, Skeleton, Typography } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { request } from "../Request/request";
 import Loader from "../components/common/loader/loader";
 import Notify from "../components/common/Notify";
 import IngredientsForm from "./Forms/IngredientsForm";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setWarningTrue } from "../redux/WarningSlice";
 
 const Ingredients = () => {
   const { branch_id } = useSelector((state) => state.settings);
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["ingredients-get"],
+  const dispatch = useDispatch();
+  const { data, isLoading, isError, refetch, isSuccess } = useQuery({
+    queryKey: [`ingredients-get-${branch_id}`],
     queryFn: () => {
       return request({
         url: `/ingredient/branch/${branch_id}`,
@@ -46,8 +52,18 @@ const Ingredients = () => {
 
   useEffect(() => {
     refetch();
-    console.log("hello");
   }, [branch_id]);
+
+  if (isSuccess) {
+    data.data.data.forEach((element) => {
+      if (element.threshold >= element.total_quantity) {
+        console.log("hello");
+        dispatch(setWarningTrue());
+        return true; // stops the loop
+      }
+      return false; // continues the loop
+    });
+  }
 
   return (
     <Page
@@ -60,28 +76,34 @@ const Ingredients = () => {
         open={open}
         handleClose={handleClose}
       />
-      <Box sx={{ pb: "20px" }}>
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <Table
-            data={ingredients?.data}
-            fields={ingredientColumns}
-            numberOfRows={ingredients.length}
-            enableTopToolBar={true}
-            enableBottomToolBar={true}
-            enablePagination={true}
-            enableColumnFilters={true}
-            enableEditing={true}
-            enableColumnDragging={true}
-            showPreview={false}
-            deleteElement={deleteMutate}
-            UpdatingForm={IngredientsForm}
-            hideFromMenu={true}
-            routeLink="ingredients"
-          />
-        )}
-      </Box>
+      <Layout>
+        <Box sx={{ p: "20px" }}>
+          {isLoading ? (
+            <Skeleton
+              sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
+              width={"100%"}
+              height={"400px"}
+            />
+          ) : (
+            <Table
+              data={ingredients?.data}
+              fields={mealIngredientColumns}
+              numberOfRows={ingredients.length}
+              enableTopToolBar={true}
+              enableBottomToolBar={true}
+              enablePagination={true}
+              enableColumnFilters={true}
+              enableEditing={true}
+              enableColumnDragging={true}
+              showPreview={false}
+              deleteElement={deleteMutate}
+              UpdatingForm={IngredientsForm}
+              hideFromMenu={true}
+              routeLink="ingredients"
+            />
+          )}
+        </Box>
+      </Layout>
     </Page>
   );
 };

@@ -1,35 +1,17 @@
 import React, { useEffect } from "react";
 import ComponentWrapper from "../../components/ComponentWrapper";
 import Table from "../../components/Table";
-import { Typography } from "@mui/material";
+import { Skeleton, Typography } from "@mui/material";
 import { request } from "../../Request/request";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import Loader from "../../components/common/loader/loader";
+import { useErrorBoundary } from "react-error-boundary";
+import InterestsIcon from "@mui/icons-material/Interests";
+import { RestoreFromTrash } from "@mui/icons-material";
 
 const TopElements = ({ columns, type, entity }) => {
-  const data1 = [
-    {
-      id: 1,
-      name: "product 1",
-      category: "pitzza",
-      rating: 4,
-    },
-    {
-      id: 2,
-      name: "product 2",
-      category: "pitzza",
-      rating: 4,
-    },
-    {
-      id: 3,
-      name: "product 3",
-      category: "pitzza",
-      rating: 4,
-    },
-  ];
-
-  const { year, month, day, branch_id } = useSelector(
+  const { dateFilter, branch_id, fromToFilter, filterState } = useSelector(
     (state) => state.settings
   );
 
@@ -44,33 +26,65 @@ const TopElements = ({ columns, type, entity }) => {
     } else if (type === "least rated products") {
       api = "/leastRequestedProduct";
     }
+
+    let data;
+
+    if (filterState === "date") {
+      data = {
+        year: dateFilter.year,
+        month: dateFilter.month,
+        day: dateFilter.day,
+      };
+
+      const filteredData = Object.keys(data).reduce((accumulator, key) => {
+        if (data[key] !== null) {
+          accumulator[key] = data[key];
+        }
+        return accumulator;
+      }, {});
+
+      data = filteredData;
+    } else if (filterState === "fromTo") {
+      data = {
+        start_date: `${fromToFilter.from.year}-${fromToFilter.from.month}-${fromToFilter.from.day}`,
+        end_date: `${fromToFilter.to.year}-${fromToFilter.to.month}-${fromToFilter.to.day}`,
+      };
+    }
+
     console.log(api);
+
     return request({
       url: `${api}/${branch_id}`,
       method: "POST",
-      data: {
-        year,
-        month,
-        day,
-      },
+      data: data,
     });
   };
 
-  const { data, isLoading, isErro, refetch } = useQuery({
-    queryKe: [`get-${type}-${entity}`],
-    queryFn: getData,
-  });
+  const { data, isLoading, isError, refetch, error, isRefetching, isSuccess } =
+    useQuery({
+      queryKe: [
+        `get-${type}-${entity}-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}`,
+      ],
+      queryFn: getData,
+    });
 
   useEffect(() => {
     refetch();
-  }, [year, month, day]);
+  }, [
+    dateFilter.year,
+    dateFilter.month,
+    dateFilter.day,
+    fromToFilter.to.year,
+    fromToFilter.to.month,
+    fromToFilter.to.day,
+    fromToFilter.from.day,
+    fromToFilter.from.year,
+    fromToFilter.from.month,
+  ]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
-  const response = data.data.data;
   const orgnizeTheResponse = (response) => {
     let data;
+
     if (
       type === "top requested products" ||
       type === "least requested products"
@@ -94,22 +108,53 @@ const TopElements = ({ columns, type, entity }) => {
     return data;
   };
 
+  if (isError) {
+    return <Typography>Error</Typography>;
+  }
+
   return (
     <ComponentWrapper>
-      <Typography variant="h5" sx={{ my: 3, textTransform: "capitalize" }}>
+      <Typography
+        variant="h6"
+        sx={{
+          my: 3,
+          textTransform: "capitalize",
+          background: "linear-gradient(to bottom, #da32f9, #629ad6)",
+          backgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          paddingLeft: "0.4rem",
+        }}
+      >
+        <InterestsIcon
+          sx={{
+            top: "0.3rem",
+            position: "relative",
+            color: "#c387f2",
+          }}
+        />{" "}
         5 {type}
       </Typography>
-      <Table
-        data={orgnizeTheResponse(response)}
-        fields={columns}
-        numberOfRows={data.data.data.length}
-        enableTopToolBar={false}
-        enableBottomToolBar={false}
-        enablePagination={false}
-        enableColumnFilters={false}
-        enableEditing={false}
-        enableColumnDragging={false}
-      />
+      {isLoading || isRefetching ? (
+        <Skeleton
+          sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
+          width={"100%"}
+          height={"280px"}
+        />
+      ) : (
+        <>
+          <Table
+            data={orgnizeTheResponse(data.data.data)}
+            fields={columns}
+            numberOfRows={data.data.data.length}
+            enableTopToolBar={false}
+            enableBottomToolBar={false}
+            enablePagination={false}
+            enableColumnFilters={false}
+            enableEditing={false}
+            enableColumnDragging={false}
+          />
+        </>
+      )}
     </ComponentWrapper>
   );
 };

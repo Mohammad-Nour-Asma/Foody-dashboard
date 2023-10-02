@@ -14,7 +14,6 @@ const SwitchForMenu = ({ productId, switchType, ...options }) => {
   };
 
   const switchState = (id) => {
-    console.log(switchType);
     return request({
       url: `${
         switchType === "categories" ? "category" : "product"

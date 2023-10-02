@@ -33,7 +33,6 @@ const Reviews = () => {
     );
   }
   const orders = data.data.data;
-  console.log(orders);
 
   return (
     <Box sx={{ pt: "100px", pb: "60px", px: "30px" }}>

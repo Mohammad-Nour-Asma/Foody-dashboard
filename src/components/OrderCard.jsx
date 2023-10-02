@@ -19,7 +19,6 @@ const OrderCard = ({ orderData, type, handlesub }) => {
   const navigate = useNavigate();
 
   const date = new Date(orderData.created_at);
-  console.log(orderData);
   return (
     <>
       <Box

@@ -8,6 +8,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import ProductIngredientForm from "../../pages/Forms/ProductIngredientForm";
+import { useDispatch, useSelector } from "react-redux";
+import { reset } from "../../redux/IngredientsSlice";
 
 const Page = ({
   title,
@@ -17,39 +19,15 @@ const Page = ({
   type,
   productIngredient,
   productExtraIngredient,
+  setOpen,
 }) => {
-  const [open, setOpen] = React.useState(false);
-
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-  console.log(productIngredient, "flag");
+  const dispatch = useDispatch();
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          Add product Ingredient
-        </DialogTitle>
-        <DialogContent>
-          <ProductIngredientForm
-            type={type}
-            productIngredient={productIngredient}
-            productExtraIngredient={productExtraIngredient}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>cancel</Button>
-        </DialogActions>
-      </Dialog>
       <Box
         sx={{
           display: "flex",
@@ -58,7 +36,16 @@ const Page = ({
           marginBottom: "16px",
         }}
       >
-        <Typography variant="h6" sx={{ marginBottom: "14px" }}>
+        <Typography
+          variant="h6"
+          sx={{
+            marginBottom: "0",
+
+            background: "linear-gradient(to bottom, #da32f9, #629ad6)",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
           {title}
         </Typography>
 
@@ -66,12 +53,16 @@ const Page = ({
           <Link to={link} style={{ textDecoration: "none" }}>
             <Button
               variant="contained"
-              color="primary"
               startIcon={<FiPlus />}
-              sx={{ borderRadius: "20px" }}
+              sx={{
+                borderRadius: "20px",
+                background:
+                  "linear-gradient(to bottom, #dd78ef, #779bc2) !important",
+              }}
               onClick={() => {
                 if (type === "extraProductIng" || type === "productIng") {
                   handleClickOpen();
+                  dispatch(reset());
                 }
               }}
             >

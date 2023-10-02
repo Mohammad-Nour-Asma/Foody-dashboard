@@ -1,22 +1,19 @@
 import styled from "@emotion/styled";
-import { Box, Grid, IconButton, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import React, { useEffect } from "react";
-import { lineChartData, lineChartOptions } from "../../../data/chartData";
-import { stats } from "../../../data/stats";
-import LineChart from "../charts/LineChart";
 import { request } from "../../../Request/request";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import Loader from "../../common/loader/loader";
-import { isPending } from "@reduxjs/toolkit";
 
 const Stats = () => {
   const Item = styled(Paper)({
-    padding: "5px 10px",
+    padding: "1rem",
     borderRadius: "12px",
     display: "flex",
-    alignItems: "center",
+    alignItems: "left",
+    background: "#ededfd",
     justifyContent: "space-between",
+    textAlign: "left",
   });
 
   const getStats = (data) => {
@@ -27,33 +24,26 @@ const Stats = () => {
     });
   };
 
-  const { year, day, month, branch_id } = useSelector(
-    (state) => state.settings
-  );
+  const { dateFilter, branch_id } = useSelector((state) => state.settings);
 
   const { mutate, isPending, data, isError } = useMutation({
-    mutationKey: [`get-${year}-${month}-${day}-statis`],
+    mutationKey: [
+      `get-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}-statis`,
+    ],
     mutationFn: getStats,
-    onSuccess: (data) => {
-      console.log(data, "success");
-    },
-    onError: (data) => {
-      console.log(data, "error");
-    },
+    onSuccess: (data) => {},
+    onError: (data) => {},
   });
 
   useEffect(() => {
     mutate({
-      year,
-      day,
-      month,
+      year: dateFilter.year,
+      day: dateFilter.day,
+      month: dateFilter.month,
       branch_id,
     });
-  }, [year, day, month]);
+  }, [dateFilter]);
 
-  if (isPending) {
-    return <Loader />;
-  }
   if (isError) {
     return <Box>Error</Box>;
   }
@@ -62,11 +52,10 @@ const Stats = () => {
   let statsArray;
 
   if (stats) statsArray = Object.keys(stats);
-  console.log(stats, statsArray);
   return (
     <Grid container spacing={2}>
-      {statsArray?.map((item, i) => (
-        <Grid item xs={12} sm={i === stats.length - 1 ? 12 : 6} lg={4} key={i}>
+      {(isPending ? Array.from(new Array(5)) : statsArray)?.map((item, i) => (
+        <Grid item xs={12} sm={i === 5 - 1 ? 12 : 6} lg={4} key={i}>
           <Item
             sx={{
               borderStyle: "solid",
@@ -76,9 +65,21 @@ const Stats = () => {
           >
             <Box sx={{ flex: 1 }}>
               {/* icon */}
-              {item.replace("_", " ").toLocaleUpperCase()}
+              {item ? (
+                item.replace("_", " ").toLocaleUpperCase()
+              ) : (
+                <Skeleton width="60%" />
+              )}
               <Typography variant="h4" sx={{ my: 2 }}>
-                {stats[item]}
+                {item ? (
+                  stats[item] ? (
+                    stats[item]
+                  ) : (
+                    0
+                  )
+                ) : (
+                  <Skeleton width="60%" />
+                )}
               </Typography>
             </Box>
           </Item>

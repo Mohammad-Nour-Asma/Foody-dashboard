@@ -1,14 +1,18 @@
-import { Box, Paper, Tab, Tabs, Grid, Typography } from "@mui/material";
-import PropTypes from "prop-types";
-import { useState } from "react";
-import Notifications from "../components/settings/Notifications";
-import Password from "../components/settings/Password";
-import Profile from "../components/settings/Profile";
-import styled from "@emotion/styled";
+import {
+  Box,
+  Paper,
+  Tab,
+  Tabs,
+  Grid,
+  Typography,
+  Skeleton,
+  Stack,
+} from "@mui/material";
+
 import { request } from "../Request/request";
 import { useQueries } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import Loader from "../components/common/loader/loader";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 
 const ServiceTiming = () => {
   const { branch_id } = useSelector((state) => state.settings);
@@ -44,38 +48,84 @@ const ServiceTiming = () => {
     ],
   });
 
-  if (result[0].isLoading || result[1].isLoading || result[2].isLoading) {
-    return <Loader />;
+  if (result[0].isError || result[1].isError || result[2].isError) {
+    return <Typography>Error</Typography>;
   }
 
-  const preparationTimeData = result[0].data.data.data;
-  const timefromDoneData = result[1].data.data.data;
-  const timeReadyData = result[2].data.data.data;
-  console.log(preparationTimeData, "rep");
+  const preparationTimeData = result[0].isLoading
+    ? []
+    : result[0].data.data.data;
+  const timefromDoneData = result[1].isLoading ? [] : result[1].data.data.data;
+  const timeReadyData = result[2].isLoading ? [] : result[2].data.data.data;
+
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
-      <Grid justifyContent={"center"} container spacing={2}>
-        <Grid item>
-          <Paper sx={{ width: "250px", background: "", padding: "2rem" }}>
-            preparation Time
+      <Stack
+        gap={0.8}
+        sx={{ marginBottom: "14px" }}
+        direction={"row"}
+        alignItems={"center"}
+      >
+        <HourglassBottomIcon
+          sx={{
+            color: "#c387f2",
+            fontSize: "1.5rem",
+            position: "relative",
+            bottom: "0.1rem",
+          }}
+          className="gradient-icon"
+        />{" "}
+        <Typography
+          sx={{
+            background: "linear-gradient(to bottom, #da32f9, #629ad6)",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+          variant="h5"
+        >
+          Service Timing
+        </Typography>
+      </Stack>
+      <Grid container spacing={2}>
+        <Grid lg={4} md={6} sm={12} item>
+          <Paper sx={{ background: "#ededfd", padding: "2rem" }}>
+            Preparation Time
             <Typography fontWeight={"bold"} fontSize={"1.4rem"}>
-              {preparationTimeData ? preparationTimeData : "no orders"}
+              {result[0].isLoading ? (
+                <Skeleton width={"55%"} />
+              ) : preparationTimeData ? (
+                preparationTimeData
+              ) : (
+                "no orders"
+              )}
             </Typography>
           </Paper>
         </Grid>
-        <Grid item>
-          <Paper sx={{ width: "250px", background: "", padding: "2rem" }}>
-            time from Done
+        <Grid lg={4} md={6} sm={12} item>
+          <Paper sx={{ background: "#ededfd", padding: "2rem" }}>
+            Time from Done
             <Typography fontWeight={"bold"} fontSize={"1.4rem"}>
-              {timefromDoneData ? timefromDoneData : "no orders"}
+              {result[0].isLoading ? (
+                <Skeleton width={"55%"} />
+              ) : timefromDoneData ? (
+                timefromDoneData
+              ) : (
+                "no orders"
+              )}
             </Typography>
           </Paper>
         </Grid>
-        <Grid item>
-          <Paper sx={{ width: "250px", background: "", padding: "2rem" }}>
-            timeReady
+        <Grid lg={4} md={6} sm={12} item>
+          <Paper sx={{ background: "#ededfd", padding: "2rem" }}>
+            Time Ready
             <Typography fontWeight={"bold"} fontSize={"1.4rem"}>
-              {timeReadyData ? timeReadyData : "no orders"}
+              {result[0].isLoading ? (
+                <Skeleton width={"55%"} />
+              ) : timeReadyData ? (
+                timeReadyData
+              ) : (
+                "no orders"
+              )}
             </Typography>
           </Paper>
         </Grid>

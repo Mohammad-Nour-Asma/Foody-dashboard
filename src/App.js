@@ -29,6 +29,8 @@ import AddCategory from "./pages/AddCategory";
 import ExtraIngredients from "./pages/ExtraIngredients";
 import AddExtra from "./pages/AddExtra";
 import ServiceTiming from "./pages/ServiceTiming";
+import { ErrorBoundary } from "react-error-boundary";
+import ExpandedTable from "./components/common/IngredientsInput";
 
 const sideBarWidth = 250;
 
@@ -81,7 +83,7 @@ function App() {
 
             <Route path="/customers" element={<Customers />} />
             <Route path="/customers/:id" element={<SingleCustomer />} />
-            <Route path="/sales/analysis" element={<SalesAnalytics />} />
+
             <Route path="/sales" element={<ProductSales />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/orders/template" element={<OrderTemplate />} />
@@ -110,8 +112,6 @@ function App() {
 
             {/* Service Timing */}
             <Route path="/extra/add" element={<AddExtra />} />
-
-            <Route path="/service-timing" element={<ServiceTiming />} />
           </Routes>
         </Box>
       </Box>

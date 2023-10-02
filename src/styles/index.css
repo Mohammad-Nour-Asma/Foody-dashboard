@@ -89,7 +89,7 @@ label {
 }
 
 a.active > .linkBtn {
-  background-color: #172032 !important;
+  background-color: #e5edff !important;
   position: relative;
 }
 
@@ -100,7 +100,7 @@ a.active > .linkBtn::before {
   width: 5px;
   left: 0;
   top: 0;
-  background-color: #027edd;
+  background: linear-gradient(to bottom, #da32f9, #629ad6);
 }
 
 .link {
@@ -130,4 +130,12 @@ span.Cancelled {
   .hide-scrollbar::-webkit-scrollbar {
     display: block;
   }
+}
+
+
+.gradient-icon {
+  background: -webkit-linear-gradient( to bottom ,#da32f9, #629ad6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 2rem;
 }

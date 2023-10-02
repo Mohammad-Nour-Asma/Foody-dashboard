@@ -98,7 +98,6 @@ const CategoryForm = ({ row }) => {
 
   // Updating
   const updateCategoryRequest = (data) => {
-    console.log(data, "upload datat");
     return request({
       url: `category/${row.original.id}`,
       headers: {
@@ -123,7 +122,6 @@ const CategoryForm = ({ row }) => {
       row.original.position = newCat.position;
     },
     onError: (err) => {
-      console.log(err);
       setOpen(true);
     },
   });

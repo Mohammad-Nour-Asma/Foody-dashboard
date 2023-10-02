@@ -1,27 +1,21 @@
-import { BsCurrencyDollar } from "react-icons/bs";
-import { FaHandshake, FaShare } from "react-icons/fa";
-import { MdOutlineLocalOffer } from "react-icons/md";
-
-import {
-  FiHome,
-  FiLayers,
-  FiMail,
-  FiMessageCircle,
-  FiSettings,
-  FiShoppingBag,
-  FiShoppingCart,
-  FiUsers,
-} from "react-icons/fi";
+import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
+import SoupKitchenIcon from "@mui/icons-material/SoupKitchen";
+import { GiCoolSpices } from "react-icons/gi";
+import FastfoodIcon from "@mui/icons-material/Fastfood";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import RateReviewIcon from "@mui/icons-material/RateReview";
+import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 
 export const links = [
   {
     name: "Dashboard",
-    icon: <FiHome />,
+    icon: <SpaceDashboardIcon />,
     url: "/Dashboard",
   },
   {
     name: "Ingredients in wearhouse",
-    icon: <FiShoppingBag />,
+    icon: <SoupKitchenIcon />,
     subLinks: [
       {
         name: "All Ingredients",
@@ -35,7 +29,7 @@ export const links = [
   },
   {
     name: "Extra ingredients",
-    icon: <FiShoppingBag />,
+    icon: <GiCoolSpices />,
     subLinks: [
       {
         name: "All extra ",
@@ -49,7 +43,7 @@ export const links = [
   },
   {
     name: "Categories",
-    icon: <FiShoppingBag />,
+    icon: <FastfoodIcon />,
     subLinks: [
       {
         name: "All Categories",
@@ -63,7 +57,7 @@ export const links = [
   },
   {
     name: "Products",
-    icon: <FiShoppingBag />,
+    icon: <RestaurantIcon />,
     subLinks: [
       {
         name: "All Products",
@@ -77,22 +71,8 @@ export const links = [
   },
 
   {
-    name: "Sales",
-    icon: <BsCurrencyDollar />,
-    subLinks: [
-      {
-        name: "Sales Analytics",
-        url: "/sales/analysis",
-      },
-      // {
-      //   name: "Product Sales",
-      //   url: "/sales",
-      // },
-    ],
-  },
-  {
     name: "Offers",
-    icon: <MdOutlineLocalOffer />,
+    icon: <MenuBookIcon />,
     subLinks: [
       {
         name: "All Offers",
@@ -104,26 +84,10 @@ export const links = [
       },
     ],
   },
-  // {
-  //   name: "Orders",
-  //   icon: <FiShoppingCart />,
-  //   subLinks: [
-  //     {
-  //       name: "All Orders",
-  //       url: "/orders",
-  //     },
-  //   ],
-  // },
 
   {
     name: "Reviews",
-    icon: <FiMessageCircle />,
+    icon: <RateReviewIcon />,
     url: "/reviews",
-  },
-
-  {
-    name: "Service Timing",
-    icon: <FiSettings />,
-    url: "/service-timing",
   },
 ];

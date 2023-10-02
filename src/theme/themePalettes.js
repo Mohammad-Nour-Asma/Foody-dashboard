@@ -2,7 +2,7 @@ import { blue, grey } from "@mui/material/colors";
 
 export const getDesignTokens = (mode) => ({
   palette: {
-    mode,
+    mode: "light",
     primary: {
       main: blue[600],
     },
@@ -24,7 +24,7 @@ export const getDesignTokens = (mode) => ({
       green: "#22c38f",
     },
 
-    ...(mode === "light"
+    ...("light" === "light"
       ? {
           // palette values for light mode
           background: {

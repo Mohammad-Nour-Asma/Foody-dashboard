@@ -10,6 +10,8 @@ import {
 } from "../data/Ingredients";
 import Table from "../components/Table";
 import Page from "../components/common/Page";
+import ProductIngredients from "../components/common/ٍSingle Meal Components/ProductIngredients";
+import ProductExtraIngredients from "../components/common/ٍSingle Meal Components/ProductExtraIngredients";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -18,26 +20,13 @@ const SingleProduct = () => {
     return request({ url: `product/${id}` });
   };
 
-  const { data, isLoading, isError, isSuccess } = useQuery({
+  const { data, isLoading, isError, isSuccess, refetch } = useQuery({
     queryKey: ["get-product-details"],
     queryFn: getProductDetails,
   });
 
   let productDetails;
   if (isSuccess) productDetails = data?.data.data;
-
-  // const getProdcutRate = () => {
-  //   return request({
-  //     url: `show_rating/${id}`,
-  //   });
-  // };
-  // const rating = useQuery({
-  //   queryKey: [`get-${id}-rate`],
-  //   queryFn: getProdcutRate,
-  // });
-
-  // const rate = rating?.data?.data.data.value;
-  // console.log(rate);
 
   if (isLoading) {
     return (
@@ -49,9 +38,6 @@ const SingleProduct = () => {
 
   const extra = productDetails.extra_ingredients;
   const ingredients = productDetails.ingredients;
-
-  console.log(extra, ingredients);
-
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
       <Typography variant="h4">Product Details</Typography>
@@ -66,6 +52,7 @@ const SingleProduct = () => {
             borderWidth: "1px",
             borderColor: "divider",
             p: "20px",
+            background: "rgba(129, 139, 156, 0.1)",
           }}
         >
           <Grid container spacing={3}>
@@ -92,58 +79,16 @@ const SingleProduct = () => {
                 sx={{ display: "flex", alignItems: "center", gap: 4, my: 2 }}
               >
                 <Typography variant="subtitle2">Category</Typography>
-                <Chip label={productDetails?.category.name} />
+                <Chip label={productDetails?.category?.name} />
               </Box>
             </Grid>
           </Grid>
         </Paper>
       )}
-      <Page
-        title={"product ingredients"}
-        type={"productIng"}
-        link={""}
-        button={"add ingredient"}
-        productIngredient={ingredients}
-        productExtraIngredient={extra}
-      >
-        <Paper my={"1rem"}>
-          <Table
-            data={ingredients}
-            fields={productIngredientColumns}
-            numberOfRows={ingredients.length}
-            enableTopToolBar={true}
-            enableBottomToolBar={true}
-            enablePagination={true}
-            enableColumnFilters={true}
-            enableColumnDragging={true}
-            showPreview={false}
-            hideFromMenu={true}
-          />
-        </Paper>
-      </Page>
-      <Page
-        title={"product extra ingredients"}
-        link={""}
-        button={"add extra ingredient"}
-        productIngredient={ingredients}
-        type={"extraProductIng"}
-        productExtraIngredient={extra}
-      >
-        <Paper my={"1rem"}>
-          <Table
-            data={extra}
-            fields={ingredientColumns}
-            numberOfRows={extra.length}
-            enableTopToolBar={true}
-            enableBottomToolBar={true}
-            enablePagination={true}
-            enableColumnFilters={true}
-            enableColumnDragging={true}
-            showPreview={false}
-            hideFromMenu={true}
-          />
-        </Paper>
-      </Page>
+
+      <ProductIngredients refetch={refetch} ingredients={ingredients} />
+
+      <ProductExtraIngredients extra={extra} />
     </Box>
   );
 };

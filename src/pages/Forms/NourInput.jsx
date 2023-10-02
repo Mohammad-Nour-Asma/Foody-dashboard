@@ -33,7 +33,6 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
         components[index]?.id !== 0)
     ) {
       setValidate(false);
-      console.log(data[0].id, "data");
       setComponents((prev) => {
         let id;
         if (data.length > 0) id = data[0].id;
@@ -47,10 +46,8 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
   };
 
   const setIng = (value, index) => {
-    console.log(value, index);
-    console.log(components[index]);
     components[index].id = value;
-    console.log(components, "hellow");
+
     setComponents(components);
   };
 
@@ -59,12 +56,10 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
   };
 
   const deleteInput = (index) => {
-    console.log(index, "index");
     const filtered = components.filter((item, index1) => {
       return index1 !== index;
     });
 
-    console.log(filtered, "filterd");
     setComponents((prev) => {
       const filtered = prev.filter((item, index1) => {
         return index1 !== index;
@@ -73,7 +68,6 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
     });
   };
 
-  console.log(components, "comp");
   return (
     <Box
       sx={{
@@ -136,7 +130,6 @@ const NourInput = ({ data, title, buttonTitle, setValues, initialValues }) => {
                   label="Ingredient"
                   value={item.id}
                   onChange={(event) => {
-                    console.log("red");
                     setIng(event.target.value, index);
                   }}
                 >

@@ -4,12 +4,10 @@ import Layout from "../components/common/Layout";
 import Table from "../components/Table";
 import { extraIngredientsColumns } from "../data/Ingredients";
 
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Skeleton, Typography } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { request } from "../Request/request";
-import Loader from "../components/common/loader/loader";
 import Notify from "../components/common/Notify";
-import IngredientsForm from "./Forms/IngredientsForm";
 import ExtraForm from "./Forms/ExtraForm";
 import { useSelector } from "react-redux";
 
@@ -52,27 +50,33 @@ const ExtraIngredients = () => {
         open={open}
         handleClose={handleClose}
       />
-      <Box sx={{ pb: "20px" }}>
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <Table
-            data={ingredients?.data}
-            fields={extraIngredientsColumns}
-            numberOfRows={ingredients.length}
-            enableTopToolBar={true}
-            enableBottomToolBar={true}
-            enablePagination={true}
-            enableColumnFilters={true}
-            enableEditing={true}
-            enableColumnDragging={true}
-            showPreview={false}
-            deleteElement={deleteMutate}
-            UpdatingForm={ExtraForm}
-            routeLink="extraIngredients"
-          />
-        )}
-      </Box>
+      <Layout>
+        <Box sx={{ pb: "20px" }}>
+          {isLoading ? (
+            <Skeleton
+              sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
+              width={"100%"}
+              height={"400px"}
+            />
+          ) : (
+            <Table
+              data={ingredients?.data}
+              fields={extraIngredientsColumns}
+              numberOfRows={ingredients.length}
+              enableTopToolBar={true}
+              enableBottomToolBar={true}
+              enablePagination={true}
+              enableColumnFilters={true}
+              enableEditing={true}
+              enableColumnDragging={true}
+              showPreview={false}
+              deleteElement={deleteMutate}
+              UpdatingForm={ExtraForm}
+              routeLink="extraIngredients"
+            />
+          )}
+        </Box>
+      </Layout>
     </Page>
   );
 };

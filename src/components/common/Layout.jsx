@@ -10,9 +10,9 @@ const Layout = (props) => {
         borderWidth: "1px",
         borderColor: "divider",
         p: "20px",
-        maxWidth: "800px",
+        maxWidth: "80%",
         margin: "0 auto",
-        cursor: "pointer",
+
         overflow: "hidden",
       }}
     >

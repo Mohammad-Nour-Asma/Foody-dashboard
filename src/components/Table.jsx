@@ -58,7 +58,6 @@ export const Table = ({
     setOpen({ type, open: true, row: row });
   };
 
-  console.log(data, "from table");
   return (
     <>
       {" "}

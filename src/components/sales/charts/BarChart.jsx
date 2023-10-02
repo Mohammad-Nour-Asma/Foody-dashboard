@@ -10,8 +10,6 @@ import React, { useEffect } from "react";
 import Loader from "../../common/loader/loader";
 
 const BarChart = ({ data }) => {
-  console.log(data, "from chart");
-
   const orginizeData = (data) => {
     let arr = new Array(12).fill(0);
     data.forEach((element) => {
@@ -24,7 +22,6 @@ const BarChart = ({ data }) => {
     return charTData;
   };
   const cahrtData = orginizeData(data);
-  console.log(cahrtData);
   return (
     <Paper
       sx={{

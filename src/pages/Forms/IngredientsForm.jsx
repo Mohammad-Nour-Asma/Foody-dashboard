@@ -10,9 +10,11 @@ import styled from "@emotion/styled";
 import Notify from "../../components/common/Notify";
 import Price from "../../components/common/Price";
 import { useMutation } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
 const IngredientsForm = ({ row }) => {
   const [updatedIng, setUpdatedIng] = useState({});
+  const { branch_id } = useSelector((state) => state.settings);
 
   let initialValues = { name: "", quantity: "", name_ar: "" };
   if (row) {
@@ -30,7 +32,8 @@ const IngredientsForm = ({ row }) => {
         name: values.name,
         name_ar: values.name_ar,
         total_quantity: values.quantity,
-        branch_id: localStorage.getItem("branch_id"),
+        threshold: values.threshold,
+        branch_id: branch_id,
       };
 
       setUpdatedIng(dataToSend);
@@ -41,7 +44,8 @@ const IngredientsForm = ({ row }) => {
         name: values.name,
         name_ar: values.name_ar,
         total_quantity: values.quantity,
-        branch_id: localStorage.getItem("branch_id"),
+        threshold: values.threshold,
+        branch_id: branch_id,
       };
       storeIngredient.mutate(data);
     }
@@ -64,7 +68,6 @@ const IngredientsForm = ({ row }) => {
       setOpen(true);
     },
     onError: (err) => {
-      console.log(err);
       setOpen(true);
     },
   });
@@ -89,15 +92,12 @@ const IngredientsForm = ({ row }) => {
     mutationFn: updateIngredientRequest,
     onSuccess: (data) => {
       const newIng = data.data.data;
-      console.log("success");
       setOpen(true);
-
       row.original.name = newIng.name;
       row.original.name_ar = newIng.name_ar;
       row.original.total_quantity = newIng.total_quantity;
     },
     onError: (err) => {
-      console.log(err);
       setOpen(true);
     },
   });
@@ -185,6 +185,19 @@ const IngredientsForm = ({ row }) => {
                 helperText={touched.quantity && errors.quantity}
                 onChange={handleChange}
                 value={values.quantity}
+              />
+            </Box>
+            <Box sx={{ my: 2 }}>
+              <TextField
+                name="threshold"
+                label="Threshold"
+                fullWidth
+                handleChange={handleChange}
+                onBlur={handleBlur}
+                error={!!touched.threshold && !!errors.threshold}
+                helperText={touched.threshold && errors.threshold}
+                onChange={handleChange}
+                value={values.threshold}
               />
             </Box>
             <Stack sx={{ my: 2 }}>
