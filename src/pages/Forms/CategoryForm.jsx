@@ -9,6 +9,7 @@ import MyLoadingButton from "../../components/common/LoadingButton";
 import { Formik } from "formik";
 import { categoryValidation } from "../../validations/categoryValidation";
 import Notify from "../../components/common/Notify";
+import { useNavigate } from "react-router-dom";
 const CategoryForm = ({ row }) => {
   let initialValues = { name: "", position: "" };
   if (row) {
@@ -50,6 +51,7 @@ const CategoryForm = ({ row }) => {
       },
     });
   };
+  const navigate = useNavigate();
 
   const addCategory = useMutation({
     mutationFn: storeCategory,
@@ -59,6 +61,7 @@ const CategoryForm = ({ row }) => {
     },
     onSuccess: () => {
       setOpen(true);
+      navigate("/categories");
     },
   });
 

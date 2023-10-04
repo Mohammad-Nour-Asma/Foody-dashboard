@@ -11,7 +11,10 @@ export const WarningSlice = createSlice({
     setWarningTrue: (state) => {
       state.warning = true;
     },
+    setWarningFalse: (state) => {
+      state.warning = false;
+    },
   },
 });
 
-export const { setWarningTrue } = WarningSlice.actions;
+export const { setWarningTrue, setWarningFalse } = WarningSlice.actions;

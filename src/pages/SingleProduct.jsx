@@ -20,10 +20,11 @@ const SingleProduct = () => {
     return request({ url: `product/${id}` });
   };
 
-  const { data, isLoading, isError, isSuccess, refetch } = useQuery({
-    queryKey: ["get-product-details"],
-    queryFn: getProductDetails,
-  });
+  const { data, isLoading, isError, isSuccess, refetch, isRefetching } =
+    useQuery({
+      queryKey: [`get-product-details-${id}`],
+      queryFn: getProductDetails,
+    });
 
   let productDetails;
   if (isSuccess) productDetails = data?.data.data;
@@ -86,9 +87,17 @@ const SingleProduct = () => {
         </Paper>
       )}
 
-      <ProductIngredients refetch={refetch} ingredients={ingredients} />
+      <ProductIngredients
+        isRefetching={isRefetching}
+        refetch={refetch}
+        ingredients={ingredients}
+      />
 
-      <ProductExtraIngredients extra={extra} />
+      <ProductExtraIngredients
+        isRefetching={isRefetching}
+        refetch={refetch}
+        extra={extra}
+      />
     </Box>
   );
 };

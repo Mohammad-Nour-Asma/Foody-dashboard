@@ -3,14 +3,22 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   dateFilter: {
     year: new Date().getFullYear(),
-    month: null,
-    day: null,
+    month: new Date().getMonth() + 1,
+    day: new Date().getDay() + 1,
   },
   fromToFilter: {
-    from: { year: null, month: null, day: null },
-    to: { year: null, month: null, day: null },
+    from: {
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      day: new Date().getDay() + 1,
+    },
+    to: {
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      day: new Date().getDay() + 1,
+    },
   },
-  filterState: "fromTo",
+  filterState: "date",
   branch_id: localStorage.getItem("branch_id"),
   restaurant_id: localStorage.getItem("restaurant_id"),
 };

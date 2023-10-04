@@ -15,6 +15,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useSelector } from "react-redux";
 
 export const Table = ({
@@ -35,6 +36,7 @@ export const Table = ({
   hideFromMenu,
   UpdatingForm,
   refetch,
+  AddAmountsForm,
 }) => {
   const columns = useMemo(() => fields, []);
 
@@ -73,6 +75,17 @@ export const Table = ({
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 Are you sure you want to delete the element ?
+              </DialogContentText>
+            </DialogContent>
+          </>
+        ) : open.type == "amounts" ? (
+          <>
+            <DialogTitle id="alert-dialog-title">{"Add Amounts"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                {AddAmountsForm && (
+                  <AddAmountsForm refetch={refetch} row={open.row} />
+                )}
               </DialogContentText>
             </DialogContent>
           </>
@@ -150,7 +163,20 @@ export const Table = ({
                   </Link>
                 </Tooltip>
               )}
-              {enableEditing && (
+              {routeLink === "ingredients" && (
+                <Tooltip arrow placement="right" title="Add Amounts">
+                  <Link>
+                    <IconButton
+                      onClick={() => {
+                        handleOpen("amounts", row);
+                      }}
+                    >
+                      <ControlPointIcon />
+                    </IconButton>
+                  </Link>
+                </Tooltip>
+              )}
+              {enableEditing && routeLink !== "productExtra" && (
                 <Tooltip arrow placement="right" title="Edit">
                   <IconButton
                     onClick={() => {

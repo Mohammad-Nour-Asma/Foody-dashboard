@@ -1,5 +1,3 @@
-import Chip from "@mui/material/Chip";
-import DoneIcon from "@mui/icons-material/Done";
 import Typography from "@mui/material/Typography/Typography";
 import { red } from "@mui/material/colors";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -50,40 +48,6 @@ export const mealIngredientColumns = [
   {
     accessorKey: "threshold", //access nested data with dot notation
     header: "Threshold",
-  },
-];
-export const productIngredientColumns = [
-  {
-    accessorKey: "name", //access nested data with dot notation
-    header: "Name",
-  },
-  {
-    accessorKey: "name_ar", //access nested data with dot notation
-    header: "Arabic Name",
-  },
-  {
-    accessorKey: "pivot.quantity", //access nested data with dot notation
-    header: "Quantity",
-  },
-  {
-    accessorKey: "pivot.is_remove", //access nested data with dot notation
-    header: "Removed",
-    Cell: ({ cell }) => {
-      if (cell.getValue() == 1) {
-        return (
-          <Chip
-            variant="outlined"
-            color="success"
-            deleteIcon={<DoneIcon />}
-            label={"removed"}
-          />
-        );
-      } else {
-        return (
-          <Chip label={"not removed"} variant="outlined" color="secondary" />
-        );
-      }
-    },
   },
 ];
 

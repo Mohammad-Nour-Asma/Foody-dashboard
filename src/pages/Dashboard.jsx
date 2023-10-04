@@ -13,6 +13,7 @@ import SalesAnalytics from "./SalesAnalytics";
 import ServiceTiming from "./ServiceTiming";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import Filter from "../components/common/Dashboard/Filter";
+import WaiterCount from "./Dashboard Components/WaiterCount";
 
 const ratedColumns = [
   {
@@ -59,6 +60,8 @@ const Dashboard = () => {
 
       <ServiceTiming />
       <SalesAnalytics />
+      <WaiterCount />
+
       <Stack
         gap={0.8}
         sx={{ marginBottom: "-1.33rem" }}
@@ -85,6 +88,7 @@ const Dashboard = () => {
           Products
         </Typography>
       </Stack>
+
       <FiveElements
         entity={"products"}
         type={"top requested products"}

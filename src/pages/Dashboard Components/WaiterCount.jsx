@@ -1,27 +1,12 @@
-import React, { useEffect } from "react";
-import ComponentWrapper from "../../components/ComponentWrapper";
+import { Box, Skeleton, Typography } from "@mui/material";
 import Table from "../../components/Table";
-import { Skeleton, Typography } from "@mui/material";
-import { request } from "../../Request/request";
 import { useQuery } from "@tanstack/react-query";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import Loader from "../../components/common/loader/loader";
-import { useErrorBoundary } from "react-error-boundary";
-import InterestsIcon from "@mui/icons-material/Interests";
-import { RestoreFromTrash } from "@mui/icons-material";
+import ComponentWrapper from "../../components/ComponentWrapper";
+import { request } from "../../Request/request";
 
-const TopElements = ({ columns, type, entity }) => {
-  let api;
-  if (type === "top requested products") {
-    api = "/mostRequestedProduct";
-  } else if (type === "least requested products") {
-    api = "/leastRequestedProduct";
-  } else if (type === "top rated products") {
-    api = "/mostRatedProduct";
-  } else if (type === "least rated products") {
-    api = "/leastRequestedProduct";
-  }
-
+const WaiterCount = () => {
   const { dateFilter, branch_id, fromToFilter, filterState } = useSelector(
     (state) => state.settings
   );
@@ -51,10 +36,8 @@ const TopElements = ({ columns, type, entity }) => {
       };
     }
 
-    console.log(api);
-
     return request({
-      url: `${api}/${branch_id}`,
+      url: `waiter/countTables/1`,
       method: "POST",
       data: data,
     });
@@ -63,9 +46,11 @@ const TopElements = ({ columns, type, entity }) => {
   const { data, isLoading, isError, refetch, error, isRefetching, isSuccess } =
     useQuery({
       queryKey: [
-        `get-hello-world${type}-${entity}-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}`,
+        `getWaiter-${branch_id}-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}`,
       ],
       queryFn: getData,
+      staleTime: Infinity,
+      cacheTime: 0,
     });
 
   useEffect(() => {
@@ -84,40 +69,6 @@ const TopElements = ({ columns, type, entity }) => {
     filterState,
   ]);
 
-  const orgnizeTheResponse = (response) => {
-    console.log(response, " data");
-    let data;
-    if (
-      type === "top requested products" ||
-      type === "least requested products"
-    ) {
-      data = response.map((item) => {
-        return {
-          name: item.product.name,
-          category: item.product.category.name,
-          total: item.total,
-        };
-      });
-    } else {
-      data = response.map((item) => {
-        return {
-          name: item.product.name,
-          category: item.product.category.name,
-          rate: item.product.AvgRating,
-        };
-      });
-    }
-    return data;
-  };
-
-  if (isError) {
-    return <Typography>Error</Typography>;
-  }
-
-  if (isSuccess) {
-    console.log(data, "data");
-  }
-
   return (
     <ComponentWrapper>
       <Typography
@@ -131,14 +82,14 @@ const TopElements = ({ columns, type, entity }) => {
           paddingLeft: "0.4rem",
         }}
       >
-        <InterestsIcon
+        {/* <InterestsIcon
           sx={{
             top: "0.3rem",
             position: "relative",
             color: "#c387f2",
           }}
-        />{" "}
-        5 {type}
+        />{" "} */}
+        Waiters Overview
       </Typography>
       {isLoading || isRefetching ? (
         <Skeleton
@@ -147,11 +98,11 @@ const TopElements = ({ columns, type, entity }) => {
           height={"280px"}
         />
       ) : (
-        <>
+        <Box pb={"1rem"}>
           <Table
-            data={orgnizeTheResponse(data?.data?.data)}
-            fields={columns}
-            numberOfRows={data.data.data.length}
+            data={data?.data?.data}
+            fields={waiterColumn}
+            numberOfRows={data?.data?.data.length}
             enableTopToolBar={false}
             enableBottomToolBar={false}
             enablePagination={false}
@@ -159,10 +110,25 @@ const TopElements = ({ columns, type, entity }) => {
             enableEditing={false}
             enableColumnDragging={false}
           />
-        </>
+        </Box>
       )}
     </ComponentWrapper>
   );
 };
 
-export default TopElements;
+export default WaiterCount;
+
+const waiterColumn = [
+  {
+    accessorKey: "waiter_name",
+    header: "Waiter Name",
+  },
+  {
+    accessorKey: "num_tables_served",
+    header: "Table that served",
+  },
+  {
+    accessorKey: "avg_time_diff",
+    header: "avg time diff",
+  },
+];

@@ -15,20 +15,22 @@ import Loader from "../components/common/loader/loader";
 import Notify from "../components/common/Notify";
 import IngredientsForm from "./Forms/IngredientsForm";
 import { useDispatch, useSelector } from "react-redux";
-import { setWarningTrue } from "../redux/WarningSlice";
+import { setWarningFalse, setWarningTrue } from "../redux/WarningSlice";
+import AddAmountsForm from "./Forms/AddAmountsForm";
 
 const Ingredients = () => {
   const { branch_id } = useSelector((state) => state.settings);
   const dispatch = useDispatch();
-  const { data, isLoading, isError, refetch, isSuccess } = useQuery({
-    queryKey: [`ingredients-get-${branch_id}`],
-    queryFn: () => {
-      return request({
-        url: `/ingredient/branch/${branch_id}`,
-        method: "GET",
-      });
-    },
-  });
+  const { data, isLoading, isError, refetch, isSuccess, isRefetching } =
+    useQuery({
+      queryKey: [`ingredients-get-${branch_id}`],
+      queryFn: () => {
+        return request({
+          url: `/ingredient/branch/${branch_id}`,
+          method: "GET",
+        });
+      },
+    });
 
   const ingredients = data?.data;
   const deleteProduct = (id) => {
@@ -55,9 +57,10 @@ const Ingredients = () => {
   }, [branch_id]);
 
   if (isSuccess) {
+    dispatch(setWarningFalse());
+
     data.data.data.forEach((element) => {
       if (element.threshold >= element.total_quantity) {
-        console.log("hello");
         dispatch(setWarningTrue());
         return true; // stops the loop
       }
@@ -78,7 +81,7 @@ const Ingredients = () => {
       />
       <Layout>
         <Box sx={{ p: "20px" }}>
-          {isLoading ? (
+          {isLoading || isRefetching ? (
             <Skeleton
               sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
               width={"100%"}
@@ -99,6 +102,8 @@ const Ingredients = () => {
               deleteElement={deleteMutate}
               UpdatingForm={IngredientsForm}
               hideFromMenu={true}
+              refetch={refetch}
+              AddAmountsForm={AddAmountsForm}
               routeLink="ingredients"
             />
           )}

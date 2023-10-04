@@ -39,6 +39,8 @@ const SalesAnalytics = () => {
   const totalSales = useQuery({
     queryKey: [`maxSalels-${branch_id}`],
     queryFn: totalSalseRequest,
+    staleTime: Infinity,
+    cacheTime: 0,
   });
 
   const getMonths = (data) => {
@@ -79,9 +81,12 @@ const SalesAnalytics = () => {
     isLoading,
     isErro,
     refetch,
+    isRefetching,
   } = useQuery({
-    queryKe: [`get-peakTimes-${dateFilter.year}-${dateFilter.month}`],
+    queryKey: [`get-peakTimes-${dateFilter.year}-${dateFilter.month}`],
     queryFn: getData,
+    staleTime: Infinity,
+    cacheTime: 0,
   });
 
   useEffect(() => {
@@ -90,7 +95,7 @@ const SalesAnalytics = () => {
 
   useEffect(() => {
     totalSales.refetch();
-  }, [dateFilter]);
+  }, [dateFilter.year, branch_id]);
 
   // initiate the line data
 
@@ -135,7 +140,10 @@ const SalesAnalytics = () => {
       <ComponentWrapper>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={6}>
-            {isLoading || totalSales.isLoading ? (
+            {isLoading ||
+            totalSales.isLoading ||
+            isRefetching ||
+            totalSales.isRefetching ? (
               <Skeleton
                 sx={{ bottom: "80px", position: "relative" }}
                 width={"100%"}
@@ -149,7 +157,10 @@ const SalesAnalytics = () => {
             )}
           </Grid>
           <Grid item xs={12} md={6} lg={6}>
-            {isLoading || totalSales.isLoading ? (
+            {isLoading ||
+            totalSales.isLoading ||
+            isRefetching ||
+            totalSales.isRefetching ? (
               <Skeleton
                 sx={{ bottom: "80px", position: "relative" }}
                 width={"100%"}

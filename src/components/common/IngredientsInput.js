@@ -35,7 +35,7 @@ const orgnizer = (array) => {
   return [];
 };
 
-const ExpandedTable = ({ data, type, refetch }) => {
+const ExpandedTable = ({ data, type, refetch, setOpen }) => {
   const { ingredients, open } = useSelector((state) => state.ingredients);
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -68,6 +68,8 @@ const ExpandedTable = ({ data, type, refetch }) => {
     },
     onSuccess: (res) => {
       refetch();
+      console.log(res, "refetched");
+      setOpen(false);
     },
   });
 

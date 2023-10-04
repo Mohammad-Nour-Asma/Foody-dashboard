@@ -14,6 +14,18 @@ import { useQueries } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 
+function decimalToTime(decimalNumber) {
+  const hours = Math.floor(decimalNumber);
+  const minutes = Math.floor((decimalNumber - hours) * 60);
+  const seconds = Math.floor(((decimalNumber - hours) * 60 - minutes) * 60);
+
+  const formattedHours = hours.toString().padStart(2, "0");
+  const formattedMinutes = minutes.toString().padStart(2, "0");
+  const formattedSeconds = seconds.toString().padStart(2, "0");
+
+  return ` ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+}
+
 const ServiceTiming = () => {
   const { branch_id } = useSelector((state) => state.settings);
   const preparationTime = () => {
@@ -94,7 +106,7 @@ const ServiceTiming = () => {
               {result[0].isLoading ? (
                 <Skeleton width={"55%"} />
               ) : preparationTimeData ? (
-                preparationTimeData
+                decimalToTime(preparationTimeData)
               ) : (
                 "no orders"
               )}
@@ -108,7 +120,7 @@ const ServiceTiming = () => {
               {result[0].isLoading ? (
                 <Skeleton width={"55%"} />
               ) : timefromDoneData ? (
-                timefromDoneData
+                decimalToTime(timefromDoneData)
               ) : (
                 "no orders"
               )}
@@ -122,7 +134,7 @@ const ServiceTiming = () => {
               {result[0].isLoading ? (
                 <Skeleton width={"55%"} />
               ) : timeReadyData ? (
-                timeReadyData
+                decimalToTime(timeReadyData)
               ) : (
                 "no orders"
               )}

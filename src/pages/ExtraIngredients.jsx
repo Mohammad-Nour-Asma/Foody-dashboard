@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 const ExtraIngredients = () => {
   const { branch_id } = useSelector((state) => state.settings);
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["extra-ingredients-get"],
+    queryKey: [`Extraingredients-get-${branch_id}`],
     queryFn: () => {
       return request({
         url: `/extraIng/branch/${branch_id}`,

@@ -2,24 +2,95 @@ import React, { useState } from "react";
 import Page from "../Page";
 import { productIngredientColumns } from "../../../data/Ingredients";
 import Table from "../../Table";
-import { Paper, Button, Skeleton } from "@mui/material";
+import { Paper, Button, Skeleton, Tooltip, IconButton } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import ExpandedTable from "../IngredientsInput";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { request } from "../../../Request/request";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import Chip from "@mui/material/Chip";
+import DoneIcon from "@mui/icons-material/Done";
 
-const ProductIngredients = ({ ingredients, refetch }) => {
+const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
   const [open, setOpen] = useState(false);
   const { branch_id } = useSelector((state) => state.settings);
+
+  const productIngredientColumns = [
+    {
+      accessorKey: "name", //access nested data with dot notation
+      header: "Name",
+    },
+    {
+      accessorKey: "name_ar", //access nested data with dot notation
+      header: "Arabic Name",
+    },
+    {
+      accessorKey: "pivot.quantity", //access nested data with dot notation
+      header: "Quantity",
+    },
+    {
+      accessorKey: "pivot.is_remove", //access nested data with dot notation
+      header: "Removed",
+      Cell: ({ cell }) => {
+        if (cell.getValue() == 1) {
+          return (
+            <Tooltip arrow placement="right" title="Toggle state">
+              <IconButton
+                color="error"
+                onClick={() => {
+                  toggleMutate.mutate(cell.row.original.id);
+                }}
+              >
+                <Chip
+                  variant="outlined"
+                  color="success"
+                  deleteIcon={<DoneIcon />}
+                  label={"removed"}
+                />
+              </IconButton>
+            </Tooltip>
+          );
+        } else {
+          return (
+            <Tooltip arrow placement="right" title="Toggle state">
+              <IconButton
+                color="error"
+                onClick={() => {
+                  toggleMutate.mutate(cell.row.original.id);
+                }}
+              >
+                <Chip
+                  label={"not removed"}
+                  variant="outlined"
+                  color="secondary"
+                />
+              </IconButton>
+            </Tooltip>
+          );
+        }
+      },
+    },
+  ];
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  const { id } = useParams();
+
+  const getProductDetails = () => {
+    return request({ url: `product/${id}` });
+  };
+
+  const getProductIng = useQuery({
+    queryKey: [`get-product-details-${id}`],
+    queryFn: getProductDetails,
+  });
 
   const getIngredientsQuery = useQuery({
     queryKey: [`ingredients-get-${branch_id}`],
@@ -28,6 +99,41 @@ const ProductIngredients = ({ ingredients, refetch }) => {
         url: `/ingredient/branch/${branch_id}`,
         method: "GET",
       });
+    },
+  });
+
+  const deleteIng = (ingId) => {
+    return request({
+      url: `/delete/ingredient/${id}/${ingId}`,
+      method: "POST",
+    });
+  };
+
+  const toggle = (ingId) => {
+    return request({
+      url: `/product/ingredient/${id}/${ingId}`,
+      method: "PUT",
+    });
+  };
+
+  const toggleMutate = useMutation({
+    mutationFn: toggle,
+    onSuccess: (data) => {
+      getProductIng.refetch();
+      console.log(data, "sucess");
+    },
+    onError: (e) => {
+      console.log(e);
+    },
+  });
+
+  const deleteMutate = useMutation({
+    mutationFn: deleteIng,
+    onSuccess: () => {
+      getProductIng.refetch();
+    },
+    onError: (e) => {
+      console.log(e);
     },
   });
 
@@ -54,12 +160,15 @@ const ProductIngredients = ({ ingredients, refetch }) => {
             background: "#f4f7fe",
           }}
         >
-          {getIngredientsQuery.isLoading ? (
+          {getIngredientsQuery.isLoading ||
+          getIngredientsQuery.isRefetching ||
+          toggleMutate.isPending ? (
             <Skeleton width={"380px"} height={"200px"} />
           ) : (
             <ExpandedTable
-              refetch={refetch}
+              refetch={getProductIng.refetch}
               type={"sendBasicIng"}
+              setOpen={setOpen}
               data={getIngredientsQuery?.data?.data?.data}
             />
           )}
@@ -81,7 +190,9 @@ const ProductIngredients = ({ ingredients, refetch }) => {
         setOpen={setOpen}
       >
         <Paper my={"1rem"}>
-          {getIngredientsQuery.isLoading ? (
+          {getIngredientsQuery.isLoading ||
+          getProductIng.isRefetching ||
+          getProductIng.isLoading ? (
             <Skeleton
               sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
               width={"100%"}
@@ -89,9 +200,9 @@ const ProductIngredients = ({ ingredients, refetch }) => {
             />
           ) : (
             <Table
-              data={ingredients}
+              data={getProductIng.data.data.data.ingredients}
               fields={productIngredientColumns}
-              numberOfRows={ingredients?.length}
+              numberOfRows={getProductIng.data.data.data.ingredients.length}
               enableTopToolBar={true}
               enableBottomToolBar={true}
               enablePagination={true}
@@ -99,6 +210,9 @@ const ProductIngredients = ({ ingredients, refetch }) => {
               enableColumnDragging={true}
               showPreview={false}
               hideFromMenu={true}
+              deleteElement={deleteMutate}
+              enableEditing={true}
+              routeLink={"productExtra"}
             />
           )}
         </Paper>

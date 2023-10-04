@@ -11,6 +11,7 @@ import Notify from "../../components/common/Notify";
 import Price from "../../components/common/Price";
 import { useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const IngredientsForm = ({ row }) => {
   const [updatedIng, setUpdatedIng] = useState({});
@@ -62,10 +63,12 @@ const IngredientsForm = ({ row }) => {
     });
   };
 
+  const navigate = useNavigate();
   const storeIngredient = useMutation({
     mutationFn: storeIngredientRequest,
     onSuccess: () => {
       setOpen(true);
+      navigate("/ingredients");
     },
     onError: (err) => {
       setOpen(true);

@@ -177,7 +177,7 @@ const Filter = () => {
               <DateInput
                 setYear={handleFromYear}
                 setMonth={handleFromMonth}
-                setDay={handleDayChange}
+                setDay={handleFromDay}
                 year={fromToFilter.from.year}
                 month={fromToFilter.from.month}
                 day={fromToFilter.from.day}

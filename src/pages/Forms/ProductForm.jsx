@@ -24,6 +24,7 @@ import { productValidationUpdate } from "../../validations/productValidationUpda
 import { productValidation } from "../../validations/productValidation";
 import Notify from "../../components/common/Notify";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const ProductForm = ({ row }) => {
   const [image, setImage] = useState("");
   let initialValues;
@@ -215,11 +216,13 @@ const ProductForm = ({ row }) => {
       },
     });
   };
+  const navigate = useNavigate();
 
   const addProduct = useMutation({
     mutationFn: addMeal,
     onSuccess: () => {
       setOpen(true);
+      navigate("/products");
     },
     onError: () => {
       setOpen(true);
