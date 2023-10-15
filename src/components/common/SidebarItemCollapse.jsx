@@ -32,6 +32,7 @@ const SidebarItemCollapse = ({ name, icon, url, subLinks }) => {
   const CustomListItemText = styled(ListItemText)({
     fontSize: "10px !important",
     position: "relative",
+    color: "#434851",
     "&::before": {
       content: '""',
       position: "absolute",
@@ -50,14 +51,19 @@ const SidebarItemCollapse = ({ name, icon, url, subLinks }) => {
       <ListItemButton
         onClick={() => setOpen(!open)}
         sx={{
-          "&:hover": { backgroundColor: "#e5edff " },
+          "&:hover": { backgroundColor: "#f4f7fe" },
           paddingY: "8px",
           paddingX: "24px",
+          background: "#e5edff",
         }}
       >
-        <ListItemIcon sx={{ color: "sidebar.textColor" }}>{icon}</ListItemIcon>
-        <ListItemText primary={name} sx={{ ml: "-10px" }} />
-        {open ? <FiChevronUp /> : <FiChevronDown />}
+        <ListItemIcon sx={{ color: "#434851" }}>{icon}</ListItemIcon>
+        <ListItemText primary={name} sx={{ ml: "-10px", color: "#434851" }} />
+        {open ? (
+          <FiChevronUp sx={{ color: "#434851" }} />
+        ) : (
+          <FiChevronDown sx={{ color: "#434851" }} />
+        )}
       </ListItemButton>
       <Collapse in={open} timeout="auto">
         <List>
@@ -75,15 +81,16 @@ const SidebarItemCollapse = ({ name, icon, url, subLinks }) => {
                     className="linkBtn sub-link"
                     key={index}
                     sx={{
-                      "&:hover": { backgroundColor: "#e5edff " },
+                      "&:hover": { backgroundColor: "#f4f7fe" },
                       paddingY: "8px",
                       paddingLeft: "70px",
+                      background: "#e5edff",
                     }}
                   >
                     <CustomListItemText
                       primary={name}
                       sx={{
-                        color: "sidebar.textColor",
+                        color: "#434851",
                       }}
                     />
                   </ListItemButton>
@@ -104,15 +111,18 @@ const SidebarItemCollapse = ({ name, icon, url, subLinks }) => {
                   className="linkBtn sub-link"
                   key={index}
                   sx={{
-                    "&:hover": { backgroundColor: "#e5edff " },
+                    "&:hover": { backgroundColor: "#f4f7fe" },
                     paddingY: "8px",
                     paddingLeft: "70px",
+                    background: "#e5edff",
+                    color: "#434851",
                   }}
                 >
                   <CustomListItemText
                     primary={name}
                     sx={{
-                      color: "sidebar.textColor",
+                      color: "#434851",
+                      fontWeight: "600",
                     }}
                   />
                 </ListItemButton>

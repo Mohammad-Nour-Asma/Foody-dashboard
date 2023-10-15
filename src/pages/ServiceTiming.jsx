@@ -100,7 +100,9 @@ const ServiceTiming = () => {
       </Stack>
       <Grid container spacing={2}>
         <Grid lg={4} md={6} sm={12} item>
-          <Paper sx={{ background: "#ededfd", padding: "2rem" }}>
+          <Paper
+            sx={{ background: "#ededfd", padding: "2rem", border: "1px solid" }}
+          >
             Preparation Time
             <Typography fontWeight={"bold"} fontSize={"1.4rem"}>
               {result[0].isLoading ? (
@@ -114,7 +116,9 @@ const ServiceTiming = () => {
           </Paper>
         </Grid>
         <Grid lg={4} md={6} sm={12} item>
-          <Paper sx={{ background: "#ededfd", padding: "2rem" }}>
+          <Paper
+            sx={{ background: "#ededfd", padding: "2rem", border: "1px solid" }}
+          >
             Time from Done
             <Typography fontWeight={"bold"} fontSize={"1.4rem"}>
               {result[0].isLoading ? (
@@ -128,7 +132,9 @@ const ServiceTiming = () => {
           </Paper>
         </Grid>
         <Grid lg={4} md={6} sm={12} item>
-          <Paper sx={{ background: "#ededfd", padding: "2rem" }}>
+          <Paper
+            sx={{ background: "#ededfd", padding: "2rem", border: "1px solid" }}
+          >
             Time Ready
             <Typography fontWeight={"bold"} fontSize={"1.4rem"}>
               {result[0].isLoading ? (

@@ -4,13 +4,14 @@ import Layout from "../components/common/Layout";
 import { useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { BiImageAdd } from "react-icons/bi";
-import { Box, TextField, Typography, Button } from "@mui/material";
+import { Box, Paper, Typography, Button } from "@mui/material";
 import { request } from "../Request/request";
 import { useMutation } from "@tanstack/react-query";
 import MyLoadingButton from "../components/common/LoadingButton";
 import Notify from "../components/common/Notify";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const AddOffer = () => {
   //Image Upload Stuff
@@ -31,6 +32,7 @@ const AddOffer = () => {
   const [imageValidation, setImageValidation] = useState(true);
   const { branch_id } = useSelector((state) => state.settings);
   const [progress, setProgress] = useState({ loading: false, open: false });
+  const navigate = useNavigate();
 
   const submitHandle = () => {
     if (image == "") {
@@ -69,6 +71,7 @@ const AddOffer = () => {
     },
     onSuccess: () => {
       setProgress({ loading: false, open: true });
+      navigate("/offers");
     },
   });
 
@@ -79,7 +82,15 @@ const AddOffer = () => {
         open={progress.open}
         handleClose={handleClose}
       />
-      <Layout>
+      <Paper
+        sx={{
+          border: "3px solid",
+          borderRadius: "10px",
+          width: "70%",
+          margin: "0 auto",
+          padding: "2rem",
+        }}
+      >
         <Box sx={{ my: 2 }}>
           <input
             type="file"
@@ -129,9 +140,13 @@ const AddOffer = () => {
             loading={progress.loading}
             variant={"contained"}
             onClick={submitHandle}
+            sx={{
+              background:
+                "linear-gradient(to bottom, #dd78ef, #779bc2) !important",
+            }}
           ></MyLoadingButton>
         </Box>
-      </Layout>
+      </Paper>
     </Page>
   );
 };

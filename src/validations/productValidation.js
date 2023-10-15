@@ -13,14 +13,18 @@ export const productValidation = yup.object({
   price: yup.number().required("the price filed is required"),
   estimated_time: yup
     .mixed()
-    .test("duration", "Invalid duration format", (value) => {
-      if (!value) {
-        return false;
-      }
+    .test(
+      "duration",
+      "Invalid duration format must be in format xx:xx",
+      (value) => {
+        if (!value) {
+          return false;
+        }
 
-      const durationRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
-      return durationRegex.test(value);
-    }),
+        const durationRegex = /([0-5]\d):([0-5]\d)$/;
+        return durationRegex.test(value);
+      }
+    ),
   position: yup.number().required("the position filed is required"),
   image: yup
     .mixed()

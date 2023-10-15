@@ -3,15 +3,7 @@ import Page from "../components/common/Page";
 import Layout from "../components/common/Layout";
 import { offerData, offerColumns } from "../data/offer";
 import Table from "../components/Table";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
+import { Skeleton } from "@mui/material";
 import { request } from "../Request/request";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../components/common/loader/loader";
@@ -25,7 +17,7 @@ const Offer = () => {
     return request({ url: `offer/branch/${branch_id}`, method: "GET" });
   };
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch, isRefetching } = useQuery({
     queryKey: ["offers-get"],
     queryFn: getOffers,
   });
@@ -58,27 +50,30 @@ const Offer = () => {
         open={open}
         handleClose={handleClose}
       />
-      <Layout>
-        <Box sx={{ pb: "20px" }}>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <Table
-              data={offers}
-              fields={offerColumns}
-              numberOfRows={offers?.length}
-              enableTopToolBar={true}
-              enableBottomToolBar={true}
-              enablePagination={true}
-              enableColumnFilters={true}
-              enableColumnDragging={true}
-              showPreview={false}
-              routeLink="offer"
-              deleteElement={mutate}
-            />
-          )}
-        </Box>
-      </Layout>
+
+      {isLoading || isRefetching ? (
+        <Layout>
+          <Skeleton
+            sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
+            width={"100%"}
+            height={"400px"}
+          />
+        </Layout>
+      ) : (
+        <Table
+          data={offers}
+          fields={offerColumns}
+          numberOfRows={offers?.length}
+          enableTopToolBar={false}
+          enableBottomToolBar={false}
+          enablePagination={true}
+          enableColumnFilters={false}
+          enableColumnDragging={false}
+          showPreview={false}
+          routeLink="offer"
+          deleteElement={mutate}
+        />
+      )}
     </Page>
   );
 };

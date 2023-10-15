@@ -3,7 +3,6 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 const SidebarItem = ({ name, icon, url }) => {
-  console.log(name);
   return (
     <NavLink
       to={url}
@@ -14,17 +13,15 @@ const SidebarItem = ({ name, icon, url }) => {
       <ListItemButton
         className="linkBtn"
         sx={{
-          "&:hover": { backgroundColor: "#e5edff" },
+          "&:hover": { backgroundColor: "#f4f7fe" },
           paddingY: "8px",
           paddingX: "24px",
+          background: "#e5edff",
         }}
       >
-        <ListItemIcon sx={{ color: "sidebar.textColor" }}>{icon}</ListItemIcon>
+        <ListItemIcon sx={{ color: "#434851" }}>{icon}</ListItemIcon>
 
-        <ListItemText
-          primary={name}
-          sx={{ ml: "-10px", color: "sidebar.textColor" }}
-        />
+        <ListItemText primary={name} sx={{ ml: "-10px", color: "#434851" }} />
       </ListItemButton>
     </NavLink>
   );

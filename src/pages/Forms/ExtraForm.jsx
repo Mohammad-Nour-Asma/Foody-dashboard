@@ -24,11 +24,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { ExtraValidation } from "../../validations/ExtraValidations";
 import Loader from "../../components/common/loader/loader";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const ExtraForm = ({ row }) => {
+const ExtraForm = ({ row, refetch }) => {
   const [updatedIng, setUpdatedIng] = useState({});
   const [ingredient, setIngredient] = useState();
-
+  const navigate = useNavigate();
   const { branch_id } = useSelector((state) => state.settings);
 
   const handleIngredientChange = (event) => {
@@ -81,6 +82,7 @@ const ExtraForm = ({ row }) => {
     mutationFn: storeIngredientRequest,
     onSuccess: () => {
       setOpen(true);
+      navigate("/extra");
     },
     onError: (err) => {
       setOpen(true);
@@ -134,13 +136,12 @@ const ExtraForm = ({ row }) => {
     onSuccess: (data) => {
       const newIng = data.data.data;
       setOpen(true);
-
-      row.original.name = newIng.name;
-      row.original.name_ar = newIng.name_ar;
-      row.original.total_quantity = newIng.total_quantity;
+      refetch();
+      row.original.price_per_kilo = newIng.price_per_kilo;
     },
     onError: (err) => {
       setOpen(true);
+      console.log(err);
     },
   });
 
@@ -152,10 +153,7 @@ const ExtraForm = ({ row }) => {
     <Paper
       sx={{
         boxShadow: "none !important",
-        borderRadius: "12px",
-        borderStyle: "solid",
-        borderWidth: "1px",
-        borderColor: "divider",
+
         p: "20px",
         maxWidth: "800px",
         margin: "0 auto",
@@ -180,7 +178,7 @@ const ExtraForm = ({ row }) => {
         }
       />
       {ingredientsData?.data?.data?.length === 0 ? (
-        <Typography>Please Add Ingredients</Typography>
+        <Typography textAlign={"center"}>Please Add Ingredients</Typography>
       ) : (
         <Formik
           initialValues={initialValues}

@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 
 const ExtraIngredients = () => {
   const { branch_id } = useSelector((state) => state.settings);
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch, isRefetching } = useQuery({
     queryKey: [`Extraingredients-get-${branch_id}`],
     queryFn: () => {
       return request({
@@ -50,33 +50,35 @@ const ExtraIngredients = () => {
         open={open}
         handleClose={handleClose}
       />
-      <Layout>
-        <Box sx={{ pb: "20px" }}>
-          {isLoading ? (
+
+      <Box sx={{ pb: "20px" }}>
+        {isLoading || isRefetching ? (
+          <Layout>
             <Skeleton
               sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
               width={"100%"}
               height={"400px"}
             />
-          ) : (
-            <Table
-              data={ingredients?.data}
-              fields={extraIngredientsColumns}
-              numberOfRows={ingredients.length}
-              enableTopToolBar={true}
-              enableBottomToolBar={true}
-              enablePagination={true}
-              enableColumnFilters={true}
-              enableEditing={true}
-              enableColumnDragging={true}
-              showPreview={false}
-              deleteElement={deleteMutate}
-              UpdatingForm={ExtraForm}
-              routeLink="extraIngredients"
-            />
-          )}
-        </Box>
-      </Layout>
+          </Layout>
+        ) : (
+          <Table
+            data={ingredients?.data}
+            fields={extraIngredientsColumns}
+            numberOfRows={ingredients.length}
+            enableTopToolBar={true}
+            enableBottomToolBar={true}
+            enablePagination={true}
+            enableColumnFilters={true}
+            enableEditing={true}
+            enableColumnDragging={true}
+            showPreview={false}
+            deleteElement={deleteMutate}
+            refetch={refetch}
+            UpdatingForm={ExtraForm}
+            routeLink="extraIngredients"
+          />
+        )}
+      </Box>
     </Page>
   );
 };

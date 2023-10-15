@@ -1,9 +1,23 @@
 import React from "react";
-import { Box, TextField, Typography, Paper, Alert, Stack } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+  Paper,
+  Alert,
+  Stack,
+  InputLabel,
+  FormControl,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { BiImageAdd } from "react-icons/bi";
 import { Formik } from "formik";
-import { ingredientValidation } from "../../validations/ingredientsValidation";
+import {
+  ingredientValidation,
+  updateiIngredientValidation,
+} from "../../validations/ingredientsValidation";
 import { request } from "../../Request/request";
 import { useRef, useState } from "react";
 import styled from "@emotion/styled";
@@ -13,16 +27,17 @@ import { useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const IngredientsForm = ({ row }) => {
+const IngredientsForm = ({ row, refetch }) => {
   const [updatedIng, setUpdatedIng] = useState({});
   const { branch_id } = useSelector((state) => state.settings);
 
-  let initialValues = { name: "", quantity: "", name_ar: "" };
+  let initialValues = { name: "", quantity: "", name_ar: "", threshold: "" };
   if (row) {
     initialValues = {
       name: row.original.name,
       name_ar: row.original.name_ar,
-      quantity: row.original.quantity,
+      quantity: row.original.total_quantity,
+      threshold: row.original.threshold,
     };
   }
 
@@ -99,21 +114,20 @@ const IngredientsForm = ({ row }) => {
       row.original.name = newIng.name;
       row.original.name_ar = newIng.name_ar;
       row.original.total_quantity = newIng.total_quantity;
+      row.original.threshold = newIng.threshold;
+      refetch();
     },
     onError: (err) => {
       setOpen(true);
     },
   });
   return (
-    <Paper
+    <Box
       sx={{
         boxShadow: "none !important",
-        borderRadius: "12px",
-        borderStyle: "solid",
-        borderWidth: "1px",
-        borderColor: "divider",
+
         p: "20px",
-        maxWidth: "800px",
+        maxWidth: "70%",
         margin: "0 auto",
         cursor: "pointer",
         overflow: "hidden",
@@ -137,7 +151,9 @@ const IngredientsForm = ({ row }) => {
       />
       <Formik
         initialValues={initialValues}
-        validationSchema={ingredientValidation}
+        validationSchema={
+          row ? updateiIngredientValidation : ingredientValidation
+        }
         onSubmit={submitHandle}
       >
         {({
@@ -177,24 +193,49 @@ const IngredientsForm = ({ row }) => {
                 value={values.name_ar}
               />
             </Box>
-            <Box sx={{ my: 2 }}>
-              <TextField
-                name="quantity"
-                label="Quantity"
-                fullWidth
-                handleChange={handleChange}
-                onBlur={handleBlur}
-                error={!!touched.quantity && !!errors.quantity}
-                helperText={touched.quantity && errors.quantity}
-                onChange={handleChange}
-                value={values.quantity}
-              />
-            </Box>
+            <Stack gap={2} direction={"row"}>
+              {!row && (
+                <Box sx={{ my: 2, flexBasis: "90%" }}>
+                  <TextField
+                    name="quantity"
+                    label="Quantity"
+                    size="small"
+                    fullWidth
+                    handleChange={handleChange}
+                    onBlur={handleBlur}
+                    error={!!touched.quantity && !!errors.quantity}
+                    helperText={touched.quantity && errors.quantity}
+                    onChange={handleChange}
+                    value={values.quantity}
+                  />
+                </Box>
+              )}
+              <Box sx={{ my: 2, flexBasis: "10%" }}>
+                {/* <InputLabel mb={2} id="demo-simple-select-label">
+                  Unit
+                </InputLabel> */}
+                <FormControl fullWidth size="small">
+                  <Select
+                    size="small"
+                    fullWidth
+                    // onChange={handleIngredientChange}
+                    value={1}
+                  >
+                    <MenuItem value={1}>Gram</MenuItem>
+                    <MenuItem value={2}>Kilogram</MenuItem>
+                    <MenuItem value={3}>Liter</MenuItem>
+                    <MenuItem value={4}>Milliliter</MenuItem>
+                    <MenuItem value={5}>Unit</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Stack>
             <Box sx={{ my: 2 }}>
               <TextField
                 name="threshold"
                 label="Threshold"
                 fullWidth
+                size="small"
                 handleChange={handleChange}
                 onBlur={handleBlur}
                 error={!!touched.threshold && !!errors.threshold}
@@ -210,6 +251,10 @@ const IngredientsForm = ({ row }) => {
                 }
                 variant="contained"
                 type="submit"
+                sx={{
+                  background:
+                    "linear-gradient(to bottom, #dd78ef, #779bc2) !important",
+                }}
               >
                 <span>Submit</span>
               </LoadingButton>
@@ -217,7 +262,7 @@ const IngredientsForm = ({ row }) => {
           </form>
         )}
       </Formik>
-    </Paper>
+    </Box>
   );
 };
 

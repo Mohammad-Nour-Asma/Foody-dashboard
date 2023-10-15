@@ -16,7 +16,8 @@ import {
   DialogTitle,
 } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import { useSelector } from "react-redux";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import { CSVLink } from "react-csv";
 
 export const Table = ({
   data,
@@ -59,6 +60,20 @@ export const Table = ({
   const handleOpen = (type, row) => {
     setOpen({ type, open: true, row: row });
   };
+  const headers = columns.map((item) => item.accessorKey);
+
+  const exportedDataTable = tableData.map((item) => {
+    let data = {};
+
+    headers.forEach((element) => {
+      // console.log(element, "ee");
+      data[element] = item[element];
+    });
+
+    return data;
+  });
+
+  console.log(exportedDataTable, "exported");
 
   return (
     <>
@@ -141,6 +156,42 @@ export const Table = ({
         enablePagination={enablePagination}
         enableBottomToolbar={enableBottomToolBar}
         enableTopToolbar={enableTopToolBar}
+        muiBottomToolbarProps={{
+          //simple styling with the `sx` prop, works just like a style prop in this example
+          sx: {
+            backgroundColor: "#f4f7fe",
+          },
+        }}
+        muiTopToolbarProps={{
+          //simple styling with the `sx` prop, works just like a style prop in this example
+          sx: {
+            backgroundColor: "#f4f7fe",
+          },
+        }}
+        // muiTableHeadCellProps={{
+        //   //simple styling with the `sx` prop, works just like a style prop in this example
+        //   sx: {
+        //     fontWeight: "normal",
+        //     fontSize: "14px",
+        //     background: "red",
+        //   },
+        // }}
+
+        renderTopToolbarCustomActions={({ table }) => (
+          <></>
+          // <Box
+          //   sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "wrap" }}
+          // >
+          //   <CSVLink
+          //     className="downloadbtn"
+          //     filename="my-file.csv"
+          //     data={exportedDataTable}
+          //     headers={columns.map((item) => item.header)}
+          //   >
+          //     Export to CSV
+          //   </CSVLink>
+          // </Box>
+        )}
         renderRowActions={({ row }) => {
           return (
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -202,10 +253,8 @@ export const Table = ({
         muiTablePaperProps={{
           sx: {
             padding: "20px",
-            borderRadius: "15px",
-            borderStyle: "solid",
-            borderWidth: "1px",
-            borderColor: "divider",
+
+            background: "f4f7fe",
           },
         }}
         muiTableContainerProps={{

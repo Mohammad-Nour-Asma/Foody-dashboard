@@ -91,13 +91,18 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
           width: { md: `calc(100% - ${sideBarWidth}px)` },
           ml: { md: `${sideBarWidth}px` },
           boxShadow: "unset",
-          backgroundColor: "#f4f7fe",
+          backgroundColor: "#e5edff",
           color: "text.primary",
           borderBottomWidth: 1,
           borderBottomColor: "divider",
         }}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{
+            background: "#e5edff",
+            borderBottom: "0.5px solid #c580e4",
+          }}
+        >
           <Box
             sx={{
               display: "flex",
@@ -124,7 +129,12 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
                 </IconButton>
               </Tooltip>
             </Box>
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              backgroundColor={"#e5edff"}
+              direction="row"
+              spacing={1}
+              alignItems="center"
+            >
               <FormControl
                 variant="standard"
                 sx={{ m: 1, minWidth: 80, maxHeight: "150px" }}

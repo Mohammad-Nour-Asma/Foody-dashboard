@@ -9,12 +9,19 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 const Sidebar = ({ window, sideBarWidth, mobileOpen, handleDrawerToggle }) => {
   const drawer = (
     <div>
-      <Toolbar>
-        <Box variant="h6" sx={{ fontWeight: "bold", padding: ".5rem" }}>
-          <img width={"80%"} src={Logo} />
+      <Toolbar sx={{ background: "#e5edff" }}>
+        <Box variant="h6" sx={{ fontWeight: "bold", padding: ".45rem" }}>
+          <img
+            style={{
+              display: "block",
+              margin: "0 auto",
+            }}
+            width={"79%"}
+            src={Logo}
+          />
         </Box>
       </Toolbar>
-      <Divider />
+
       <List disablePadding>
         {links?.map((link, index) =>
           link?.subLinks ? (
@@ -50,7 +57,7 @@ const Sidebar = ({ window, sideBarWidth, mobileOpen, handleDrawerToggle }) => {
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: sideBarWidth,
-            backgroundColor: "#f4f7fe",
+            backgroundColor: "#e5edff !important",
             color: "sidebar.textColor",
           },
         }}
@@ -70,7 +77,7 @@ const Sidebar = ({ window, sideBarWidth, mobileOpen, handleDrawerToggle }) => {
             width: sideBarWidth,
             boxSizing: "border-box",
             borderRight: 0,
-            backgroundColor: "#f4f7fe",
+            backgroundColor: "#e5edff !important",
             color: "sidebar.textColor",
           },
         }}

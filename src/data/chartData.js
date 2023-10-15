@@ -206,7 +206,7 @@ export const salesLineChartOptions = {
   },
   xaxis: {
     type: "numeric",
-    categories: ["DEC", "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "lsdkf"],
+    categories: ["January", "February", "March", "April", "May"],
     labels: {
       style: {
         colors: "#A3AED0",
@@ -215,10 +215,10 @@ export const salesLineChartOptions = {
       },
     },
     axisBorder: {
-      show: false,
+      show: true,
     },
     axisTicks: {
-      show: false,
+      show: true,
     },
   },
   yaxis: {
@@ -244,6 +244,90 @@ export const salesLineChartOptions = {
   },
   color: ["#7551FF", "#39B8FF"],
 };
+// export const salesLineChartOptionsByDay = {
+//   chart: {
+//     toolbar: {
+//       show: false,
+//     },
+//     dropShadow: {
+//       enabled: true,
+//       top: 13,
+//       left: 0,
+//       blur: 10,
+//       opacity: 0.1,
+//       color: "#4318FF",
+//     },
+//   },
+
+//   colors: ["#4318FF", "#fd4332"],
+//   markers: {
+//     size: 0,
+//     colors: "white",
+//     strokeColors: "#7551FF",
+//     strokeWidth: 3,
+//     strokeOpacity: 0.9,
+//     strokeDashArray: 0,
+//     fillOpacity: 1,
+//     discrete: [],
+//     shape: "circle",
+//     radius: 2,
+//     offsetX: 0,
+//     offsetY: 0,
+//     showNullDataPoints: true,
+//   },
+//   tooltip: {
+//     theme: "dark",
+//   },
+//   dataLabels: {
+//     enabled: false,
+//   },
+//   stroke: {
+//     curve: "smooth",
+//     type: "line",
+//   },
+//   xaxis: {
+//     type: "numeric",
+//     categories: [
+//       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+//       22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+//     ],
+//     labels: {
+//       style: {
+//         colors: "#A3AED0",
+//         fontSize: "12px",
+//         fontWeight: "500",
+//       },
+//     },
+//     axisBorder: {
+//       show: true,
+//     },
+//     axisTicks: {
+//       show: true,
+//     },
+//   },
+//   yaxis: {
+//     labels: {
+//       show: true,
+//       style: {
+//         colors: "#9aaeb5",
+//         fontSize: "14px",
+//       },
+//     },
+//   },
+//   legend: {
+//     position: "top",
+//     offsetY: 0,
+//     colors: "#9aaeb5",
+//   },
+//   grid: {
+//     show: false,
+//     column: {
+//       color: ["#7551FF", "#39B8FF"],
+//       opacity: 0.5,
+//     },
+//   },
+//   color: ["#7551FF", "#39B8FF"],
+// };
 
 export const dailyVisitsBarChartData = [
   {

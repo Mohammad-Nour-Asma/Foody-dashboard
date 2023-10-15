@@ -3,7 +3,7 @@ import Table from "../components/Table";
 import { reviews, reviewsClumns } from "../data/reviews";
 import { request } from "../Request/request";
 import { useSelector } from "react-redux";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Loader from "../components/common/loader/loader";
 import { Box, Button, Rating, Skeleton, Typography } from "@mui/material";
 import Layout from "../components/common/Layout";
@@ -17,7 +17,7 @@ const Reviews = () => {
     });
   };
 
-  const { isLoading, data, refetch, isRefetching } = useQuery({
+  const { isLoading, data, refetch, isRefetching, isError } = useQuery({
     queryKey: [`get-feedback-${branch_id}`],
     queryFn: getOrdersReviews,
   });
@@ -25,6 +25,26 @@ const Reviews = () => {
   useEffect(() => {
     refetch();
   }, [branch_id]);
+
+  const getExcel = useMutation({
+    mutationKey: [`excel-${branch_id}`],
+    mutationFn: (branch_id) => {
+      return request({
+        url: `/export/${branch_id}`,
+        method: "GET",
+      });
+    },
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (data) => {
+      console.log(data);
+    },
+  });
+
+  if (isError) {
+    return <p>Error</p>;
+  }
 
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
@@ -47,6 +67,40 @@ const Reviews = () => {
           Orders
         </Typography>
       </Box>
+
+      {getExcel.isPending ? (
+        <Typography
+          sx={{
+            color: "#b27ded",
+            textDecoration: "underline",
+            cursor: "pointer",
+            fontSize: "0.8rem",
+            "&:active": {
+              transform: "translateY(2px)",
+            },
+          }}
+        >
+          Downloading...
+        </Typography>
+      ) : (
+        <Typography
+          sx={{
+            color: "#b27ded",
+            textDecoration: "underline",
+            cursor: "pointer",
+            fontSize: "0.8rem",
+            "&:active": {
+              transform: "translateY(2px)",
+            },
+          }}
+          onClick={() => {
+            getExcel.mutate(branch_id);
+          }}
+        >
+          Download as Excel
+        </Typography>
+      )}
+
       <Layout>
         <Box sx={{ pb: "20px" }}>
           {isLoading || isRefetching ? (
@@ -68,6 +122,18 @@ const Reviews = () => {
               showPreview={true}
               hideFromMenu={true}
               columns={columns}
+              muiBottomToolbarProps={{
+                //simple styling with the `sx` prop, works just like a style prop in this example
+                sx: {
+                  backgroundColor: "#f4f7fe",
+                },
+              }}
+              muiTopToolbarProps={{
+                //simple styling with the `sx` prop, works just like a style prop in this example
+                sx: {
+                  backgroundColor: "#f4f7fe",
+                },
+              }}
               renderDetailPanel={({ row }) => {
                 console.log(row.original.products, "row");
                 if (row.original.products.length > 0) {
@@ -105,6 +171,14 @@ const columns = [
   {
     accessorKey: "id",
     header: "Id",
+  },
+  {
+    accessorKey: "table.table_num",
+    header: "Table Number",
+  },
+  {
+    accessorKey: "waiter_name",
+    header: "Waiter Name",
   },
   {
     accessorKey: "feedback",

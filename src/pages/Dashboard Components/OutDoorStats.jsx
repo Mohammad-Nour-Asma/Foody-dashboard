@@ -1,12 +1,13 @@
 import styled from "@emotion/styled";
 import { Box, Grid, Paper, Skeleton, Typography, Stack } from "@mui/material";
 import React, { useEffect } from "react";
-import { request } from "../../../Request/request";
+
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import DashboardHeading from "../../../pages/Dashboard Components/DashboardHeading";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
-const Stats = () => {
+import { request } from "../../Request/request";
+import DashboardHeading from "./DashboardHeading";
+const OutDoorStats = () => {
   const Item = styled(Paper)({
     padding: "1rem",
     borderRadius: "12px",
@@ -19,7 +20,7 @@ const Stats = () => {
 
   const getStats = (data) => {
     return request({
-      url: `/statistics/${branch_id}`,
+      url: `/takeaway/statistics/${branch_id}`,
       data,
       method: "POST",
     });
@@ -31,7 +32,7 @@ const Stats = () => {
 
   const { mutate, isPending, data, isError } = useMutation({
     mutationKey: [
-      `get-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}-statis`,
+      `get-outdoor-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}-statis`,
     ],
     mutationFn: getStats,
     onSuccess: (data) => {},
@@ -40,11 +41,11 @@ const Stats = () => {
 
   const getMaxSales = useMutation({
     mutationKey: [
-      `get-maxSales-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}-statis`,
+      `get-outdoor-maxSales-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}-statis`,
     ],
     mutationFn: (data) => {
       return request({
-        url: `/max/${branch_id}`,
+        url: `takeaway/max/${branch_id}`,
         data,
         method: "POST",
       });
@@ -100,7 +101,7 @@ const Stats = () => {
   console.log(getMaxSales.data?.data?.data, "max");
   return (
     <>
-      <DashboardHeading title={"Indoor Statistics"} Icon={QueryStatsIcon} />
+      <DashboardHeading title={"Outdoor Statistics"} Icon={QueryStatsIcon} />
       <Grid container spacing={2}>
         {(isPending ? Array.from(new Array(4)) : statsArray)?.map((item, i) => (
           <Grid item xs={12} sm={i === 5 - 1 ? 12 : 6} lg={4} key={i}>
@@ -133,7 +134,6 @@ const Stats = () => {
             </Item>
           </Grid>
         ))}
-
         <Grid item xs={12} sm={12} lg={4}>
           <Item
             sx={{
@@ -174,4 +174,4 @@ const Stats = () => {
   );
 };
 
-export default Stats;
+export default OutDoorStats;

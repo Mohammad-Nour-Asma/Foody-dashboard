@@ -1,5 +1,5 @@
-import { Box, Button, Skeleton, Switch, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Button, Skeleton, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import Table from "../components/Table";
@@ -10,58 +10,62 @@ import Notify from "../components/common/Notify";
 import ProductForm from "./Forms/ProductForm";
 import { useSelector } from "react-redux";
 import Layout from "../components/common/Layout";
+import { formatNumber } from "../components/HelperFunction";
 
+const productsColumns = [
+  {
+    accessorKey: "image",
+    header: "Image",
+    //or in the component override callbacks like this
+    Cell: ({ cell }) => {
+      return (
+        <Box
+          sx={{
+            width: "150px",
+            height: "150px",
+            borderRadius: "10px",
+            backgroundImage: `url(${cell.getValue()})`,
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+        ></Box>
+      );
+    },
+  },
+  {
+    accessorKey: "name", //access nested data with dot notation
+    header: "Meal Name",
+  },
+  {
+    accessorKey: "name_ar", //access nested data with dot notation
+    header: "Meal Arabic Name",
+  },
+
+  {
+    accessorKey: "category.name", //access nested data with dot notation
+    header: "Category",
+  },
+  {
+    accessorKey: "estimated_time", //access nested data with dot notation
+    header: "Estimated Time",
+  },
+  {
+    accessorKey: "price",
+    header: "Price",
+    Cell: ({ cell }) => {
+      const number = formatNumber(cell.getValue());
+
+      return <Typography>{number} SAR</Typography>;
+    },
+  },
+  {
+    accessorKey: "position",
+    header: "Position",
+    //or in the component override callbacks like this
+  },
+];
 const Products = () => {
-  const productsColumns = [
-    {
-      accessorKey: "image",
-      header: "Image",
-      //or in the component override callbacks like this
-      Cell: ({ cell }) => {
-        return (
-          <Box
-            sx={{
-              width: "150px",
-              height: "150px",
-              borderRadius: "10px",
-              backgroundImage: `url(${cell.getValue()})`,
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-            }}
-          ></Box>
-        );
-      },
-    },
-    {
-      accessorKey: "name", //access nested data with dot notation
-      header: "Meal Name",
-    },
-    {
-      accessorKey: "name_ar", //access nested data with dot notation
-      header: "Meal Arabic Name",
-    },
-
-    {
-      accessorKey: "category.name", //access nested data with dot notation
-      header: "Category",
-    },
-    {
-      accessorKey: "estimated_time", //access nested data with dot notation
-      header: "Estimated Time",
-    },
-    {
-      accessorKey: "price",
-      header: "Price",
-      Cell: ({ cell }) => <span>${cell.getValue()}</span>,
-    },
-    {
-      accessorKey: "position",
-      header: "Position",
-      //or in the component override callbacks like this
-    },
-  ];
-
   const { branch_id } = useSelector((state) => state.settings);
 
   const getAllProducts = () => {
@@ -71,11 +75,15 @@ const Products = () => {
     });
   };
 
-  const { isLoading, data, isError, error } = useQuery({
+  const { isLoading, data, isError, error, refetch, isRefetching } = useQuery({
     queryKey: [`porducts-${branch_id}`],
     queryFn: getAllProducts,
     staleTime: 0,
   });
+
+  useEffect(() => {
+    refetch();
+  }, [branch_id]);
 
   const products = data?.data.data;
 
@@ -139,35 +147,36 @@ const Products = () => {
           </Button>
         </Link>
       </Box>
-      <Layout>
-        <Box sx={{ pb: "20px" }}>
-          {isLoading ? (
+      <Box sx={{ pb: "20px" }}>
+        {isLoading || isRefetching ? (
+          <Layout>
             <Skeleton
               sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
               width={"100%"}
               height={"400px"}
             />
-          ) : (
-            <Table
-              data={data?.data.data}
-              fields={productsColumns}
-              numberOfRows={products.length}
-              enableTopToolBar={true}
-              enableBottomToolBar={true}
-              enablePagination={true}
-              enableColumnFilters={true}
-              enableEditing={true}
-              enableColumnDragging={true}
-              showPreview={true}
-              hideFromMenu={true}
-              deleteElement={deleteMutate}
-              edit={true}
-              routeLink="products"
-              UpdatingForm={ProductForm}
-            />
-          )}
-        </Box>
-      </Layout>
+          </Layout>
+        ) : (
+          <Table
+            data={data?.data.data}
+            fields={productsColumns}
+            numberOfRows={products.length}
+            enableTopToolBar={true}
+            enableBottomToolBar={true}
+            enablePagination={true}
+            enableColumnFilters={true}
+            enableEditing={true}
+            enableColumnDragging={true}
+            showPreview={true}
+            hideFromMenu={true}
+            deleteElement={deleteMutate}
+            edit={true}
+            refetch={refetch}
+            routeLink="products"
+            UpdatingForm={ProductForm}
+          />
+        )}
+      </Box>
     </Box>
   );
 };

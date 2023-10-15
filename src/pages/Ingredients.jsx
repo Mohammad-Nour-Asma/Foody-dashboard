@@ -19,8 +19,8 @@ import { setWarningFalse, setWarningTrue } from "../redux/WarningSlice";
 import AddAmountsForm from "./Forms/AddAmountsForm";
 
 const Ingredients = () => {
-  const { branch_id } = useSelector((state) => state.settings);
   const dispatch = useDispatch();
+  const { branch_id } = useSelector((state) => state.settings);
   const { data, isLoading, isError, refetch, isSuccess, isRefetching } =
     useQuery({
       queryKey: [`ingredients-get-${branch_id}`],
@@ -79,36 +79,37 @@ const Ingredients = () => {
         open={open}
         handleClose={handleClose}
       />
-      <Layout>
-        <Box sx={{ p: "20px" }}>
-          {isLoading || isRefetching ? (
+
+      <Box sx={{ p: "20px" }}>
+        {isLoading || isRefetching ? (
+          <Layout>
             <Skeleton
               sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
               width={"100%"}
               height={"400px"}
             />
-          ) : (
-            <Table
-              data={ingredients?.data}
-              fields={mealIngredientColumns}
-              numberOfRows={ingredients.length}
-              enableTopToolBar={true}
-              enableBottomToolBar={true}
-              enablePagination={true}
-              enableColumnFilters={true}
-              enableEditing={true}
-              enableColumnDragging={true}
-              showPreview={false}
-              deleteElement={deleteMutate}
-              UpdatingForm={IngredientsForm}
-              hideFromMenu={true}
-              refetch={refetch}
-              AddAmountsForm={AddAmountsForm}
-              routeLink="ingredients"
-            />
-          )}
-        </Box>
-      </Layout>
+          </Layout>
+        ) : (
+          <Table
+            data={ingredients?.data}
+            fields={mealIngredientColumns}
+            numberOfRows={ingredients.length}
+            enableTopToolBar={true}
+            enableBottomToolBar={true}
+            enablePagination={true}
+            enableColumnFilters={true}
+            enableEditing={true}
+            enableColumnDragging={true}
+            showPreview={false}
+            deleteElement={deleteMutate}
+            UpdatingForm={IngredientsForm}
+            hideFromMenu={true}
+            refetch={refetch}
+            AddAmountsForm={AddAmountsForm}
+            routeLink="ingredients"
+          />
+        )}
+      </Box>
     </Page>
   );
 };

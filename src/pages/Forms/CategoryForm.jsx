@@ -10,7 +10,7 @@ import { Formik } from "formik";
 import { categoryValidation } from "../../validations/categoryValidation";
 import Notify from "../../components/common/Notify";
 import { useNavigate } from "react-router-dom";
-const CategoryForm = ({ row }) => {
+const CategoryForm = ({ row, refetch }) => {
   let initialValues = { name: "", position: "" };
   if (row) {
     initialValues = {
@@ -123,6 +123,7 @@ const CategoryForm = ({ row }) => {
       row.original.name = newCat.name;
       row.original.name_ar = newCat.name_ar;
       row.original.position = newCat.position;
+      refetch();
     },
     onError: (err) => {
       setOpen(true);
@@ -132,12 +133,8 @@ const CategoryForm = ({ row }) => {
     <Paper
       sx={{
         boxShadow: "none !important",
-        borderRadius: "12px",
-        borderStyle: "solid",
-        borderWidth: "1px",
-        borderColor: "divider",
         p: "20px",
-        maxWidth: "800px",
+        maxWidth: "70%",
         margin: "0 auto",
         cursor: "pointer",
         overflow: "hidden",
@@ -278,6 +275,10 @@ const CategoryForm = ({ row }) => {
                 variant={"contained"}
                 loading={row ? updateCategory.isPending : addCategory.isPending}
                 type="submit"
+                sx={{
+                  background:
+                    "linear-gradient(to bottom, #dd78ef, #779bc2) !important",
+                }}
               />
             </Box>
           </form>

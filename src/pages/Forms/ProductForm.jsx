@@ -25,7 +25,7 @@ import { productValidation } from "../../validations/productValidation";
 import Notify from "../../components/common/Notify";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-const ProductForm = ({ row }) => {
+const ProductForm = ({ row, refetch: refetchMeals }) => {
   const [image, setImage] = useState("");
   let initialValues;
   const { branch_id } = useSelector((state) => state.settings);
@@ -34,7 +34,7 @@ const ProductForm = ({ row }) => {
       name: row.original.name,
       description: row.original.description,
       price: row.original.price,
-      estimated_time: row.original.estimated_time,
+      estimated_time: row.original.estimated_time.slice(3),
       position: row.original.position,
       description_ar: row.original.description_ar,
       name_ar: row.original.name_ar,
@@ -58,6 +58,7 @@ const ProductForm = ({ row }) => {
   const handleSubmit = (values) => {
     const product = {
       ...values,
+      estimated_time: `00:${values.estimated_time}`,
       category_id: selectedCategory,
       status: status ? 1 : 0,
       branch_id,
@@ -185,19 +186,7 @@ const ProductForm = ({ row }) => {
     mutationFn: updateProduct,
     onSuccess: () => {
       setOpen(true);
-      row.original.name = updatedMeal.name;
-      row.original.category.name = categories.find(
-        (item) => item.id == selectedCategory
-      ).name;
-      row.original.estimated_time = updatedMeal.estimated_time;
-
-      row.original.ingredient = updatedMeal.ingredient;
-      row.original.position = updatedMeal.position;
-      row.original.price = updatedMeal.price;
-      row.original.status = updatedMeal.status;
-    },
-    if(image) {
-      row.original.image = URL.createObjectURL(image);
+      refetchMeals();
     },
     onError: () => {
       setOpen(true);
@@ -240,14 +229,9 @@ const ProductForm = ({ row }) => {
     <Paper
       sx={{
         boxShadow: "none !important",
-        borderRadius: "12px",
-        borderStyle: "solid",
-        borderWidth: "1px",
-        borderColor: "divider",
         p: "20px",
-        maxWidth: "800px",
+        maxWidth: "70%",
         margin: "0 auto",
-        cursor: "pointer",
         overflow: "hidden",
       }}
     >
@@ -524,6 +508,10 @@ const ProductForm = ({ row }) => {
                       loading={
                         row ? updateMutation.isPending : addProduct.isPending
                       }
+                      sx={{
+                        background:
+                          "linear-gradient(to bottom, #dd78ef, #779bc2) !important",
+                      }}
                       onClick={handleSubmit}
                     />
                   </Box>

@@ -31,6 +31,7 @@ import AddExtra from "./pages/AddExtra";
 import ServiceTiming from "./pages/ServiceTiming";
 import { ErrorBoundary } from "react-error-boundary";
 import ExpandedTable from "./components/common/IngredientsInput";
+import CheckUuid from "./pages/CheckUuid";
 
 const sideBarWidth = 250;
 
@@ -44,11 +45,13 @@ function App() {
   const location = useLocation();
 
   const queryClient = new QueryClient();
-
+  console.log(
+    location.pathname !== "/" && !location.pathname.includes("check")
+  );
   return (
     <QueryClientProvider client={queryClient}>
       <Box sx={{ display: "flex" }}>
-        {location.pathname !== "/" && (
+        {location.pathname !== "/" && !location.pathname.includes("check") && (
           <>
             <Navbar
               sideBarWidth={sideBarWidth}
@@ -72,6 +75,7 @@ function App() {
           {/* Routes */}
           <Routes>
             <Route path="/" element={<Login />} />
+            <Route path="/check/:uuid" element={<CheckUuid />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/add" element={<AddProduct />} />

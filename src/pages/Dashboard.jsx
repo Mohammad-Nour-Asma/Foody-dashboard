@@ -14,6 +14,9 @@ import ServiceTiming from "./ServiceTiming";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import Filter from "../components/common/Dashboard/Filter";
 import WaiterCount from "./Dashboard Components/WaiterCount";
+import UnderThersholdIng from "./Dashboard Components/UnderThersholdIng";
+import DailySales from "./Dashboard Components/DailySales";
+import OutDoorStats from "./Dashboard Components/OutDoorStats";
 
 const ratedColumns = [
   {
@@ -57,9 +60,13 @@ const Dashboard = () => {
       <ComponentWrapper>
         <Stats />
       </ComponentWrapper>
+      <ComponentWrapper>
+        <OutDoorStats />
+      </ComponentWrapper>
 
       <ServiceTiming />
       <SalesAnalytics />
+      <DailySales />
       <WaiterCount />
 
       <Stack
@@ -109,6 +116,8 @@ const Dashboard = () => {
         type={"least rated products"}
         columns={ratedColumns}
       />
+
+      <UnderThersholdIng />
     </Box>
   );
 };

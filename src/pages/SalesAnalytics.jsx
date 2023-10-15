@@ -109,6 +109,8 @@ const SalesAnalytics = () => {
   };
   salesLineChartOptions.xaxis.categories = getMonths(salsePerMonth);
 
+  console.log(getMonths(salsePerMonth), getTotalSalesData(salsePerMonth));
+
   return (
     <Box sx={{ pt: "20px", pb: "20px" }}>
       <Stack

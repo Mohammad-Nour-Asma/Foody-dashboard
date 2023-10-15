@@ -89,8 +89,10 @@ label {
 }
 
 a.active > .linkBtn {
-  background-color: #e5edff !important;
+  background-color: #f4f7fe !important;
   position: relative;
+  border-right: "solid 1px transparent";
+
 }
 
 a.active > .linkBtn::before {
@@ -138,4 +140,60 @@ span.Cancelled {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 2rem;
+}
+
+.MuiTableCell-root {
+  padding: 16px;
+  background-color: #f4f7fe !important;
+  border: 1px solid #dbc9e9 !important;
+  border-collapse: collapse !important;
+
+}
+.MuiTableContainer-root {
+ 
+  border: 1px solid #dbc9e9 !important;
+  border-collapse: collapse !important;
+  border-radius: 10px;
+}
+
+.MuiPaper-root{
+    background: #f4f7fe !important;
+    border-color: #6074da6e !important;
+}
+
+@keyframes bumb {
+  0%{
+    transform: scale(1);
+  }
+  50%{
+    transform: scale(1.1);
+
+  }
+  100%{
+    transform: scale(1);
+
+  }
+}
+
+@keyframes textFade {
+  0%{
+   opacity: 0;
+  }
+  100%{
+    transform: scale(1);
+
+  }
+}
+
+
+
+.logo {
+
+  animation: bumb 1.7s ease-in-out infinite;
+ 
+}
+.fade{
+  display: block;
+  animation: textFade 0.5s ease-in-out ;
+
 }

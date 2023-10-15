@@ -56,15 +56,15 @@ export const links = [
     ],
   },
   {
-    name: "Products",
+    name: "Meals",
     icon: <RestaurantIcon />,
     subLinks: [
       {
-        name: "All Products",
+        name: "All Meals",
         url: "/products",
       },
       {
-        name: "Add Product",
+        name: "Add Meal",
         url: "/products/add",
       },
     ],

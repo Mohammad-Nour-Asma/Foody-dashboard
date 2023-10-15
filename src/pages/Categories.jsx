@@ -49,11 +49,12 @@ const Categories = () => {
     });
   };
 
-  const { data, isLoading, isError, isSuccess } = useQuery({
-    queryKey: [`category-${branch_id}-get`],
-    queryFn: getCategory,
-    cacheTime: 0,
-  });
+  const { data, isLoading, isError, isSuccess, refetch, isRefetching } =
+    useQuery({
+      queryKey: [`category-${branch_id}-get`],
+      queryFn: getCategory,
+      cacheTime: 0,
+    });
 
   const categories = data?.data.data;
 
@@ -84,33 +85,34 @@ const Categories = () => {
         open={open}
         handleClose={handleClose}
       />
-      <Layout>
-        <Box sx={{ pb: "20px" }}>
-          {isLoading ? (
+      <Box sx={{ pb: "20px" }}>
+        {isLoading || isRefetching ? (
+          <Layout>
             <Skeleton
               sx={{ margin: "0 auto", bottom: "43px", position: "relative" }}
               width={"100%"}
               height={"400px"}
             />
-          ) : (
-            <Table
-              data={categories}
-              fields={offerColumns}
-              numberOfRows={categories.length}
-              enableTopToolBar={false}
-              enableBottomToolBar={false}
-              enablePagination={true}
-              enableColumnFilters={true}
-              enableEditing={true}
-              showPreview={false}
-              deleteElement={deleteMutate}
-              UpdatingForm={CategoryForm}
-              hideFromMenu={true}
-              routeLink="categories"
-            />
-          )}
-        </Box>
-      </Layout>
+          </Layout>
+        ) : (
+          <Table
+            data={categories}
+            fields={offerColumns}
+            numberOfRows={categories.length}
+            enableTopToolBar={false}
+            enableBottomToolBar={false}
+            enablePagination={true}
+            enableColumnFilters={true}
+            enableEditing={true}
+            showPreview={false}
+            deleteElement={deleteMutate}
+            UpdatingForm={CategoryForm}
+            hideFromMenu={true}
+            routeLink="categories"
+            refetch={refetch}
+          />
+        )}
+      </Box>
     </Page>
   );
 };
