@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { CSVLink } from "react-csv";
 
@@ -57,23 +58,16 @@ export const Table = ({
     setOpen({ ...open, open: false });
   };
 
-  const handleOpen = (type, row) => {
-    setOpen({ type, open: true, row: row });
+  const handleOpen = (type, row, amount) => {
+    if (type === "amounts") {
+      setOpen({ type, open: true, row: row, amount: amount });
+    } else {
+      setOpen({ type, open: true, row: row });
+    }
   };
   const headers = columns.map((item) => item.accessorKey);
 
-  const exportedDataTable = tableData.map((item) => {
-    let data = {};
-
-    headers.forEach((element) => {
-      // console.log(element, "ee");
-      data[element] = item[element];
-    });
-
-    return data;
-  });
-
-  console.log(exportedDataTable, "exported");
+  console.log(open, "exported");
 
   return (
     <>
@@ -95,11 +89,17 @@ export const Table = ({
           </>
         ) : open.type == "amounts" ? (
           <>
-            <DialogTitle id="alert-dialog-title">{"Add Amounts"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">
+              {open.amount === "dec" ? "Decrease Amount" : "Add Amount"}
+            </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 {AddAmountsForm && (
-                  <AddAmountsForm refetch={refetch} row={open.row} />
+                  <AddAmountsForm
+                    type={open.amount}
+                    refetch={refetch}
+                    row={open.row}
+                  />
                 )}
               </DialogContentText>
             </DialogContent>
@@ -177,21 +177,6 @@ export const Table = ({
         //   },
         // }}
 
-        renderTopToolbarCustomActions={({ table }) => (
-          <></>
-          // <Box
-          //   sx={{ display: "flex", gap: "1rem", p: "0.5rem", flexWrap: "wrap" }}
-          // >
-          //   <CSVLink
-          //     className="downloadbtn"
-          //     filename="my-file.csv"
-          //     data={exportedDataTable}
-          //     headers={columns.map((item) => item.header)}
-          //   >
-          //     Export to CSV
-          //   </CSVLink>
-          // </Box>
-        )}
         renderRowActions={({ row }) => {
           return (
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -215,11 +200,24 @@ export const Table = ({
                 </Tooltip>
               )}
               {routeLink === "ingredients" && (
+                <Tooltip arrow placement="right" title="Decrease Amount">
+                  <Link>
+                    <IconButton
+                      onClick={() => {
+                        handleOpen("amounts", row, "dec");
+                      }}
+                    >
+                      <RemoveCircleOutlineIcon />
+                    </IconButton>
+                  </Link>
+                </Tooltip>
+              )}
+              {routeLink === "ingredients" && (
                 <Tooltip arrow placement="right" title="Add Amounts">
                   <Link>
                     <IconButton
                       onClick={() => {
-                        handleOpen("amounts", row);
+                        handleOpen("amounts", row, "inc");
                       }}
                     >
                       <ControlPointIcon />

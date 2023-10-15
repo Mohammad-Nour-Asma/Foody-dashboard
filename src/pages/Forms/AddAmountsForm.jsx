@@ -1,22 +1,46 @@
 import React, { useState } from "react";
-import { Paper, Stack, TextField } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  MenuItem,
+  Paper,
+  Select,
+  Stack,
+  TextField,
+} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useMutation } from "@tanstack/react-query";
 import { request } from "../../Request/request";
 
-const AddAmountsForm = ({ row, refetch }) => {
-  console.log(row.original.id, "orginal");
+const AddAmountsForm = ({ row, refetch, type }) => {
+  const units =
+    row.original.unit === "kg" || row.original.unit === "g"
+      ? ["kg", "g"]
+      : ["l", "ml"];
+  const [unit, setUnit] = useState(row.original.unit);
+
+  const handleUnitChange = (e) => {
+    setUnit(e.target.value);
+  };
+
   const addAmountsQuery = useMutation({
     mutationKey: [`addAmount-${row.original.id}`],
     mutationFn: (data) => {
+      let api;
+      if (type === "dec") api = `/destruction/${row.original.id}`;
+      else api = `/ingredient/${row.original.id}`;
       return request({
-        url: `/ingredient/${row.original.id}`,
+        url: `${api}`,
         method: "POST",
         data,
       });
     },
-    onSuccess: () => {
+    onSuccess: (re) => {
       refetch();
+      console.log(re);
+    },
+    onError: (err) => {
+      console.log(err);
     },
   });
 
@@ -37,26 +61,54 @@ const AddAmountsForm = ({ row, refetch }) => {
         overflow: "hidden",
       }}
     >
-      <TextField
-        id="outlined-number"
-        label="Amount"
-        type="number"
-        value={amount}
-        onChange={(e) => {
-          setAmount(e.target.value);
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        inputProps={{
-          min: 1,
-        }}
-      />
+      <Stack gap={1} direction={"row"}>
+        <Box sx={{ my: 2, flexBasis: "95%" }}>
+          <TextField
+            id="outlined-number"
+            label="Amount"
+            type="number"
+            size="small"
+            value={amount}
+            onChange={(e) => {
+              setAmount(e.target.value);
+            }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{
+              min: 1,
+            }}
+          />
+        </Box>
+
+        <Box sx={{ my: 2, flexBasis: "5%" }}>
+          {/* <InputLabel mb={2} id="demo-simple-select-label">
+                  Unit
+                </InputLabel> */}
+          <FormControl fullWidth size="small">
+            <Select
+              size="small"
+              fullWidth
+              onChange={handleUnitChange}
+              value={unit}
+            >
+              {units.map((item) => {
+                return (
+                  <MenuItem value={item}>
+                    {item === "g" ? "Gram" : item === "l" ? "Liter" : item}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </Box>
+      </Stack>
       <Stack sx={{ my: 2 }}>
         <LoadingButton
           onClick={() => {
             addAmountsQuery.mutate({
               total_quantity: amount,
+              unit,
             });
           }}
           loading={addAmountsQuery.isPending}

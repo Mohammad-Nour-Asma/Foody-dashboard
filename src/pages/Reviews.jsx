@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "../components/Table";
 import { reviews, reviewsClumns } from "../data/reviews";
 import { request } from "../Request/request";
@@ -8,6 +8,7 @@ import Loader from "../components/common/loader/loader";
 import { Box, Button, Rating, Skeleton, Typography } from "@mui/material";
 import Layout from "../components/common/Layout";
 import MaterialReactTable from "material-react-table";
+import axios from "axios";
 
 const Reviews = () => {
   const { branch_id } = useSelector((state) => state.settings);
@@ -42,6 +43,45 @@ const Reviews = () => {
     },
   });
 
+  const [loader, setLoader] = useState(false);
+
+  async function downloadExil(branch_id) {
+    try {
+      setLoader(true);
+      const response = await axios.get(
+        `https://api.foody.gomaplus.tech/api/export/${branch_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          responseType: "arraybuffer", // Ensure the response is treated as binary data
+        }
+      );
+
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      // Create a URL for the Blob
+      const blobUrl = URL.createObjectURL(blob);
+
+      // Create a link and click it to trigger download
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "downloaded_file.xlsx"; // Set the desired file name
+      link.click();
+
+      // Clean up the Blob URL
+      URL.revokeObjectURL(blobUrl);
+      setLoader(false);
+    } catch (error) {
+      setLoader(false);
+
+      console.log(error);
+      // Handle the error appropriately (show an error message, etc.)
+    }
+  }
+
   if (isError) {
     return <p>Error</p>;
   }
@@ -68,13 +108,14 @@ const Reviews = () => {
         </Typography>
       </Box>
 
-      {getExcel.isPending ? (
+      {loader ? (
         <Typography
           sx={{
             color: "#b27ded",
             textDecoration: "underline",
             cursor: "pointer",
             fontSize: "0.8rem",
+            marginBottom: "1rem",
             "&:active": {
               transform: "translateY(2px)",
             },
@@ -89,12 +130,13 @@ const Reviews = () => {
             textDecoration: "underline",
             cursor: "pointer",
             fontSize: "0.8rem",
+            marginBottom: "1rem",
             "&:active": {
               transform: "translateY(2px)",
             },
           }}
           onClick={() => {
-            getExcel.mutate(branch_id);
+            downloadExil(branch_id);
           }}
         >
           Download as Excel

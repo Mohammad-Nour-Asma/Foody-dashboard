@@ -110,9 +110,6 @@ const ProductIngredientForm = ({
     return { id: item.id, quantity: item.pivot.quantity };
   });
 
-  console.log(extraIngredient, "jdfskljfdslkfjdslkfj");
-  console.log(ingredient, "jdfskljfdslkfjdslkfj");
-
   return (
     <Box sx={{ padding: "1rem" }}>
       <Notify
@@ -154,14 +151,6 @@ const ProductIngredientForm = ({
             loading={storeIngredient.isPending}
             variant="contained"
             onClick={() => {
-              console.log(
-                {
-                  id: 1,
-                  ingredients: [...ingredient, info],
-                  extra_ingredients: [...extraIngredient],
-                },
-                "heleo"
-              );
               if (type === "extraProductIng") {
                 storeIngredient.mutate({
                   id: 1,

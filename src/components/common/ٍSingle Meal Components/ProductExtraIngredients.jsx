@@ -49,6 +49,7 @@ const ProductExtraIngredients = () => {
       return {
         id: item.id,
         name: item.ingredient.name,
+        unit: item.ingredient.unit,
       };
     });
   }
@@ -70,9 +71,7 @@ const ProductExtraIngredients = () => {
       console.log(e);
     },
   });
-
-  console.log(getProductExtra.data);
-
+  console.log(getExtraIngredientsQuery.data);
   return (
     <>
       <Dialog

@@ -27,9 +27,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const IngredientsForm = ({ row, refetch }) => {
+const IngredientsForm = ({ row, refetch, type }) => {
   const [updatedIng, setUpdatedIng] = useState({});
   const { branch_id } = useSelector((state) => state.settings);
+  const [unit, setUnit] = useState("g");
+
+  const handleUnitChange = (e) => {
+    setUnit(e.target.value);
+  };
 
   let initialValues = { name: "", quantity: "", name_ar: "", threshold: "" };
   if (row) {
@@ -62,6 +67,7 @@ const IngredientsForm = ({ row, refetch }) => {
         total_quantity: values.quantity,
         threshold: values.threshold,
         branch_id: branch_id,
+        unit,
       };
       storeIngredient.mutate(data);
     }
@@ -218,14 +224,13 @@ const IngredientsForm = ({ row, refetch }) => {
                   <Select
                     size="small"
                     fullWidth
-                    // onChange={handleIngredientChange}
-                    value={1}
+                    onChange={handleUnitChange}
+                    value={unit}
                   >
-                    <MenuItem value={1}>Gram</MenuItem>
-                    <MenuItem value={2}>Kilogram</MenuItem>
-                    <MenuItem value={3}>Liter</MenuItem>
-                    <MenuItem value={4}>Milliliter</MenuItem>
-                    <MenuItem value={5}>Unit</MenuItem>
+                    <MenuItem value={"g"}>Gram</MenuItem>
+                    <MenuItem value={"kg"}>Kilogram</MenuItem>
+                    <MenuItem value={"l"}>Liter</MenuItem>
+                    <MenuItem value={"ml"}>Milliliter</MenuItem>
                   </Select>
                 </FormControl>
               </Box>

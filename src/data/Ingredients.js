@@ -16,6 +16,16 @@ export const ingredientColumns = [
   {
     accessorKey: "quantity", //access nested data with dot notation
     header: "Quantity",
+    Cell: ({ cell }) => {
+      const number = cell.getValue();
+
+      return (
+        <Typography>
+          {number}{" "}
+          <span style={{ fontWeight: "bold" }}>{cell.row.original.unit}</span>
+        </Typography>
+      );
+    },
   },
 ];
 export const mealIngredientColumns = [
@@ -32,8 +42,8 @@ export const mealIngredientColumns = [
     header: "Quantity",
     Cell: ({ cell }) => {
       const number = formatNumber(cell.getValue());
-      console.log(number);
-      if (cell.row.original.threshold > cell.getValue()) {
+
+      if (cell.row.original.threshold >= cell.getValue()) {
         return (
           <Stack
             direction={"row"}
@@ -41,12 +51,22 @@ export const mealIngredientColumns = [
             gap={2}
             sx={{ fontWeight: "bold", color: red[400] }}
           >
-            <Typography>{number}</Typography>
+            <Typography>
+              {number}{" "}
+              <span style={{ fontWeight: "bold" }}>
+                {cell.row.original.unit}
+              </span>
+            </Typography>
             <ErrorOutlineIcon sx={{ color: red[400], fontSize: "1.4rem" }} />
           </Stack>
         );
       } else {
-        return <Typography>{number}</Typography>;
+        return (
+          <Typography>
+            {number}{" "}
+            <span style={{ fontWeight: "bold" }}>{cell.row.original.unit}</span>
+          </Typography>
+        );
       }
     },
   },
@@ -56,7 +76,12 @@ export const mealIngredientColumns = [
     Cell: ({ cell }) => {
       const number = formatNumber(cell.getValue());
 
-      return <Typography>{number}</Typography>;
+      return (
+        <Typography>
+          {number}{" "}
+          <span style={{ fontWeight: "bold" }}>{cell.row.original.unit}</span>
+        </Typography>
+      );
     },
   },
 ];
@@ -72,11 +97,25 @@ export const extraIngredientsColumns = [
   },
   {
     accessorKey: "price_per_kilo", //access nested data with dot notation
-    header: "Price Per Kilo",
+    header: "Price",
     Cell: ({ cell }) => {
       const number = formatNumber(cell.getValue());
 
-      return <Typography>{number}</Typography>;
+      return (
+        <Typography>
+          {number} <span style={{ fontWeight: "bold" }}>SAR</span>{" "}
+          <span style={{ fontSize: "0.7rem" }}>
+            {" "}
+            per{" "}
+            <span style={{ fontWeight: "bold" }}>
+              {cell.row.original.ingredient.unit === "l" ||
+              cell.row.original.ingredient.unit === "l"
+                ? "Liter"
+                : "Kilogram"}
+            </span>
+          </span>
+        </Typography>
+      );
     },
   },
 ];

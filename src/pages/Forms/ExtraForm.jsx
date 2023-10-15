@@ -31,8 +31,15 @@ const ExtraForm = ({ row, refetch }) => {
   const [ingredient, setIngredient] = useState();
   const navigate = useNavigate();
   const { branch_id } = useSelector((state) => state.settings);
+  const [unit, setUnit] = useState();
 
-  const handleIngredientChange = (event) => {
+  const handleUnitChange = (e) => {
+    setUnit(e.target.value);
+  };
+
+  const handleIngredientChange = (event, element) => {
+    const unit = element.props["data-unit"];
+    setUnit(unit);
     setIngredient(event.target.value);
   };
 
@@ -128,6 +135,7 @@ const ExtraForm = ({ row, refetch }) => {
   useEffect(() => {
     if (isSuccess && ingredientsData.data?.data?.length !== 0) {
       setIngredient(ingredientsData.data.data[0].id);
+      setUnit(ingredientsData.data.data[0].unit);
     }
   }, [isSuccess]);
 
@@ -205,19 +213,24 @@ const ExtraForm = ({ row, refetch }) => {
                       onChange={handleIngredientChange}
                       value={`${ingredient}`}
                     >
-                      {ingredientsData?.data?.data?.map(({ id, name }) => (
-                        <MenuItem value={id} key={id}>
-                          {name}
-                        </MenuItem>
-                      ))}
+                      {ingredientsData?.data?.data?.map(
+                        ({ id, name, unit }) => (
+                          <MenuItem data-unit={unit} value={id} key={id}>
+                            {name}
+                          </MenuItem>
+                        )
+                      )}
                     </Select>
                   </FormControl>
                 </Box>
               )}
+
               <Box sx={{ my: 2 }}>
                 <TextField
                   name="price_per_kilo"
-                  label="Price Per Kilo"
+                  label={`Price Per ${
+                    unit === "kg" || unit === "g" ? "Kilogram" : "Liter"
+                  }`}
                   fullWidth
                   handleChange={handleChange}
                   onBlur={handleBlur}

@@ -17,6 +17,8 @@ const ingredients = createSlice({
         id: 0,
         quantity: 0,
         is_remove: false,
+        units_options: [],
+        unit: "",
       });
     },
     delete_ingredient: (state, action) => {
@@ -36,6 +38,8 @@ const ingredients = createSlice({
             id: action.payload.id,
             quantity: action.payload.quantity,
             is_remove: action.payload.is_remove,
+            units_options: action.payload.units_options,
+            unit: action.payload.unit,
           };
           oldArray[i] = ingredient;
         }

@@ -58,7 +58,7 @@ const Ingredients = () => {
 
   if (isSuccess) {
     dispatch(setWarningFalse());
-
+    console.log(data.data.data);
     data.data.data.forEach((element) => {
       if (element.threshold >= element.total_quantity) {
         dispatch(setWarningTrue());

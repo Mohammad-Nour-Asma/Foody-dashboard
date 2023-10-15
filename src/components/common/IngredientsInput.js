@@ -8,6 +8,9 @@ import {
   IconButton,
   TextField,
   Typography,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +33,7 @@ const orgnizer = (array) => {
     return array.map((obj) => ({
       id: obj.id,
       label: obj.name,
+      unit: obj.unit,
     }));
   }
   return [];
@@ -60,6 +64,7 @@ const ExpandedTable = ({ data, type, refetch, setOpen }) => {
           ingredients: data,
         };
       }
+
       return request({
         url: `${api}`,
         method: "POST",
@@ -68,7 +73,7 @@ const ExpandedTable = ({ data, type, refetch, setOpen }) => {
     },
     onSuccess: (res) => {
       refetch();
-      console.log(res, "refetched");
+
       setOpen(false);
     },
   });
@@ -84,7 +89,7 @@ const ExpandedTable = ({ data, type, refetch, setOpen }) => {
           maxWidth: "100%",
           position: "relative",
           margin: "0 auto",
-          maxHeight: "300px",
+          maxHeight: "500px",
           overflowY: "auto",
         }}
       >
@@ -96,7 +101,7 @@ const ExpandedTable = ({ data, type, refetch, setOpen }) => {
           }}
         >
           <Grid container spacing={0}>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <Typography
                 sx={{
                   textAlign: "center",
@@ -109,7 +114,7 @@ const ExpandedTable = ({ data, type, refetch, setOpen }) => {
                 Ingredient
               </Typography>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <Typography
                 sx={{
                   textAlign: "center",
@@ -120,6 +125,19 @@ const ExpandedTable = ({ data, type, refetch, setOpen }) => {
                 }}
               >
                 Quantity
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  padding: "6px",
+                  color: "#000",
+                  fontWeight: "500",
+                  borderRight: "1px solid #b1b1b1",
+                }}
+              >
+                Unit
               </Typography>
             </Grid>
 
@@ -167,7 +185,7 @@ const ExpandedTable = ({ data, type, refetch, setOpen }) => {
           )}
           <Grid container spacing={1} sx={{ position: "relative" }}>
             {ingredients.map((ingredient) => (
-              <Grid item xs={12} key={ingredient.key}>
+              <Grid item xs={12} key={`${ingredient.key}`}>
                 <Grid
                   container
                   spacing={1}
@@ -177,29 +195,38 @@ const ExpandedTable = ({ data, type, refetch, setOpen }) => {
                     mb: 1,
                   }}
                 >
-                  <Grid item xs={4} sx={{}}>
+                  <Grid item xs={3} sx={{}}>
                     <Autocomplete
                       disablePortal
                       options={orgnizer(data || [])}
                       fullWidth
+                      size="small"
                       renderInput={(params) => (
                         <TextField {...params} label="Ingredients" />
                       )}
                       onChange={(e, v) => {
+                        const units =
+                          v.unit === "kg" || v.unit === "g"
+                            ? ["g", "kg"]
+                            : ["ml", "l"];
+
                         dispatch(
                           update_ingredient({
                             ...ingredient,
                             id: v.id,
+                            units_options: units ? units : [],
+                            unit: units[0],
                           })
                         );
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={3}>
                     <TextField
                       id="outlined-number"
                       label="Number"
                       type="number"
+                      size="small"
                       value={ingredient.quantity}
                       inputProps={{
                         min: 1,
@@ -215,6 +242,51 @@ const ExpandedTable = ({ data, type, refetch, setOpen }) => {
                       fullWidth
                     />
                   </Grid>
+
+                  <Grid
+                    item
+                    xs={2}
+                    justifyContent={"center"}
+                    textAlign={"center"}
+                  >
+                    {type == "sendBasicIng" ? (
+                      <FormControl fullWidth size="small">
+                        <Select
+                          size="small"
+                          fullWidth
+                          value={ingredient.unit}
+                          onChange={(e) => {
+                            dispatch(
+                              update_ingredient({
+                                ...ingredient,
+                                unit: e.target.value,
+                              })
+                            );
+                          }}
+                        >
+                          {ingredient?.units_options?.map((item) => {
+                            return (
+                              <MenuItem key={item} value={item}>
+                                {item === "g"
+                                  ? "Gram"
+                                  : item === "l"
+                                  ? "Liter"
+                                  : item.toUpperCase()}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
+                    ) : (
+                      <Typography
+                        sx={{ bottom: "-7px", position: "relative" }}
+                        fontWeight={"bold"}
+                      >
+                        {ingredient.unit}
+                      </Typography>
+                    )}
+                  </Grid>
+
                   {type == "sendBasicIng" && (
                     <Grid
                       item

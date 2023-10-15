@@ -131,7 +131,7 @@ const Products = () => {
           }}
           variant="h6"
         >
-          Products
+          Meals
         </Typography>
         <Link to="/products/add" style={{ textDecoration: "none" }}>
           <Button
@@ -143,7 +143,7 @@ const Products = () => {
                 "linear-gradient(to bottom, #dd78ef, #779bc2) !important",
             }}
           >
-            Add Product
+            Add Meal
           </Button>
         </Link>
       </Box>

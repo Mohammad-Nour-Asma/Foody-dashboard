@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import Page from "../Page";
 import { productIngredientColumns } from "../../../data/Ingredients";
 import Table from "../../Table";
-import { Paper, Button, Skeleton, Tooltip, IconButton } from "@mui/material";
+import {
+  Paper,
+  Button,
+  Skeleton,
+  Tooltip,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -30,51 +37,69 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
       header: "Arabic Name",
     },
     {
-      accessorKey: "pivot.quantity", //access nested data with dot notation
+      accessorKey: "total_quantity", //access nested data with dot notation
       header: "Quantity",
-    },
-    {
-      accessorKey: "pivot.is_remove", //access nested data with dot notation
-      header: "Removed",
       Cell: ({ cell }) => {
-        if (cell.getValue() == 1) {
+        const number = cell.getValue();
+
+        if (cell.row.original.threshold >= cell.getValue()) {
           return (
-            <Tooltip arrow placement="right" title="Toggle state">
-              <IconButton
-                color="error"
-                onClick={() => {
-                  toggleMutate.mutate(cell.row.original.id);
-                }}
-              >
-                <Chip
-                  variant="outlined"
-                  color="success"
-                  deleteIcon={<DoneIcon />}
-                  label={"removed"}
-                />
-              </IconButton>
-            </Tooltip>
-          );
-        } else {
-          return (
-            <Tooltip arrow placement="right" title="Toggle state">
-              <IconButton
-                color="error"
-                onClick={() => {
-                  toggleMutate.mutate(cell.row.original.id);
-                }}
-              >
-                <Chip
-                  label={"not removed"}
-                  variant="outlined"
-                  color="secondary"
-                />
-              </IconButton>
-            </Tooltip>
+            <Typography>
+              {number}{" "}
+              <span style={{ fontWeight: "bold" }}>
+                {cell.row.original.unit === "l"
+                  ? "Liter"
+                  : cell.row.original.unit === "g"
+                  ? "Gram"
+                  : cell.row.original.unit}
+              </span>
+            </Typography>
           );
         }
       },
     },
+    // {
+    //   accessorKey: "pivot.is_remove", //access nested data with dot notation
+    //   header: "Removed",
+    //   Cell: ({ cell }) => {
+    //     if (cell.getValue() == 1) {
+    //       return (
+    //         <Tooltip arrow placement="right" title="Toggle state">
+    //           <IconButton
+    //             color="error"
+    //             onClick={() => {
+    //               toggleMutate.mutate(cell.row.original.id);
+    //             }}
+    //           >
+    //             <Chip
+    //               variant="outlined"
+    //               color="success"
+    //               deleteIcon={<DoneIcon />}
+    //               label={"removed"}
+    //             />
+    //           </IconButton>
+    //         </Tooltip>
+    //       );
+    //     } else {
+    //       return (
+    //         <Tooltip arrow placement="right" title="Toggle state">
+    //           <IconButton
+    //             color="error"
+    //             onClick={() => {
+    //               toggleMutate.mutate(cell.row.original.id);
+    //             }}
+    //           >
+    //             <Chip
+    //               label={"not removed"}
+    //               variant="outlined"
+    //               color="secondary"
+    //             />
+    //           </IconButton>
+    //         </Tooltip>
+    //       );
+    //     }
+    //   },
+    // },
   ];
 
   const handleClose = () => {
@@ -83,13 +108,13 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
 
   const { id } = useParams();
 
-  const getProductDetails = () => {
-    return request({ url: `product/${id}` });
+  const getIngredientProductDetails = () => {
+    return request({ url: `/ingredient/product/${id}` });
   };
 
   const getProductIng = useQuery({
     queryKey: [`get-product-details-${id}`],
-    queryFn: getProductDetails,
+    queryFn: getIngredientProductDetails,
   });
 
   const getIngredientsQuery = useQuery({
@@ -120,7 +145,6 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
     mutationFn: toggle,
     onSuccess: (data) => {
       getProductIng.refetch();
-      console.log(data, "sucess");
     },
     onError: (e) => {
       console.log(e);
@@ -200,9 +224,9 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
             />
           ) : (
             <Table
-              data={getProductIng.data.data.data.ingredients}
+              data={getProductIng.data.data.data}
               fields={productIngredientColumns}
-              numberOfRows={getProductIng.data.data.data.ingredients.length}
+              numberOfRows={getProductIng.data.data.data.length}
               enableTopToolBar={true}
               enableBottomToolBar={true}
               enablePagination={true}

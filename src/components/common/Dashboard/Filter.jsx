@@ -32,8 +32,6 @@ const Filter = () => {
     (state) => state.settings
   );
 
-  console.log(dateFilter);
-
   const dispatch = useDispatch();
 
   const handleYearChange = (event) => {

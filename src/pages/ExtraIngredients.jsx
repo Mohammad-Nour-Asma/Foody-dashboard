@@ -42,6 +42,7 @@ const ExtraIngredients = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  console.log(ingredients);
 
   return (
     <Page button={"Add Extra"} link={"/extra/add"} title={"Extra Ingredients"}>
