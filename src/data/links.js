@@ -14,7 +14,7 @@ export const links = [
     url: "/Dashboard",
   },
   {
-    name: "Ingredients in wearhouse",
+    name: "Inventory",
     icon: <SoupKitchenIcon />,
     subLinks: [
       {

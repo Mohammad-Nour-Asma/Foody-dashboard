@@ -89,7 +89,7 @@ const WaiterCount = () => {
             color: "#c387f2",
           }}
         />{" "} */}
-        Waiters Overview
+        Waiters Performance
       </Typography>
       {isLoading || isRefetching ? (
         <Skeleton

@@ -71,7 +71,7 @@ const ProductExtraIngredients = () => {
       console.log(e);
     },
   });
-  console.log(getExtraIngredientsQuery.data);
+
   return (
     <>
       <Dialog
