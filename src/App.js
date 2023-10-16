@@ -32,6 +32,7 @@ import ServiceTiming from "./pages/ServiceTiming";
 import { ErrorBoundary } from "react-error-boundary";
 import ExpandedTable from "./components/common/IngredientsInput";
 import CheckUuid from "./pages/CheckUuid";
+import DamagedIngredient from "./pages/DamagedIngredient";
 
 const sideBarWidth = 250;
 
@@ -45,9 +46,7 @@ function App() {
   const location = useLocation();
 
   const queryClient = new QueryClient();
-  console.log(
-    location.pathname !== "/" && !location.pathname.includes("check")
-  );
+
   return (
     <QueryClientProvider client={queryClient}>
       <Box sx={{ display: "flex" }}>
@@ -116,6 +115,12 @@ function App() {
 
             {/* Service Timing */}
             <Route path="/extra/add" element={<AddExtra />} />
+
+            {/* Damaged Ingredients */}
+            <Route
+              path="/destructed/ingredient"
+              element={<DamagedIngredient />}
+            />
           </Routes>
         </Box>
       </Box>

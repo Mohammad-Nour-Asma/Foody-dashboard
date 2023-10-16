@@ -5,7 +5,7 @@ import FastfoodIcon from "@mui/icons-material/Fastfood";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import FmdBadIcon from "@mui/icons-material/FmdBad";
 
 export const links = [
   {
@@ -26,6 +26,11 @@ export const links = [
         url: "/ingredient/add",
       },
     ],
+  },
+  {
+    name: "Destructed ingredient",
+    icon: <FmdBadIcon />,
+    url: "/destructed/ingredient",
   },
   {
     name: "Extra ingredients",
