@@ -9,6 +9,8 @@ import { Box, Button, Rating, Skeleton, Typography } from "@mui/material";
 import Layout from "../components/common/Layout";
 import MaterialReactTable from "material-react-table";
 import axios from "axios";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "../components/ErrorComponent";
 
 const Reviews = () => {
   const { branch_id } = useSelector((state) => state.settings);
@@ -18,7 +20,7 @@ const Reviews = () => {
     });
   };
 
-  const { isLoading, data, refetch, isRefetching, isError } = useQuery({
+  const { isLoading, data, refetch, isRefetching, isError, error } = useQuery({
     queryKey: [`get-feedback-${branch_id}`],
     queryFn: getOrdersReviews,
   });
@@ -26,22 +28,6 @@ const Reviews = () => {
   useEffect(() => {
     refetch();
   }, [branch_id]);
-
-  const getExcel = useMutation({
-    mutationKey: [`excel-${branch_id}`],
-    mutationFn: (branch_id) => {
-      return request({
-        url: `/export/${branch_id}`,
-        method: "GET",
-      });
-    },
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (data) => {
-      console.log(data);
-    },
-  });
 
   const [loader, setLoader] = useState(false);
 
@@ -77,13 +63,21 @@ const Reviews = () => {
     } catch (error) {
       setLoader(false);
 
-      console.log(error);
       // Handle the error appropriately (show an error message, etc.)
     }
   }
 
+  const { showBoundary } = useErrorBoundary();
+  let errorMessage;
   if (isError) {
-    return <p>Error</p>;
+    if (error?.response?.status === 404)
+      errorMessage = "Data Not Found - Please Contact The Technical Team Or";
+    else if (error?.response?.status === 500)
+      errorMessage =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
+    else {
+      showBoundary(error);
+    }
   }
 
   return (
@@ -151,6 +145,8 @@ const Reviews = () => {
               width={"100%"}
               height={"400px"}
             />
+          ) : isError ? (
+            <ErrorComponent message={errorMessage} refetch={refetch} />
           ) : (
             <MaterialReactTable
               title="Expandable Table"
@@ -177,7 +173,6 @@ const Reviews = () => {
                 },
               }}
               renderDetailPanel={({ row }) => {
-                console.log(row.original.products, "row");
                 if (row.original.products.length > 0) {
                   return (
                     <MaterialReactTable

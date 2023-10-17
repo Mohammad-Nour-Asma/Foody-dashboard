@@ -37,7 +37,7 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
       header: "Arabic Name",
     },
     {
-      accessorKey: "total_quantity", //access nested data with dot notation
+      accessorKey: "pivot.quantity", //access nested data with dot notation
       header: "Quantity",
       Cell: ({ cell }) => {
         const number = cell.getValue();
@@ -58,48 +58,48 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
         }
       },
     },
-    // {
-    //   accessorKey: "pivot.is_remove", //access nested data with dot notation
-    //   header: "Removed",
-    //   Cell: ({ cell }) => {
-    //     if (cell.getValue() == 1) {
-    //       return (
-    //         <Tooltip arrow placement="right" title="Toggle state">
-    //           <IconButton
-    //             color="error"
-    //             onClick={() => {
-    //               toggleMutate.mutate(cell.row.original.id);
-    //             }}
-    //           >
-    //             <Chip
-    //               variant="outlined"
-    //               color="success"
-    //               deleteIcon={<DoneIcon />}
-    //               label={"removed"}
-    //             />
-    //           </IconButton>
-    //         </Tooltip>
-    //       );
-    //     } else {
-    //       return (
-    //         <Tooltip arrow placement="right" title="Toggle state">
-    //           <IconButton
-    //             color="error"
-    //             onClick={() => {
-    //               toggleMutate.mutate(cell.row.original.id);
-    //             }}
-    //           >
-    //             <Chip
-    //               label={"not removed"}
-    //               variant="outlined"
-    //               color="secondary"
-    //             />
-    //           </IconButton>
-    //         </Tooltip>
-    //       );
-    //     }
-    //   },
-    // },
+    {
+      accessorKey: "pivot.is_remove", //access nested data with dot notation
+      header: "Removed",
+      Cell: ({ cell }) => {
+        if (cell.getValue() == 1) {
+          return (
+            <Tooltip arrow placement="right" title="Toggle state">
+              <IconButton
+                color="error"
+                onClick={() => {
+                  toggleMutate.mutate(cell.row.original.id);
+                }}
+              >
+                <Chip
+                  variant="outlined"
+                  color="success"
+                  deleteIcon={<DoneIcon />}
+                  label={"removed"}
+                />
+              </IconButton>
+            </Tooltip>
+          );
+        } else {
+          return (
+            <Tooltip arrow placement="right" title="Toggle state">
+              <IconButton
+                color="error"
+                onClick={() => {
+                  toggleMutate.mutate(cell.row.original.id);
+                }}
+              >
+                <Chip
+                  label={"not removed"}
+                  variant="outlined"
+                  color="secondary"
+                />
+              </IconButton>
+            </Tooltip>
+          );
+        }
+      },
+    },
   ];
 
   const handleClose = () => {
@@ -109,7 +109,7 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
   const { id } = useParams();
 
   const getIngredientProductDetails = () => {
-    return request({ url: `/ingredient/product/${id}` });
+    return request({ url: `/ingredient/pro/${id}` });
   };
 
   const getProductIng = useQuery({
@@ -161,6 +161,7 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
     },
   });
 
+  console.log(getProductIng.data.data.data);
   return (
     <>
       <Dialog
@@ -224,7 +225,7 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
             />
           ) : (
             <Table
-              data={getProductIng.data.data.data}
+              data={getProductIng?.data?.data?.data}
               fields={productIngredientColumns}
               numberOfRows={getProductIng.data.data.data.length}
               enableTopToolBar={true}

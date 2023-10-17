@@ -17,11 +17,14 @@ import IngredientsForm from "./Forms/IngredientsForm";
 import { useDispatch, useSelector } from "react-redux";
 import { setWarningFalse, setWarningTrue } from "../redux/WarningSlice";
 import AddAmountsForm from "./Forms/AddAmountsForm";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "../components/ErrorComponent";
 
 const Ingredients = () => {
   const dispatch = useDispatch();
+  const { showBoundary } = useErrorBoundary();
   const { branch_id } = useSelector((state) => state.settings);
-  const { data, isLoading, isError, refetch, isSuccess, isRefetching } =
+  const { data, isLoading, isError, refetch, isSuccess, isRefetching, error } =
     useQuery({
       queryKey: [`ingredients-get-${branch_id}`],
       queryFn: () => {
@@ -58,7 +61,7 @@ const Ingredients = () => {
 
   if (isSuccess) {
     dispatch(setWarningFalse());
-    console.log(data.data.data);
+
     data.data.data.forEach((element) => {
       if (element.threshold >= element.total_quantity) {
         dispatch(setWarningTrue());
@@ -66,6 +69,16 @@ const Ingredients = () => {
       }
       return false; // continues the loop
     });
+  }
+
+  let errorMessage;
+  if (isError) {
+    if (error?.response?.status === 404)
+      errorMessage = "Data Not Found - Please Contact The Technical Team Or";
+    else if (error?.response?.status === 500)
+      errorMessage =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
+    else showBoundary(error);
   }
 
   return (
@@ -89,6 +102,8 @@ const Ingredients = () => {
               height={"400px"}
             />
           </Layout>
+        ) : isError ? (
+          <ErrorComponent message={errorMessage} refetch={refetch} />
         ) : (
           <Table
             data={ingredients?.data}

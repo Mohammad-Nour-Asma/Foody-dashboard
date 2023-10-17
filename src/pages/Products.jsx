@@ -11,6 +11,8 @@ import ProductForm from "./Forms/ProductForm";
 import { useSelector } from "react-redux";
 import Layout from "../components/common/Layout";
 import { formatNumber } from "../components/HelperFunction";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "../components/ErrorComponent";
 
 const productsColumns = [
   {
@@ -85,7 +87,7 @@ const Products = () => {
     refetch();
   }, [branch_id]);
 
-  const products = data?.data.data;
+  const products = data?.data?.data;
 
   const deleteProduct = (id) => {
     return request({
@@ -106,6 +108,16 @@ const Products = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const { showBoundary } = useErrorBoundary();
+  let errorMessage;
+  if (isError) {
+    if (error?.response?.status === 404)
+      errorMessage = "Data Not Found - Please Contact The Technical Team Or";
+    else if (error?.response?.status === 500)
+      errorMessage =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
+    else showBoundary(error);
+  }
 
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
@@ -156,11 +168,13 @@ const Products = () => {
               height={"400px"}
             />
           </Layout>
+        ) : isError ? (
+          <ErrorComponent message={errorMessage} refetch={refetch} />
         ) : (
           <Table
-            data={data?.data.data}
+            data={data?.data?.data}
             fields={productsColumns}
-            numberOfRows={products.length}
+            numberOfRows={products?.length}
             enableTopToolBar={true}
             enableBottomToolBar={true}
             enablePagination={true}

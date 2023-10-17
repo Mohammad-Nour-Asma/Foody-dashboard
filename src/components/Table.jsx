@@ -67,8 +67,6 @@ export const Table = ({
   };
   const headers = columns.map((item) => item.accessorKey);
 
-  console.log(open, "exported");
-
   return (
     <>
       {" "}

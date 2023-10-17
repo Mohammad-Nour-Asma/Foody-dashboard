@@ -65,8 +65,9 @@ const Dashboard = () => {
       </ComponentWrapper>
 
       <SalesAnalytics />
-      <ServiceTiming />
       <DailySales />
+
+      <ServiceTiming />
       <WaiterCount />
 
       <Stack

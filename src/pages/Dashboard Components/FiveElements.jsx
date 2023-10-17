@@ -9,6 +9,7 @@ import Loader from "../../components/common/loader/loader";
 import { useErrorBoundary } from "react-error-boundary";
 import InterestsIcon from "@mui/icons-material/Interests";
 import { RestoreFromTrash } from "@mui/icons-material";
+import ErrorComponent from "../../components/ErrorComponent";
 
 const TopElements = ({ columns, type, entity }) => {
   let api;
@@ -25,6 +26,7 @@ const TopElements = ({ columns, type, entity }) => {
   const { dateFilter, branch_id, fromToFilter, filterState } = useSelector(
     (state) => state.settings
   );
+  const { showBoundary } = useErrorBoundary();
 
   const getData = () => {
     let data;
@@ -51,8 +53,6 @@ const TopElements = ({ columns, type, entity }) => {
       };
     }
 
-    console.log(api);
-
     return request({
       url: `${api}/${branch_id}`,
       method: "POST",
@@ -66,6 +66,10 @@ const TopElements = ({ columns, type, entity }) => {
         `get-hello-world${type}-${entity}-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}`,
       ],
       queryFn: getData,
+      onError: (data) => {
+        if (data?.response?.status !== 404 || data?.response?.status !== 500)
+          showBoundary(data);
+      },
     });
 
   useEffect(() => {
@@ -84,8 +88,16 @@ const TopElements = ({ columns, type, entity }) => {
     filterState,
   ]);
 
+  let errorMessage;
+  if (isError) {
+    if (error?.response?.status === 404)
+      errorMessage = "Data Not Found - Please Contact The Technical Team Or";
+    else if (error?.response?.status === 500)
+      errorMessage =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
+  }
+
   const orgnizeTheResponse = (response) => {
-    console.log(response, " data");
     let data;
     if (
       type === "top requested products" ||
@@ -109,14 +121,6 @@ const TopElements = ({ columns, type, entity }) => {
     }
     return data;
   };
-
-  if (isError) {
-    return <Typography>Error</Typography>;
-  }
-
-  if (isSuccess) {
-    console.log(data, "data");
-  }
 
   return (
     <ComponentWrapper>
@@ -146,6 +150,8 @@ const TopElements = ({ columns, type, entity }) => {
           width={"100%"}
           height={"280px"}
         />
+      ) : isError ? (
+        <ErrorComponent message={errorMessage} refetch={refetch} />
       ) : (
         <>
           <Table

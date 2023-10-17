@@ -59,6 +59,7 @@ const ExtraForm = ({ row, refetch }) => {
       let dataToSend = {
         price_per_kilo: values.price_per_kilo,
         branch_id: branch_id,
+        unit,
       };
 
       setUpdatedIng(dataToSend);
@@ -69,6 +70,7 @@ const ExtraForm = ({ row, refetch }) => {
         ingredient_id: ingredient,
         price_per_kilo: values.price_per_kilo,
         branch_id: branch_id,
+        unit,
       };
       storeIngredient.mutate(data);
     }
@@ -215,7 +217,13 @@ const ExtraForm = ({ row, refetch }) => {
                     >
                       {ingredientsData?.data?.data?.map(
                         ({ id, name, unit }) => (
-                          <MenuItem data-unit={unit} value={id} key={id}>
+                          <MenuItem
+                            data-unit={
+                              unit === "g" ? "kg" : unit === "ml" ? "l" : unit
+                            }
+                            value={id}
+                            key={id}
+                          >
                             {name}
                           </MenuItem>
                         )

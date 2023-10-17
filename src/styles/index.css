@@ -197,3 +197,5 @@ span.Cancelled {
   animation: textFade 0.5s ease-in-out ;
 
 }
+
+body{position: relative;}

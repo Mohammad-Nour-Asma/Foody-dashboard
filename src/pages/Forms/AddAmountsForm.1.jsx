@@ -4,7 +4,6 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useMutation } from "@tanstack/react-query";
 
 export const AddAmountsForm = ({ row }) => {
-  console.log(row);
   const addAmountsQuery = useMutation({
     mutationKey: "",
   });

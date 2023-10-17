@@ -5,11 +5,15 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import ComponentWrapper from "../../components/ComponentWrapper";
 import { request } from "../../Request/request";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "../../components/ErrorComponent";
 
 const WaiterCount = () => {
   const { dateFilter, branch_id, fromToFilter, filterState } = useSelector(
     (state) => state.settings
   );
+
+  const { showBoundary } = useErrorBoundary();
 
   const getData = () => {
     let data;
@@ -37,7 +41,7 @@ const WaiterCount = () => {
     }
 
     return request({
-      url: `waiter/countTables/1`,
+      url: `waiter/countTables/${branch_id}`,
       method: "POST",
       data: data,
     });
@@ -51,6 +55,10 @@ const WaiterCount = () => {
       queryFn: getData,
       staleTime: Infinity,
       cacheTime: 0,
+      onError: (data) => {
+        if (data?.response?.status !== 404 || data?.response?.status !== 500)
+          showBoundary(data);
+      },
     });
 
   useEffect(() => {
@@ -69,6 +77,14 @@ const WaiterCount = () => {
     filterState,
   ]);
 
+  let errorMessage;
+  if (isError) {
+    if (error?.response?.status === 404)
+      errorMessage = "Data Not Found - Please Contact The Technical Team Or";
+    else if (error?.response?.status === 500)
+      errorMessage =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
+  }
   return (
     <ComponentWrapper>
       <Typography
@@ -97,6 +113,8 @@ const WaiterCount = () => {
           width={"100%"}
           height={"280px"}
         />
+      ) : isError ? (
+        <ErrorComponent message={errorMessage} refetch={refetch} />
       ) : (
         <Box pb={"1rem"}>
           <Table

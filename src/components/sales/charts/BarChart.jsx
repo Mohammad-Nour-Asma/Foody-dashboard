@@ -23,7 +23,6 @@ const BarChart = ({ data }) => {
   };
   const cahrtData = orginizeData(data);
 
-  console.log(data);
   return (
     <Paper
       sx={{

@@ -33,6 +33,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import ExpandedTable from "./components/common/IngredientsInput";
 import CheckUuid from "./pages/CheckUuid";
 import DamagedIngredient from "./pages/DamagedIngredient";
+import ErrorPage from "./pages/ErrorPage";
 
 const sideBarWidth = 250;
 
@@ -48,83 +49,91 @@ function App() {
   const queryClient = new QueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Box sx={{ display: "flex" }}>
-        {location.pathname !== "/" && !location.pathname.includes("check") && (
-          <>
-            <Navbar
-              sideBarWidth={sideBarWidth}
-              handleDrawerToggle={handleDrawerToggle}
-            />
-            <Sidebar
-              sideBarWidth={sideBarWidth}
-              mobileOpen={mobileOpen}
-              handleDrawerToggle={handleDrawerToggle}
-            />
-          </>
-        )}
-        <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            px: { xs: 1, md: 2 },
-            width: { xs: "100%", md: `calc(100% - ${sideBarWidth}px)` },
-          }}
-        >
-          {/* Routes */}
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/check/:uuid" element={<CheckUuid />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/add" element={<AddProduct />} />
-            <Route
-              path="/products/edit/:id"
-              element={<AddProduct edit={true} />}
-            />
-            <Route path="/products/:id" element={<SingleProduct />} />
+    <ErrorBoundary
+      FallbackComponent={ErrorPage}
+      onError={(e) => {
+        console.log(e);
+      }}
+    >
+      <QueryClientProvider client={queryClient}>
+        <Box sx={{ display: "flex" }}>
+          {location.pathname !== "/" &&
+            !location.pathname.includes("check") && (
+              <>
+                <Navbar
+                  sideBarWidth={sideBarWidth}
+                  handleDrawerToggle={handleDrawerToggle}
+                />
+                <Sidebar
+                  sideBarWidth={sideBarWidth}
+                  mobileOpen={mobileOpen}
+                  handleDrawerToggle={handleDrawerToggle}
+                />
+              </>
+            )}
+          <Box
+            component="main"
+            sx={{
+              flexGrow: 1,
+              px: { xs: 1, md: 2 },
+              width: { xs: "100%", md: `calc(100% - ${sideBarWidth}px)` },
+            }}
+          >
+            {/* Routes */}
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/check/:uuid" element={<CheckUuid />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/products/add" element={<AddProduct />} />
+              <Route
+                path="/products/edit/:id"
+                element={<AddProduct edit={true} />}
+              />
+              <Route path="/products/:id" element={<SingleProduct />} />
 
-            <Route path="/customers" element={<Customers />} />
-            <Route path="/customers/:id" element={<SingleCustomer />} />
+              <Route path="/customers" element={<Customers />} />
+              <Route path="/customers/:id" element={<SingleCustomer />} />
 
-            <Route path="/sales" element={<ProductSales />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/orders/template" element={<OrderTemplate />} />
-            <Route path="/orders/:id" element={<SingleOrder />} />
+              <Route path="/sales" element={<ProductSales />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/orders/template" element={<OrderTemplate />} />
+              <Route path="/orders/:id" element={<SingleOrder />} />
 
-            <Route path="/transactions" element={<Transactions />} />
+              <Route path="/transactions" element={<Transactions />} />
 
-            <Route path="/reviews" element={<Reviews />} />
+              <Route path="/reviews" element={<Reviews />} />
 
-            <Route path="/reviews" element={<Reviews />} />
-            {/* Ingredients */}
-            <Route path="/ingredient/add" element={<AddIngredients />} />
-            <Route path="/ingredients" element={<Ingredients />} />
+              <Route path="/reviews" element={<Reviews />} />
+              {/* Ingredients */}
+              <Route path="/ingredient/add" element={<AddIngredients />} />
+              <Route path="/ingredients" element={<Ingredients />} />
 
-            {/* Offer  */}
-            <Route path="/offers" element={<Offer />} />
-            <Route path="/offer/add" element={<AddOffer />} />
+              {/* Offer  */}
+              <Route path="/offers" element={<Offer />} />
+              <Route path="/offer/add" element={<AddOffer />} />
 
-            {/* Categories */}
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/category/add" element={<AddCategory />} />
+              {/* Categories */}
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/category/add" element={<AddCategory />} />
 
-            {/* Extra Ingredients */}
-            <Route path="/extra" element={<ExtraIngredients />} />
-            <Route path="/extra/add" element={<AddExtra />} />
+              {/* Extra Ingredients */}
+              <Route path="/extra" element={<ExtraIngredients />} />
+              <Route path="/extra/add" element={<AddExtra />} />
 
-            {/* Service Timing */}
-            <Route path="/extra/add" element={<AddExtra />} />
+              {/* Service Timing */}
+              <Route path="/extra/add" element={<AddExtra />} />
 
-            {/* Damaged Ingredients */}
-            <Route
-              path="/destructed/ingredient"
-              element={<DamagedIngredient />}
-            />
-          </Routes>
+              {/* Damaged Ingredients */}
+              <Route
+                path="/destructed/ingredient"
+                element={<DamagedIngredient />}
+              />
+            </Routes>
+          </Box>
         </Box>
-      </Box>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

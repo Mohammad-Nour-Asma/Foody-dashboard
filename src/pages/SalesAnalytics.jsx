@@ -15,6 +15,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import React, { useEffect } from "react";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "../components/ErrorComponent";
 const SalesAnalytics = () => {
   const ComponentWrapper = styled(Box)({
     marginTop: "10px",
@@ -23,6 +25,8 @@ const SalesAnalytics = () => {
 
   const { dateFilter, branch_id } = useSelector((state) => state.settings);
 
+  const { showBoundary } = useErrorBoundary();
+
   // Start Total Salse Per Month
   const totalSalseRequest = () => {
     let data = { year: new Date().getFullYear() };
@@ -30,7 +34,7 @@ const SalesAnalytics = () => {
       data.year = dateFilter.year;
     }
     return request({
-      url: `totalSales/${branch_id}`,
+      url: `/totalSales/${branch_id}`,
       method: "POST",
       data: data,
     });
@@ -41,11 +45,16 @@ const SalesAnalytics = () => {
     queryFn: totalSalseRequest,
     staleTime: Infinity,
     cacheTime: 0,
+
+    onError: (data) => {
+      if (data?.response?.status !== 404 || data?.response?.status !== 500)
+        showBoundary(data);
+    },
   });
 
   const getMonths = (data) => {
     let months = [];
-    for (let index = 0; index < data.length; index++) {
+    for (let index = 0; index < data?.length; index++) {
       const element = data[index];
       const date = new Date();
       date.setMonth(element.month - 1);
@@ -57,7 +66,7 @@ const SalesAnalytics = () => {
 
   const getTotalSalesData = (data) => {
     let info = [];
-    for (let index = 0; index < data.length; index++) {
+    for (let index = 0; index < data?.length; index++) {
       // data.push(data[index]?.total);
       info.push(data[index].totalSales);
     }
@@ -79,14 +88,19 @@ const SalesAnalytics = () => {
   const {
     data: bar,
     isLoading,
-    isErro,
+    isError,
     refetch,
     isRefetching,
+    error,
   } = useQuery({
     queryKey: [`get-peakTimes-${dateFilter.year}-${dateFilter.month}`],
     queryFn: getData,
     staleTime: Infinity,
     cacheTime: 0,
+    onError: (data) => {
+      if (data?.response?.status !== 404 || data?.response?.status !== 500)
+        showBoundary(data);
+    },
   });
 
   useEffect(() => {
@@ -99,17 +113,29 @@ const SalesAnalytics = () => {
 
   // initiate the line data
 
-  if (totalSales.isError || isErro) {
-    return <Typography>Error happen</Typography>;
+  let errorMessage1;
+  if (isError || totalSales.error) {
+    if (
+      error?.response?.status === 404 ||
+      totalSales.error?.response?.status === 404
+    )
+      errorMessage1 = "Data Not Found - Please Contact The Technical Team Or";
+    else if (
+      error?.response?.status === 500 ||
+      totalSales.error?.response?.status === 500
+    )
+      errorMessage1 =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
   }
-  const salsePerMonth = totalSales.isLoading ? [] : totalSales.data.data.data;
+
+  const salsePerMonth = totalSales.isLoading
+    ? []
+    : totalSales?.data?.data?.data;
   const chartData = {
     name: "Total Sales",
     data: getTotalSalesData(salsePerMonth),
   };
   salesLineChartOptions.xaxis.categories = getMonths(salsePerMonth);
-
-  console.log(getMonths(salsePerMonth), getTotalSalesData(salsePerMonth));
 
   return (
     <Box sx={{ pt: "20px", pb: "20px" }}>
@@ -140,39 +166,50 @@ const SalesAnalytics = () => {
         </Typography>
       </Stack>
       <ComponentWrapper>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={6}>
-            {isLoading ||
-            totalSales.isLoading ||
-            isRefetching ||
-            totalSales.isRefetching ? (
-              <Skeleton
-                sx={{ bottom: "80px", position: "relative" }}
-                width={"100%"}
-                height={"400px"}
-              />
-            ) : (
-              <LineChart
-                chartOptions={salesLineChartOptions}
-                chartData={[chartData]}
-              />
-            )}
+        {totalSales.isError || isError ? (
+          <ErrorComponent
+            message={errorMessage1}
+            refetch={() => {
+              totalSales.refetch();
+              refetch();
+            }}
+          />
+        ) : (
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={6}>
+              {isLoading ||
+              totalSales.isLoading ||
+              isRefetching ||
+              totalSales.isRefetching ? (
+                <Skeleton
+                  sx={{ bottom: "80px", position: "relative" }}
+                  width={"100%"}
+                  height={"400px"}
+                />
+              ) : (
+                <LineChart
+                  chartOptions={salesLineChartOptions}
+                  chartData={[chartData]}
+                />
+              )}
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={6}>
+              {isLoading ||
+              totalSales.isLoading ||
+              isRefetching ||
+              totalSales.isRefetching ? (
+                <Skeleton
+                  sx={{ bottom: "80px", position: "relative" }}
+                  width={"100%"}
+                  height={"400px"}
+                />
+              ) : (
+                <BarChart data={bar.data.data} />
+              )}
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={6} lg={6}>
-            {isLoading ||
-            totalSales.isLoading ||
-            isRefetching ||
-            totalSales.isRefetching ? (
-              <Skeleton
-                sx={{ bottom: "80px", position: "relative" }}
-                width={"100%"}
-                height={"400px"}
-              />
-            ) : (
-              <BarChart data={bar.data.data} />
-            )}
-          </Grid>
-        </Grid>
+        )}
       </ComponentWrapper>
     </Box>
   );

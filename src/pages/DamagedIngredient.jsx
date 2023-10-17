@@ -5,10 +5,14 @@ import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import { request } from "../Request/request";
 import Layout from "../components/common/Layout";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "../components/ErrorComponent";
 
 const DamagedIngredient = () => {
+  const { showBoundary } = useErrorBoundary();
+
   const { branch_id } = useSelector((state) => state.settings);
-  const { data, isLoading, isError, refetch, isRefetching } = useQuery({
+  const { data, isLoading, isError, refetch, isRefetching, error } = useQuery({
     queryKey: [`Extraingredients-get-${branch_id}`],
     queryFn: () => {
       return request({
@@ -18,7 +22,17 @@ const DamagedIngredient = () => {
     },
   });
 
-  console.log(data);
+  let errorMessage;
+  if (isError) {
+    if (error?.response?.status === 404)
+      errorMessage = "Data Not Found - Please Contact The Technical Team Or";
+    else if (error?.response?.status === 500)
+      errorMessage =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
+    else {
+      showBoundary(error);
+    }
+  }
   return (
     <Box sx={{ pt: "80px", pb: "20px" }}>
       <Typography
@@ -40,11 +54,13 @@ const DamagedIngredient = () => {
             height={"400px"}
           />
         </Layout>
+      ) : isError ? (
+        <ErrorComponent message={errorMessage} refetch={refetch} />
       ) : (
         <Table
-          data={data.data.data}
+          data={data?.data?.data}
           fields={destructuredCol}
-          numberOfRows={data.data.data.length}
+          numberOfRows={data?.data?.data?.length}
           enableTopToolBar={true}
           enableBottomToolBar={true}
           enablePagination={true}

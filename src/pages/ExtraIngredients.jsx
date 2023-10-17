@@ -10,10 +10,12 @@ import { request } from "../Request/request";
 import Notify from "../components/common/Notify";
 import ExtraForm from "./Forms/ExtraForm";
 import { useSelector } from "react-redux";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "../components/ErrorComponent";
 
 const ExtraIngredients = () => {
   const { branch_id } = useSelector((state) => state.settings);
-  const { data, isLoading, isError, refetch, isRefetching } = useQuery({
+  const { data, isLoading, isError, refetch, isRefetching, error } = useQuery({
     queryKey: [`Extraingredients-get-${branch_id}`],
     queryFn: () => {
       return request({
@@ -42,7 +44,20 @@ const ExtraIngredients = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(ingredients);
+
+  const { showBoundary } = useErrorBoundary();
+
+  let errorMessage;
+  if (isError) {
+    if (error?.response?.status === 404)
+      errorMessage = "Data Not Found - Please Contact The Technical Team Or";
+    else if (error?.response?.status === 500)
+      errorMessage =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
+    else {
+      showBoundary(error);
+    }
+  }
 
   return (
     <Page button={"Add Extra"} link={"/extra/add"} title={"Extra Ingredients"}>
@@ -61,11 +76,13 @@ const ExtraIngredients = () => {
               height={"400px"}
             />
           </Layout>
+        ) : isError ? (
+          <ErrorComponent message={errorMessage} refetch={refetch} />
         ) : (
           <Table
             data={ingredients?.data}
             fields={extraIngredientsColumns}
-            numberOfRows={ingredients.length}
+            numberOfRows={ingredients?.length}
             enableTopToolBar={true}
             enableBottomToolBar={true}
             enablePagination={true}

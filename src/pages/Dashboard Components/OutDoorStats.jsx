@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import { request } from "../../Request/request";
 import DashboardHeading from "./DashboardHeading";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "../../components/ErrorComponent";
 const OutDoorStats = () => {
   const Item = styled(Paper)({
     padding: "1rem",
@@ -18,6 +20,7 @@ const OutDoorStats = () => {
     textAlign: "left",
   });
 
+  const { showBoundary } = useErrorBoundary();
   const getStats = (data) => {
     return request({
       url: `/takeaway/statistics/${branch_id}`,
@@ -30,39 +33,21 @@ const OutDoorStats = () => {
     (state) => state.settings
   );
 
-  const { mutate, isPending, data, isError } = useMutation({
+  const { mutate, isPending, data, isError, error } = useMutation({
     mutationKey: [
       `get-outdoor-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}-statis`,
     ],
     mutationFn: getStats,
     onSuccess: (data) => {},
-    onError: (data) => {},
-  });
-
-  const getMaxSales = useMutation({
-    mutationKey: [
-      `get-outdoor-maxSales-${dateFilter.year}-${dateFilter.month}-${dateFilter.day}-statis`,
-    ],
-    mutationFn: (data) => {
-      return request({
-        url: `takeaway/max/${branch_id}`,
-        data,
-        method: "POST",
-      });
+    onError: (data) => {
+      if (data?.response?.status !== 404 || data?.response?.status !== 500)
+        showBoundary(data);
     },
-    onSuccess: (data) => {},
-    onError: (data) => {},
   });
 
   useEffect(() => {
     if (filterState === "date") {
       mutate({
-        year: dateFilter.year,
-        day: dateFilter.day,
-        month: dateFilter.month,
-        branch_id,
-      });
-      getMaxSales.mutate({
         year: dateFilter.year,
         day: dateFilter.day,
         month: dateFilter.month,
@@ -74,7 +59,6 @@ const OutDoorStats = () => {
         end_date: `${fromToFilter.to.year}-${fromToFilter.to.month}-${fromToFilter.to.day}`,
       };
       mutate(data);
-      getMaxSales.mutate(data);
     }
   }, [
     dateFilter.year,
@@ -90,21 +74,79 @@ const OutDoorStats = () => {
     filterState,
   ]);
 
+  const refetch = () => {
+    if (filterState === "date") {
+      mutate({
+        year: dateFilter.year,
+        day: dateFilter.day,
+        month: dateFilter.month,
+        branch_id,
+      });
+    } else if (filterState === "fromTo") {
+      const data = {
+        start_date: `${fromToFilter.from.year}-${fromToFilter.from.month}-${fromToFilter.from.day}`,
+        end_date: `${fromToFilter.to.year}-${fromToFilter.to.month}-${fromToFilter.to.day}`,
+      };
+      mutate(data);
+    }
+  };
+
+  let errorMessage = "";
   if (isError) {
-    return <Box>Error</Box>;
+    if (error?.response?.status === 404)
+      errorMessage = "Data Not Found - Please Contact The Technical Team Or";
+    else if (error?.response?.status === 500)
+      errorMessage =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
   }
 
-  const stats = data?.data?.data;
+  const stats = data?.data[0];
   let statsArray;
 
   if (stats) statsArray = Object.keys(stats);
-  console.log(getMaxSales.data?.data?.data, "max");
+
   return (
     <>
       <DashboardHeading title={"Outdoor Statistics"} Icon={QueryStatsIcon} />
-      <Grid container spacing={2}>
-        {(isPending ? Array.from(new Array(4)) : statsArray)?.map((item, i) => (
-          <Grid item xs={12} sm={i === 5 - 1 ? 12 : 6} lg={4} key={i}>
+      {isError ? (
+        <ErrorComponent message={errorMessage} refetch={refetch} />
+      ) : (
+        <Grid container spacing={2}>
+          {(isPending ? Array.from(new Array(6)) : statsArray)?.map(
+            (item, i) => (
+              <Grid item xs={12} sm={i === 5 - 1 ? 12 : 6} lg={4} key={i}>
+                <Item
+                  sx={{
+                    borderStyle: "solid",
+                    borderWidth: "1px",
+                    borderColor: "divider",
+                  }}
+                >
+                  <Box sx={{ flex: 1 }}>
+                    {/* icon */}
+                    {item ? (
+                      item.replace("_", " ").toLocaleUpperCase()
+                    ) : (
+                      <Skeleton width="60%" />
+                    )}
+                    <Typography variant="h4" sx={{ my: 2 }}>
+                      {item ? (
+                        stats[item] ? (
+                          stats[item]
+                        ) : (
+                          0
+                        )
+                      ) : (
+                        <Skeleton width="60%" />
+                      )}
+                    </Typography>
+                  </Box>
+                </Item>
+              </Grid>
+            )
+          )}
+
+          <Grid xs={12} sm={6} lg={4} item>
             <Item
               sx={{
                 borderStyle: "solid",
@@ -114,62 +156,96 @@ const OutDoorStats = () => {
             >
               <Box sx={{ flex: 1 }}>
                 {/* icon */}
-                {item ? (
-                  item.replace("_", " ").toLocaleUpperCase()
-                ) : (
-                  <Skeleton width="60%" />
-                )}
-                <Typography variant="h4" sx={{ my: 2 }}>
-                  {item ? (
-                    stats[item] ? (
-                      stats[item]
+                {isPending ? <Skeleton width="60%" /> : "Order Count"}
+                <Stack
+                  direction="row"
+                  alignItems={"center"}
+                  justifyContent={"space-between"}
+                >
+                  <Typography variant="h4" sx={{ mt: 2 }}>
+                    {isPending ? (
+                      <Skeleton width="60%" />
+                    ) : data?.data[1] ? (
+                      data?.data[1]?.count ? (
+                        data?.data[1]?.count
+                      ) : (
+                        0
+                      )
                     ) : (
-                      0
-                    )
-                  ) : (
-                    <Skeleton width="60%" />
-                  )}
-                </Typography>
+                      <Typography variant="h4" sx={{ my: 1 }}>
+                        0
+                      </Typography>
+                    )}
+                  </Typography>
+
+                  <Typography variant="h6">
+                    {isPending ? (
+                      <Skeleton width="60%" />
+                    ) : data?.data[1] ? (
+                      data?.data[1]?.date ? (
+                        data?.data[1]?.date
+                      ) : (
+                        0
+                      )
+                    ) : (
+                      <Typography></Typography>
+                    )}
+                  </Typography>
+                </Stack>
               </Box>
             </Item>
           </Grid>
-        ))}
-        <Grid item xs={12} sm={12} lg={4}>
-          <Item
-            sx={{
-              borderStyle: "solid",
-              borderWidth: "1px",
-              borderColor: "divider",
-            }}
-          >
-            <Box sx={{ flex: 1 }}>
-              <Typography>
-                {getMaxSales.isPending ? <Skeleton width="60%" /> : "Max Sales"}
-              </Typography>
-              <Stack
-                direction={"row"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <Typography variant="h4" sx={{ my: 2 }}>
-                  {getMaxSales.isPending ? (
-                    <Skeleton width="60%" />
-                  ) : (
-                    getMaxSales.data?.data?.data.count
-                  )}
-                </Typography>
-                <Typography fontSize={"1rem"} sx={{ my: 2 }}>
-                  {getMaxSales.isPending ? (
-                    <Skeleton width="60%" />
-                  ) : (
-                    getMaxSales.data?.data?.data.date
-                  )}
-                </Typography>
-              </Stack>
-            </Box>
-          </Item>
+          <Grid xs={12} sm={6} lg={4} item>
+            <Item
+              sx={{
+                borderStyle: "solid",
+                borderWidth: "1px",
+                borderColor: "divider",
+              }}
+            >
+              <Box sx={{ flex: 1 }}>
+                {/* icon */}
+                {isPending ? <Skeleton width="60%" /> : "Max Sales"}
+                <Stack
+                  direction="row"
+                  alignItems={"center"}
+                  justifyContent={"space-between"}
+                >
+                  <Typography variant="h4" sx={{ mt: 2 }}>
+                    {isPending ? (
+                      <Skeleton width="60%" />
+                    ) : data?.data[2] ? (
+                      data?.data[2]?.max_sales ? (
+                        data?.data[2]?.max_sales
+                      ) : (
+                        0
+                      )
+                    ) : (
+                      <Typography variant="h4" sx={{ my: 1 }}>
+                        0
+                      </Typography>
+                    )}
+                  </Typography>
+
+                  <Typography variant="h6">
+                    {isPending ? (
+                      <Skeleton width="60%" />
+                    ) : data?.data[2] ? (
+                      data?.data[2]?.date ? (
+                        data?.data[2]?.date
+                      ) : (
+                        0
+                      )
+                    ) : (
+                      <Typography></Typography>
+                    )}
+                  </Typography>
+                </Stack>
+              </Box>
+            </Item>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </>
   );
 };

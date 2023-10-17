@@ -19,7 +19,6 @@ const CheckUuid = () => {
   const chekcUuid = useMutation({
     mutationKey: [`uuid-${uuid}`],
     mutationFn: (data) => {
-      console.log(data);
       return request({
         url: "/get-token-by-uuid",
         data,
@@ -27,8 +26,6 @@ const CheckUuid = () => {
       });
     },
     onSuccess: (resp) => {
-      console.log(resp);
-
       localStorage.setItem("token", resp.data.token);
       localStorage.setItem(
         "restaurant_id",
@@ -36,10 +33,7 @@ const CheckUuid = () => {
       );
       dispatch(setRestaurantId(resp.data.user.branch.restaurant_id));
       dispatch(setBranchId(resp.data.user.branch.id));
-      console.log(
-        resp.data.user.branch.id,
-        resp.data.user.branch.restaurant_id
-      );
+
       setOpacity(true);
       setTimeout(() => {
         navigate("/dashboard");

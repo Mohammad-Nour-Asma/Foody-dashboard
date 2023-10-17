@@ -65,7 +65,6 @@ const ProductExtraIngredients = () => {
     mutationFn: deleteProduct,
     onSuccess: () => {
       getProductExtra.refetch();
-      console.log("hellow world");
     },
     onError: (e) => {
       console.log(e);

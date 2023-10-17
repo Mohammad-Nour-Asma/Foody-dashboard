@@ -62,8 +62,11 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
     },
   });
 
+  useEffect(() => {
+    refetch();
+  }, [restaurant_id]);
+
   if (isSuccess) {
-    console.log(data?.data?.data);
     if (!localStorage.getItem("branch_id")) {
       localStorage.setItem("branch_id", data.data.data[0].id);
       dispatch(setBranchId(data.data.data[0].id));
@@ -80,9 +83,6 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
     dispatch(setBranchId(event.target.value));
   };
 
-  useEffect(() => {
-    refetch();
-  }, [restaurant_id]);
   return (
     <>
       <AppBar

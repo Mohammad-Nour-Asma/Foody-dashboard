@@ -16,8 +16,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "../../components/ErrorComponent";
 
 const DailySales = () => {
+  const { showBoundary } = useErrorBoundary();
+
   const ComponentWrapper = styled(Box)({
     marginTop: "10px",
     paddingBottom: "10px",
@@ -28,7 +32,7 @@ const DailySales = () => {
     (state) => state.settings
   );
 
-  const { data, isLoading, isError, refetch, isRefetching, isSuccess } =
+  const { data, isLoading, isError, refetch, isRefetching, isSuccess, error } =
     useQuery({
       queryKey: [`get-dayily-Sales-${dateFilter.year}-${dateFilter.month}`],
       queryFn: () => {
@@ -45,14 +49,23 @@ const DailySales = () => {
           method: "POST",
         });
       },
+      onError: (data) => {
+        if (data?.response?.status !== 404 || data?.response?.status !== 500)
+          showBoundary(data);
+      },
     });
 
   const [state, setState] = useState("bar");
 
   // End Total Salse Per Month
 
+  let errorMessage;
   if (isError) {
-    return <Box>An Error Happen !</Box>;
+    if (error?.response?.status === 404)
+      errorMessage = "Data Not Found - Please Contact The Technical Team Or";
+    else if (error?.response?.status === 500)
+      errorMessage =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
   }
 
   let chartData = [];
@@ -142,38 +155,42 @@ const DailySales = () => {
           </button>
         </Stack>
       </Stack>
-      <ComponentWrapper>
-        {isLoading || isRefetching ? (
-          <Skeleton animation={"wave"} width={600} height={250} />
-        ) : (
-          <>
-            {chartData.length === 0 ? (
-              <Typography>No Sales In This Day</Typography>
-            ) : state === "line" ? (
-              <LineChart
-                width={600}
-                height={250}
-                data={chartData}
-                margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-              >
-                <Line type="monotone" dataKey="totalSales" stroke="#8884d8" />
-                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
-              </LineChart>
-            ) : (
-              <BarChart width={600} height={300} data={chartData}>
-                <XAxis dataKey="day" stroke="#c387f2" />
-                <YAxis />
-                <Tooltip />
-                <CartesianGrid stroke="#c387f2" strokeDasharray="2 2" />
-                <Bar dataKey="totalSales" fill="#c387f2" barSize={30} />
-              </BarChart>
-            )}
-          </>
-        )}
-      </ComponentWrapper>
+      {isError ? (
+        <ErrorComponent message={errorMessage} refetch={refetch} />
+      ) : (
+        <ComponentWrapper>
+          {isLoading || isRefetching ? (
+            <Skeleton animation={"wave"} width={600} height={250} />
+          ) : (
+            <>
+              {chartData.length === 0 ? (
+                <Typography>No Sales In This Day</Typography>
+              ) : state === "line" ? (
+                <LineChart
+                  width={600}
+                  height={250}
+                  data={chartData}
+                  margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+                >
+                  <Line type="monotone" dataKey="totalSales" stroke="#8884d8" />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                  <XAxis dataKey="day" />
+                  <YAxis />
+                  <Tooltip />
+                </LineChart>
+              ) : (
+                <BarChart width={600} height={300} data={chartData}>
+                  <XAxis dataKey="day" stroke="#c387f2" />
+                  <YAxis />
+                  <Tooltip />
+                  <CartesianGrid stroke="#c387f2" strokeDasharray="2 2" />
+                  <Bar dataKey="totalSales" fill="#c387f2" barSize={30} />
+                </BarChart>
+              )}
+            </>
+          )}
+        </ComponentWrapper>
+      )}
     </Paper>
   );
 };

@@ -37,7 +37,6 @@ const AddAmountsForm = ({ row, refetch, type }) => {
     },
     onSuccess: (re) => {
       refetch();
-      console.log(re);
     },
     onError: (err) => {
       console.log(err);

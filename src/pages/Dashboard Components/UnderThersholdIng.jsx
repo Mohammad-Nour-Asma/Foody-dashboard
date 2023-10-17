@@ -10,16 +10,18 @@ import Table from "../../components/Table";
 import { mealIngredientColumns } from "../../data/Ingredients";
 import ComponentWrapper from "../../components/ComponentWrapper";
 import Loader from "../../components/common/loader/loader";
+import { useErrorBoundary } from "react-error-boundary";
+import ErrorComponent from "../../components/ErrorComponent";
 
 const filterTheData = (data) => {
-  console.log(data);
   const filtered = data.filter((item) => item.threshold >= item.total_quantity);
   return filtered;
 };
 
 const UnderThersholdIng = () => {
   const { branch_id } = useSelector((state) => state.settings);
-  const { data, isLoading, isError, refetch, isSuccess, isRefetching } =
+  const { showBoundary } = useErrorBoundary();
+  const { data, isLoading, isError, refetch, isSuccess, isRefetching, error } =
     useQuery({
       queryKey: [`ingredients-get-${branch_id}`],
       queryFn: () => {
@@ -28,7 +30,21 @@ const UnderThersholdIng = () => {
           method: "GET",
         });
       },
+      onError: () => {
+        if (data?.response?.status !== 404 || data?.response?.status !== 500)
+          showBoundary(data);
+      },
     });
+
+  let errorMessage;
+  if (isError) {
+    if (error?.response?.status === 404)
+      errorMessage = "Data Not Found - Please Contact The Technical Team Or";
+    else if (error?.response?.status === 500)
+      errorMessage =
+        "Something Went Wrong In Our Server - Please Contact The Technical Team Or";
+  }
+
   const ingredients = data?.data;
 
   return (
@@ -44,6 +60,8 @@ const UnderThersholdIng = () => {
           width={"100%"}
           height={"280px"}
         />
+      ) : isError ? (
+        <ErrorComponent message={errorMessage} refetch={refetch} />
       ) : (
         <>
           <Table
