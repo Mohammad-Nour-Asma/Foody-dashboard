@@ -25,6 +25,8 @@ const ExtraIngredients = () => {
     },
   });
 
+  console.log(data);
+
   const ingredients = data?.data;
   const deleteProduct = (id) => {
     return request({

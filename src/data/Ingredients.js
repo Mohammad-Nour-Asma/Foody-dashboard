@@ -109,7 +109,7 @@ export const extraIngredientsColumns = [
             per{" "}
             <span style={{ fontWeight: "bold" }}>
               {cell.row.original.ingredient.unit === "l" ||
-              cell.row.original.ingredient.unit === "l"
+              cell.row.original.ingredient.unit === "ml"
                 ? "Liter"
                 : "Kilogram"}
             </span>
