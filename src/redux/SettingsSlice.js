@@ -4,18 +4,18 @@ const initialState = {
   dateFilter: {
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
-    day: new Date().getDay() + 1,
+    day: new Date().getUTCDate(),
   },
   fromToFilter: {
     from: {
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
-      day: new Date().getDay() + 1,
+      day:  new Date().getUTCDate(),
     },
     to: {
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
-      day: new Date().getDay() + 1,
+      day:  new Date().getUTCDate(),
     },
   },
   filterState: "date",

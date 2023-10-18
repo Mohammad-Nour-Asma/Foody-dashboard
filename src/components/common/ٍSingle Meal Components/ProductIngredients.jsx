@@ -113,7 +113,7 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
   };
 
   const getProductIng = useQuery({
-    queryKey: [`get-product-details-${id}`],
+    queryKey: [`get-product-ingredient-details-${id}`],
     queryFn: getIngredientProductDetails,
   });
 
@@ -142,6 +142,7 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
   };
 
   const toggleMutate = useMutation({
+    mutationKey: [`toggle${id}`],
     mutationFn: toggle,
     onSuccess: (data) => {
       getProductIng.refetch();
@@ -161,7 +162,6 @@ const ProductIngredients = ({ ingredients, refetch, isRefetching }) => {
     },
   });
 
-  console.log(getProductIng.data.data.data);
   return (
     <>
       <Dialog

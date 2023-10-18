@@ -34,7 +34,7 @@ const ProductExtraIngredients = () => {
   });
 
   const getProductExtra = useQuery({
-    queryFn: [`${id}-product-extra`],
+    queryKey: [`${id}-product-extra`],
     queryFn: () => {
       return request({
         url: `extraIng/product/${id}`,
@@ -62,6 +62,7 @@ const ProductExtraIngredients = () => {
   };
 
   const deleteMutate = useMutation({
+    mutationKey: [`delete-${id}`],
     mutationFn: deleteProduct,
     onSuccess: () => {
       getProductExtra.refetch();

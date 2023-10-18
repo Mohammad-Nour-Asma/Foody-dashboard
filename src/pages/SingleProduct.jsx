@@ -27,7 +27,7 @@ const SingleProduct = () => {
     });
 
   let productDetails;
-  if (isSuccess) productDetails = data?.data.data;
+  if (isSuccess) productDetails = data?.data?.data;
 
   if (isLoading) {
     return (
@@ -37,6 +37,7 @@ const SingleProduct = () => {
     );
   }
 
+  console.log(productDetails, "product");
   const extra = productDetails.extra_ingredients;
   const ingredients = productDetails.ingredients;
   return (
