@@ -58,7 +58,7 @@ const ProductForm = ({ row, refetch: refetchMeals }) => {
   const handleSubmit = (values) => {
     const product = {
       ...values,
-      estimated_time: `00:${values.estimated_time}`,
+      estimated_time: `00:${values.estimated_time}:00`,
       category_id: selectedCategory,
       status: status ? 1 : 0,
       branch_id,
