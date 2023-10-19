@@ -100,7 +100,6 @@ const Navbar = ({ sideBarWidth, handleDrawerToggle }) => {
         <Toolbar
           sx={{
             background: "#e5edff",
-            borderBottom: "0.5px solid #c580e4",
           }}
         >
           <Box

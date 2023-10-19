@@ -22,7 +22,7 @@ const Sidebar = ({ window, sideBarWidth, mobileOpen, handleDrawerToggle }) => {
         </Box>
       </Toolbar>
 
-      <List disablePadding>
+      <List sx={{ marginTop: "1rem" }} disablePadding>
         {links?.map((link, index) =>
           link?.subLinks ? (
             <SidebarItemCollapse {...link} key={index} />

@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 const ErrorComponent = ({ message, refetch }) => {
+  if (!message) message = "an error happen - please";
   return (
     <Box>
       <Typography variant="h6" sx={{ textAlign: "center" }}>

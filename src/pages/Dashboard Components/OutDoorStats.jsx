@@ -9,6 +9,7 @@ import { request } from "../../Request/request";
 import DashboardHeading from "./DashboardHeading";
 import { useErrorBoundary } from "react-error-boundary";
 import ErrorComponent from "../../components/ErrorComponent";
+import { formatNumber } from "../../components/HelperFunction";
 const OutDoorStats = () => {
   const Item = styled(Paper)({
     padding: "1rem",
@@ -129,10 +130,10 @@ const OutDoorStats = () => {
                     ) : (
                       <Skeleton width="60%" />
                     )}
-                    <Typography variant="h4" sx={{ my: 2 }}>
+                    <Typography variant="h4" sx={{ mt: "1rem" }}>
                       {item ? (
                         stats[item] ? (
-                          stats[item]
+                          formatNumber(Math.trunc(stats[item]))
                         ) : (
                           0
                         )
@@ -161,20 +162,19 @@ const OutDoorStats = () => {
                   direction="row"
                   alignItems={"center"}
                   justifyContent={"space-between"}
+                  mt={"1rem"}
                 >
-                  <Typography variant="h4" sx={{ mt: 2 }}>
+                  <Typography variant="h4">
                     {isPending ? (
                       <Skeleton width="60%" />
                     ) : data?.data[1] ? (
                       data?.data[1]?.count ? (
-                        data?.data[1]?.count
+                        formatNumber(data?.data[1]?.count)
                       ) : (
                         0
                       )
                     ) : (
-                      <Typography variant="h4" sx={{ my: 1 }}>
-                        0
-                      </Typography>
+                      <Typography variant="h4">0</Typography>
                     )}
                   </Typography>
 
@@ -210,20 +210,19 @@ const OutDoorStats = () => {
                   direction="row"
                   alignItems={"center"}
                   justifyContent={"space-between"}
+                  mt={"1rem"}
                 >
-                  <Typography variant="h4" sx={{ mt: 2 }}>
+                  <Typography variant="h4">
                     {isPending ? (
                       <Skeleton width="60%" />
                     ) : data?.data[2] ? (
                       data?.data[2]?.max_sales ? (
-                        data?.data[2]?.max_sales
+                        formatNumber(Math.trunc(data?.data[2]?.max_sales))
                       ) : (
                         0
                       )
                     ) : (
-                      <Typography variant="h4" sx={{ my: 1 }}>
-                        0
-                      </Typography>
+                      <Typography variant="h4">0</Typography>
                     )}
                   </Typography>
 

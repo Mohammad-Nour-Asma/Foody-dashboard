@@ -24,7 +24,7 @@ const Reviews = () => {
     queryKey: [`get-feedback-${branch_id}`],
     queryFn: getOrdersReviews,
   });
-
+  console.log(data);
   useEffect(() => {
     refetch();
   }, [branch_id]);
@@ -133,7 +133,7 @@ const Reviews = () => {
             downloadExil(branch_id);
           }}
         >
-          Download as Excel
+          Export Excel Sheet
         </Typography>
       )}
 

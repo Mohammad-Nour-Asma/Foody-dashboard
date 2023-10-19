@@ -13,11 +13,12 @@ export const productValidation = yup.object({
   price: yup.number().required("the price filed is required"),
   estimated_time: yup
     .mixed()
-    .required.test(
+    .required()
+    .test(
       "duration",
       "Invalid duration format must be Positive Number",
       (value) => {
-        if (value <= 0) {
+        if (isNaN(Number(value)) || value <= 0) {
           return false;
         }
 
