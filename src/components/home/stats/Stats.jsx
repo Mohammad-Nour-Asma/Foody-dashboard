@@ -121,7 +121,7 @@ const Stats = () => {
       {isError && errorMessage ? (
         <ErrorComponent message={errorMessage} refetch={refetch} />
       ) : (
-        <Grid container spacing={2}>
+        <Grid sx={{}} container spacing={2}>
           {(isPending ? Array.from(new Array(6)) : statsArray)?.map(
             (item, i) => (
               <Grid item xs={12} sm={i === 5 - 1 ? 12 : 6} lg={4} key={i}>
@@ -130,6 +130,8 @@ const Stats = () => {
                     borderStyle: "solid",
                     borderWidth: "1px",
                     borderColor: "divider",
+                    background:
+                      "linear-gradient(45deg, #e5edff, #f4f7fe) !important",
                   }}
                 >
                   <Box sx={{ flex: 1 }}>
@@ -161,6 +163,8 @@ const Stats = () => {
                 borderStyle: "solid",
                 borderWidth: "1px",
                 borderColor: "divider",
+                background:
+                  "linear-gradient(45deg, #e5edff, #f4f7fe) !important",
               }}
             >
               <Box sx={{ flex: 1 }}>
@@ -211,6 +215,8 @@ const Stats = () => {
                 borderStyle: "solid",
                 borderWidth: "1px",
                 borderColor: "divider",
+                background:
+                  "linear-gradient(45deg, #e5edff, #f4f7fe) !important",
               }}
             >
               <Box sx={{ flex: 1 }}>

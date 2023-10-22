@@ -46,7 +46,7 @@ const Categories = () => {
 
   const getCategory = () => {
     return request({
-      url: `/category/branch/${branch_id}`,
+      url: `/admin/category/branch/${branch_id}`,
       method: "GET",
     });
   };
@@ -59,6 +59,7 @@ const Categories = () => {
     });
 
   const categories = data?.data?.data;
+  console.log(categories);
 
   const deleteCategory = (id) => {
     return request({

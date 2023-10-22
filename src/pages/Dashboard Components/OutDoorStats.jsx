@@ -118,6 +118,9 @@ const OutDoorStats = () => {
               <Grid item xs={12} sm={i === 5 - 1 ? 12 : 6} lg={4} key={i}>
                 <Item
                   sx={{
+                    background:
+                      "linear-gradient(45deg, #e5edff, #f4f7fe) !important",
+
                     borderStyle: "solid",
                     borderWidth: "1px",
                     borderColor: "divider",
@@ -152,6 +155,9 @@ const OutDoorStats = () => {
               sx={{
                 borderStyle: "solid",
                 borderWidth: "1px",
+                background:
+                  "linear-gradient(45deg, #e5edff, #f4f7fe) !important",
+
                 borderColor: "divider",
               }}
             >
@@ -201,6 +207,8 @@ const OutDoorStats = () => {
                 borderStyle: "solid",
                 borderWidth: "1px",
                 borderColor: "divider",
+                background:
+                  "linear-gradient(45deg, #e5edff, #f4f7fe) !important",
               }}
             >
               <Box sx={{ flex: 1 }}>

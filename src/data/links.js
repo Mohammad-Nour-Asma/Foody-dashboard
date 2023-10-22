@@ -6,6 +6,7 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import FmdBadIcon from "@mui/icons-material/FmdBad";
+import FlakyIcon from "@mui/icons-material/Flaky";
 
 export const links = [
   {
@@ -28,9 +29,20 @@ export const links = [
     ],
   },
   {
-    name: "Destructed ingredient",
-    icon: <FmdBadIcon />,
-    url: "/destructed/ingredient",
+    name: "Actions",
+    icon: <FlakyIcon />,
+    subLinks: [
+      {
+        name: "Destructed ingredient",
+        icon: <FmdBadIcon />,
+        url: "/destructed/ingredient",
+      },
+      {
+        name: "Added ingredient",
+        icon: <FmdBadIcon />,
+        url: "/added/ingredient",
+      },
+    ],
   },
   {
     name: "Extra ingredients",

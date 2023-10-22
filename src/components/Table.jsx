@@ -223,17 +223,19 @@ export const Table = ({
                   </Link>
                 </Tooltip>
               )}
-              {enableEditing && routeLink !== "productExtra" && (
-                <Tooltip arrow placement="right" title="Edit">
-                  <IconButton
-                    onClick={() => {
-                      handleOpen("edit", row);
-                    }}
-                  >
-                    <AiOutlineEdit />
-                  </IconButton>
-                </Tooltip>
-              )}
+              {enableEditing &&
+                routeLink !== "productExtra" &&
+                routeLink !== "offer" && (
+                  <Tooltip arrow placement="right" title="Edit">
+                    <IconButton
+                      onClick={() => {
+                        handleOpen("edit", row);
+                      }}
+                    >
+                      <AiOutlineEdit />
+                    </IconButton>
+                  </Tooltip>
+                )}
               {hideFromMenu &&
                 (routeLink === "products" || routeLink === "categories") && (
                   <SwitchForMenu

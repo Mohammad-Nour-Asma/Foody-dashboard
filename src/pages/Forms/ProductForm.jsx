@@ -34,7 +34,7 @@ const ProductForm = ({ row, refetch: refetchMeals }) => {
       name: row.original.name,
       description: row.original.description,
       price: row.original.price,
-      estimated_time: row.original.estimated_time.slice(3),
+      estimated_time: row.original.estimated_time.slice(3, 5),
       position: row.original.position,
       description_ar: row.original.description_ar,
       name_ar: row.original.name_ar,
@@ -58,7 +58,11 @@ const ProductForm = ({ row, refetch: refetchMeals }) => {
   const handleSubmit = (values) => {
     const product = {
       ...values,
-      estimated_time: `00:${values.estimated_time}:00`,
+      estimated_time: `00:${
+        values.estimated_time > 9
+          ? values.estimated_time
+          : `0${values.estimated_time}`
+      }:00`,
       category_id: selectedCategory,
       status: status ? 1 : 0,
       branch_id,
@@ -66,8 +70,8 @@ const ProductForm = ({ row, refetch: refetchMeals }) => {
       extra_ingredients: extraIngredient,
     };
 
-    setUpdatedMeal(product);
     if (row) {
+      console.log(product);
       updateMutation.mutate(product);
     } else {
       addProduct.mutate(product);

@@ -88,6 +88,7 @@ const Offer = () => {
           enableColumnDragging={false}
           showPreview={false}
           routeLink="offer"
+          enableEditing={true}
           deleteElement={mutate}
         />
       )}

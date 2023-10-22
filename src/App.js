@@ -34,6 +34,7 @@ import ExpandedTable from "./components/common/IngredientsInput";
 import CheckUuid from "./pages/CheckUuid";
 import DamagedIngredient from "./pages/DamagedIngredient";
 import ErrorPage from "./pages/ErrorPage";
+import AddedIngredients from "./pages/AddedIngredients";
 
 const sideBarWidth = 250;
 
@@ -129,6 +130,9 @@ function App() {
                 path="/destructed/ingredient"
                 element={<DamagedIngredient />}
               />
+
+              {/* Added Ingredients */}
+              <Route path="/added/ingredient" element={<AddedIngredients />} />
             </Routes>
           </Box>
         </Box>

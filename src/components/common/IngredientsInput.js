@@ -371,6 +371,9 @@ const ExpandedTable = ({ data, type, refetch, setOpen }) => {
           sx={{
             mt: 1,
             borderRadius: "5px",
+            background: "linear-gradient(to bottom, #da32f9, #629ad6)",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
           }}
           onClick={() => {
             sendTheFilterdData(ingredients);

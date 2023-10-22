@@ -5,7 +5,7 @@ export const offerColumns = [
     size: 100,
     Cell: ({ cell }) => (
       <div>
-        <img src={cell.getValue()} alt="" width={100} />
+        <img src={cell.getValue()} alt="" width={200} />
       </div>
     ),
   },
