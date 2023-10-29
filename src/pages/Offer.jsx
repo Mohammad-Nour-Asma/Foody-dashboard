@@ -26,7 +26,7 @@ const Offer = () => {
   const offers = data?.data?.data;
 
   const handleDelete = (id) => {
-    return request({ url: `offer/${id}`, method: "POST" });
+    return request({ url: `offer/${id}`, method: "DELETE" });
   };
 
   const mutate = useMutation({

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ComponentWrapper from "../../components/ComponentWrapper";
 import { Skeleton, Box, Paper, Typography, Button, Stack } from "@mui/material";
 
@@ -31,6 +31,23 @@ const DailySales = () => {
   const { dateFilter, branch_id, filterState } = useSelector(
     (state) => state.settings
   );
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  console.log(windowWidth / 2);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const { data, isLoading, isError, refetch, isRefetching, isSuccess, error } =
     useQuery({
@@ -83,16 +100,11 @@ const DailySales = () => {
         borderStyle: "solid",
         borderWidth: "1px",
         borderColor: "divider",
-        width: "fit-content",
-        margin: "0 auto",
+        width: "100%",
+        margin: "0",
       }}
     >
-      <Stack
-        direction={"row"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        gap={6}
-      >
+      <Stack direction={"row"} alignItems={"center"} gap={6} width={"100%"}>
         <Typography variant="h5">
           Sales Statistics On{" "}
           <Typography
@@ -167,7 +179,7 @@ const DailySales = () => {
                 <Typography>No Sales In This Day</Typography>
               ) : state === "line" ? (
                 <LineChart
-                  width={600}
+                  width={windowWidth / 1.35}
                   height={250}
                   data={chartData}
                   margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
@@ -179,7 +191,11 @@ const DailySales = () => {
                   <Tooltip />
                 </LineChart>
               ) : (
-                <BarChart width={600} height={300} data={chartData}>
+                <BarChart
+                  width={windowWidth / 1.35}
+                  height={300}
+                  data={chartData}
+                >
                   <XAxis dataKey="day" stroke="#c387f2" />
                   <YAxis />
                   <Tooltip />

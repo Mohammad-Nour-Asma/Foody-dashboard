@@ -7,7 +7,6 @@ import {
   IngredientsData,
   mealIngredientColumns,
 } from "../data/Ingredients";
-
 import { Box, Button, Paper, Skeleton, Typography } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { request } from "../Request/request";
@@ -24,6 +23,7 @@ const Ingredients = () => {
   const dispatch = useDispatch();
   const { showBoundary } = useErrorBoundary();
   const { branch_id } = useSelector((state) => state.settings);
+
   const { data, isLoading, isError, refetch, isSuccess, isRefetching, error } =
     useQuery({
       queryKey: [`ingredients-get-${branch_id}`],
@@ -36,6 +36,7 @@ const Ingredients = () => {
     });
 
   const ingredients = data?.data;
+
   const deleteProduct = (id) => {
     return request({
       url: `ingredient/${id}`,

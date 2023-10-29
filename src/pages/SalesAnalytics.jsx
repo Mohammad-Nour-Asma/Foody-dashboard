@@ -140,9 +140,9 @@ const SalesAnalytics = () => {
   return (
     <Box sx={{ pt: "20px", pb: "20px" }}>
       <Stack
+        direction={"row"}
         gap={0.8}
         sx={{ marginBottom: "14px" }}
-        direction={"row"}
         alignItems={"center"}
       >
         <MonetizationOnIcon
@@ -175,8 +175,8 @@ const SalesAnalytics = () => {
             }}
           />
         ) : (
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={6}>
+          <Stack gap={2}>
+            <Box sx={{ padding: "1rem" }}>
               {isLoading ||
               totalSales.isLoading ||
               isRefetching ||
@@ -192,9 +192,9 @@ const SalesAnalytics = () => {
                   chartData={[chartData]}
                 />
               )}
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} md={6} lg={6}>
+            <Box sx={{ padding: "1rem" }}>
               {isLoading ||
               totalSales.isLoading ||
               isRefetching ||
@@ -207,8 +207,8 @@ const SalesAnalytics = () => {
               ) : (
                 <BarChart data={bar.data.data} />
               )}
-            </Grid>
-          </Grid>
+            </Box>
+          </Stack>
         )}
       </ComponentWrapper>
     </Box>
