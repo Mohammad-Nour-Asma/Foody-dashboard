@@ -235,7 +235,7 @@ const columns = [
   },
   {
     accessorKey: "from_start_to_done_diff",
-    header: "from start to done",
+    header: "Order Preparation Time",
   },
   {
     accessorKey: "serviceRate", //access nested data with dot notation

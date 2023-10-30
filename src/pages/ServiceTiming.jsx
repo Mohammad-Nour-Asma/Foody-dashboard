@@ -147,7 +147,7 @@ const ServiceTiming = () => {
                 border: "1px solid",
               }}
             >
-              Preparation Time
+              Preparation Time In Kitchen
               <Typography fontWeight={"bold"} fontSize={"1.4rem"}>
                 {result[0].isLoading || result[0].isRefetching ? (
                   <Skeleton width={"55%"} />
@@ -167,7 +167,7 @@ const ServiceTiming = () => {
                 border: "1px solid",
               }}
             >
-              Time from Done
+              Waiter Delivery Time
               <Typography fontWeight={"bold"} fontSize={"1.4rem"}>
                 {result[1].isLoading || result[1].isRefetching ? (
                   <Skeleton width={"55%"} />
@@ -187,7 +187,7 @@ const ServiceTiming = () => {
                 border: "1px solid",
               }}
             >
-              Time Ready
+              Full Process Time
               <Typography fontWeight={"bold"} fontSize={"1.4rem"}>
                 {result[2].isLoading || result[2].isRefetching ? (
                   <Skeleton width={"55%"} />
