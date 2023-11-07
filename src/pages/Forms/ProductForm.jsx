@@ -25,10 +25,12 @@ import { productValidation } from "../../validations/productValidation";
 import Notify from "../../components/common/Notify";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
 const ProductForm = ({ row, refetch: refetchMeals }) => {
   const [image, setImage] = useState("");
   let initialValues;
   const { branch_id } = useSelector((state) => state.settings);
+  const { showBoundary } = useErrorBoundary();
   if (row) {
     initialValues = {
       name: row.original.name,
@@ -109,15 +111,27 @@ const ProductForm = ({ row, refetch: refetchMeals }) => {
   const { data, isLoading, isError, isSuccess, refetch } = useQuery({
     queryKey: [`category-get-${branch_id}`],
     queryFn: getCategory,
+    onError(err) {
+      showBoundary(err);
+    },
+    onSuccess(data) {
+      setSelectedCategory(
+        row ? row.original.category.id : data?.data.data[0].id
+      );
+    },
   });
   const categories = data?.data.data;
 
   const [selectedCategory, setSelectedCategory] = useState(
-    row ? row.original.category.id : 8
+    row ? row.original.category.id : 0
   );
+
+  console.log(selectedCategory);
   useEffect(() => {
     if (isSuccess) {
-      if (categories.length !== 0) setSelectedCategory(categories[0].id);
+      if (row) {
+        setSelectedCategory(row.original.category.id);
+      } else if (categories.length !== 0) setSelectedCategory(categories[0].id);
     }
   }, [isSuccess]);
 
@@ -194,6 +208,7 @@ const ProductForm = ({ row, refetch: refetchMeals }) => {
     },
     onError: () => {
       setOpen(true);
+      showBoundary();
     },
   });
 
@@ -217,8 +232,9 @@ const ProductForm = ({ row, refetch: refetchMeals }) => {
       setOpen(true);
       navigate("/products");
     },
-    onError: () => {
+    onError: (err) => {
       setOpen(true);
+      showBoundary(err);
     },
   });
 
@@ -443,6 +459,7 @@ const ProductForm = ({ row, refetch: refetchMeals }) => {
                   <input
                     type="file"
                     // name={row ? " " : "image"}
+                    accept="image/*"
                     ref={imageInput}
                     hidden
                     // onBlur={handleBlur}

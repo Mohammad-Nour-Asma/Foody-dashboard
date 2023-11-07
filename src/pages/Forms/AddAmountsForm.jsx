@@ -11,8 +11,10 @@ import {
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useMutation } from "@tanstack/react-query";
 import { request } from "../../Request/request";
+import { useErrorBoundary } from "react-error-boundary";
 
 const AddAmountsForm = ({ row, refetch, type }) => {
+  const { showBoundary } = useErrorBoundary();
   const units =
     row.original.unit === "kg" || row.original.unit === "g"
       ? ["kg", "g"]
@@ -40,6 +42,7 @@ const AddAmountsForm = ({ row, refetch, type }) => {
     },
     onError: (err) => {
       console.log(err);
+      showBoundary();
     },
   });
 

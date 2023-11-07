@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import Notify from "../../components/common/Notify";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Stack } from "@mui/material";
+import { useErrorBoundary } from "react-error-boundary";
 const ProductIngredientForm = ({
   type,
   productIngredient,
@@ -22,6 +23,7 @@ const ProductIngredientForm = ({
   const { branch_id } = useSelector((state) => state.settings);
   const { id } = useParams();
   const [open, setOpen] = useState(false);
+  const { showBoundary } = useErrorBoundary();
 
   // handle cloase
   const handleClose = () => {
@@ -41,6 +43,9 @@ const ProductIngredientForm = ({
         method: "GET",
       });
     },
+    onError(err) {
+      showBoundary();
+    },
   });
 
   const getExtraQuiry = useQuery({
@@ -50,6 +55,9 @@ const ProductIngredientForm = ({
         url: `extraIng/branch/${branch_id}`,
         method: "GET",
       });
+    },
+    onError(err) {
+      showBoundary();
     },
   });
 
@@ -70,7 +78,7 @@ const ProductIngredientForm = ({
       setOpen(true);
     },
     onError: (err) => {
-      console.log(err);
+      showBoundary(err);
       setOpen(true);
     },
   });

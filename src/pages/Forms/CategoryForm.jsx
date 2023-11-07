@@ -10,6 +10,7 @@ import { Formik } from "formik";
 import { categoryValidation } from "../../validations/categoryValidation";
 import Notify from "../../components/common/Notify";
 import { useNavigate } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
 const CategoryForm = ({ row, refetch }) => {
   let initialValues = { name: "", position: "" };
   if (row) {
@@ -21,6 +22,7 @@ const CategoryForm = ({ row, refetch }) => {
   }
 
   const [updatedCat, setUpdatedCat] = useState();
+  const { showBoundary } = useErrorBoundary();
 
   const UploadBox = styled(Box)({
     marginTop: 30,
@@ -58,6 +60,7 @@ const CategoryForm = ({ row, refetch }) => {
 
     onError: (err) => {
       setOpen(true);
+      showBoundary(err);
     },
     onSuccess: () => {
       setOpen(true);
@@ -127,6 +130,7 @@ const CategoryForm = ({ row, refetch }) => {
     },
     onError: (err) => {
       setOpen(true);
+      showBoundary();
     },
   });
   return (
@@ -216,6 +220,7 @@ const CategoryForm = ({ row, refetch }) => {
                 type="file"
                 hidden
                 ref={imageInput}
+                accept="image/*"
                 onChange={(e) => setImage(e.target.files[0])}
               />
               <UploadBox onClick={() => imageInput.current.click()}>

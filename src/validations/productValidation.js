@@ -4,8 +4,15 @@ const FILE_SIZE = 5_000_000; //5MB
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
 export const productValidation = yup.object({
-  name: yup.string().required("name field is required"),
-  name_ar: yup.string().required("arabic name field is required"),
+  name: yup
+    .string()
+    .required("name field is required")
+    .max(30, "The Name Must Be Under 20 Letters"),
+  name_ar: yup
+    .string()
+    .required("arabic name field is required")
+    .max(30, "The Name Must Be Under 20 Letters"),
+
   description: yup.string().required("Meal description field is required"),
   description_ar: yup
     .string()

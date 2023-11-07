@@ -12,6 +12,7 @@ import Notify from "../components/common/Notify";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
 
 const AddOffer = () => {
   //Image Upload Stuff
@@ -34,6 +35,7 @@ const AddOffer = () => {
   const [progress, setProgress] = useState({ loading: false, open: false });
   const navigate = useNavigate();
 
+  const { showBoundary } = useErrorBoundary();
   const submitHandle = () => {
     if (image == "") {
       setImageValidation(false);
@@ -68,6 +70,7 @@ const AddOffer = () => {
     },
     onError: (err) => {
       setProgress({ loading: false, open: false });
+      showBoundary(err);
     },
     onSuccess: () => {
       setProgress({ loading: false, open: true });

@@ -7,11 +7,15 @@ const ErrorPage = ({ error, resetErrorBoundary }) => {
   let errorMessage;
   if (error?.message === "Network Error")
     errorMessage = "Network Error - Check Your Internet Connection";
+  else if (error?.message === "timeout of 6000ms exceeded")
+    errorMessage = "Weak Internet Connection - Check Your Internet Connection";
   else if (error?.response?.status === 404)
     errorMessage = "404 - Page Not Found";
+  else if (error?.response?.status === 422)
+    errorMessage = "You Entered Wrong Information";
   else if (error?.response?.status === 429)
     errorMessage = "Too Many Request - Wait A Little";
-  else errorMessage = error.message;
+  else errorMessage = "Something went wrong";
   return (
     <Box sx={{ position: "relative", height: "100vh", width: "100%" }}>
       <Box

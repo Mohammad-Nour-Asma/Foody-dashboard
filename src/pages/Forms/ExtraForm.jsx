@@ -25,6 +25,7 @@ import { ExtraValidation } from "../../validations/ExtraValidations";
 import Loader from "../../components/common/loader/loader";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
 
 const ExtraForm = ({ row, refetch }) => {
   const [updatedIng, setUpdatedIng] = useState({});
@@ -32,6 +33,7 @@ const ExtraForm = ({ row, refetch }) => {
   const navigate = useNavigate();
   const { branch_id } = useSelector((state) => state.settings);
   const [unit, setUnit] = useState();
+  const { showBoundary } = useErrorBoundary();
 
   const handleUnitChange = (e) => {
     setUnit(e.target.value);
@@ -95,7 +97,11 @@ const ExtraForm = ({ row, refetch }) => {
     },
     onError: (err) => {
       setOpen(true);
+      console.log(err, "this is error");
+      showBoundary(err);
     },
+    throwOnError: true, // Throw an error for network errors
+    retry: 3, // Retry the mutation 3 times
   });
 
   const [open, setOpen] = useState(false);
@@ -125,7 +131,7 @@ const ExtraForm = ({ row, refetch }) => {
   const {
     data: ingredientsData,
     isLoading: loading2,
-    isError: error2,
+    error: error2,
     refetch: ingredientRefetch,
     isSuccess,
   } = useQuery({
@@ -152,11 +158,17 @@ const ExtraForm = ({ row, refetch }) => {
     onError: (err) => {
       setOpen(true);
       console.log(err);
+      showBoundary(err);
     },
   });
 
   if (loading2) {
     return <Loader />;
+  }
+
+  if (error2) {
+    console.log(error2);
+    showBoundary(error2);
   }
 
   return (

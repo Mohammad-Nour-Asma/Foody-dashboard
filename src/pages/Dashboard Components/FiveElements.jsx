@@ -53,6 +53,8 @@ const TopElements = ({ columns, type, entity }) => {
       };
     }
 
+    console.log(data);
+
     return request({
       url: `${api}/${branch_id}`,
       method: "POST",

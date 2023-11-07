@@ -20,17 +20,17 @@ import {
 } from "../../validations/ingredientsValidation";
 import { request } from "../../Request/request";
 import { useRef, useState } from "react";
-import styled from "@emotion/styled";
 import Notify from "../../components/common/Notify";
-import Price from "../../components/common/Price";
 import { useMutation } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
 
 const IngredientsForm = ({ row, refetch, type }) => {
   const [updatedIng, setUpdatedIng] = useState({});
   const { branch_id } = useSelector((state) => state.settings);
   const [unit, setUnit] = useState("g");
+  const { showBoundary } = useErrorBoundary();
 
   const handleUnitChange = (e) => {
     setUnit(e.target.value);
@@ -93,6 +93,7 @@ const IngredientsForm = ({ row, refetch, type }) => {
     },
     onError: (err) => {
       setOpen(true);
+      showBoundary(err);
     },
   });
 
@@ -125,8 +126,10 @@ const IngredientsForm = ({ row, refetch, type }) => {
     },
     onError: (err) => {
       setOpen(true);
+      showBoundary();
     },
   });
+
   return (
     <Box
       sx={{
