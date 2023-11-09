@@ -3,7 +3,6 @@ import { Box, Button, Typography } from "@mui/material";
 import Stars from "../images/error.jpg";
 
 const ErrorPage = ({ error, resetErrorBoundary }) => {
-  console.log(error);
   let errorMessage;
   if (error?.message === "Network Error")
     errorMessage = "Network Error - Check Your Internet Connection";
@@ -13,6 +12,8 @@ const ErrorPage = ({ error, resetErrorBoundary }) => {
     errorMessage = "404 - Page Not Found";
   else if (error?.response?.status === 422)
     errorMessage = "You Entered Wrong Information";
+  else if (error?.response?.status === 401)
+    errorMessage = "Unauthorized - Please Login Again";
   else if (error?.response?.status === 429)
     errorMessage = "Too Many Request - Wait A Little";
   else errorMessage = "Something went wrong";
@@ -57,9 +58,17 @@ const ErrorPage = ({ error, resetErrorBoundary }) => {
               background:
                 "linear-gradient(to bottom, #dd78ef, #779bc2) !important",
             }}
-            onClick={resetErrorBoundary}
+            onClick={() => {
+              if (error?.response?.status === 401) {
+                document.location.href = "/";
+                return;
+              }
+              resetErrorBoundary();
+            }}
           >
-            Refresh Page
+            {error?.response?.status == 401
+              ? "Return To Home Page"
+              : "Refresh Page"}
           </Button>
         </Box>
       </Box>

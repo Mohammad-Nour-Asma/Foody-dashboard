@@ -5,7 +5,7 @@ export const request = async ({ ...options }) => {
   client.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem(
     "token"
   )}`;
-  client.defaults.timeout = 15000;
+  // client.defaults.timeout = 0;
 
   return client(options).then((res) => res);
 };
