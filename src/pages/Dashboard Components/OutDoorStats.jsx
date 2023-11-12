@@ -253,7 +253,7 @@ const OutDoorStats = () => {
 
   return (
     <>
-      <DashboardHeading title={"Indoor Statistics"} Icon={QueryStatsIcon} />
+      <DashboardHeading title={"Outdoor Statistics"} Icon={QueryStatsIcon} />
       {isError && errorMessage ? (
         <ErrorComponent message={errorMessage} refetch={refetch} />
       ) : (
